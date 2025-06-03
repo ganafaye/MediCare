@@ -6,11 +6,7 @@
   @vite('resources/css/app.css')
 </head>
 <body>
-  <div class="container">
-    <h1 class="text-primary text-3xl font-bold underline">
-      Hello, Laravel avec Bootstrap et Tailwind !
-    </h1>
-  </div>
+
   @vite('resources/js/app.js')
 </body>
 </html>
