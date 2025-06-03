@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediCare - Clinique Gynéco Obstétrique </title>
   @vite('resources/css/app.css')
+  <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
 </head>
 <body>
 <!--  header . -->
@@ -212,15 +214,47 @@
         </div>
     </div>
 </section>
+
+<!-- Section new letters  -->
+<section class="newsletter-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
+    <div class="container text-center">
+        <h2 class="mb-4 fw-bold" style="color: #fd0d99;">
+            <i class="bi bi-envelope-paper-heart-fill me-2"></i>
+            Inscrivez-vous à notre newsletter
+            <i class="bi bi-envelope-paper-heart-fill ms-2"></i>
+        </h2>
+        <p class="mb-4">Recevez les dernières actualités et conseils santé directement dans votre boîte mail.</p>
+        <form class="d-flex justify-content-center">
+            <input type="email" class="form-control me-2 newsletter-input" placeholder="Votre email" required>
+            <button type="submit" class="btn btn-pink px-4">S'inscrire</button>
+        </form>
+    </div>
+</section>
+
 <!-- contact section -->
 <section class="contact-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
-        <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
-            <span class="me-2">📞</span>Contactez-nous<span class="ms-2">📞</span>
-        </h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="contact-card bg-white bg-opacity-90 rounded-4 shadow-lg p-4 p-md-5 mx-auto">
+        <div class="row justify-content-center align-items-stretch">
+            <!-- Colonne gauche : Google Maps -->
+            <div class="col-lg-6 mb-4 mb-lg-0 d-flex flex-column align-items-stretch">
+                <h4 class="contact-title text-center mb-4">
+                    <i class="bi bi-geo-alt-fill me-2" style="color:#fd0d99;"></i>
+                    Notre adresse
+                </h4>
+                <div class="w-100 h-100 rounded-4 shadow-lg overflow-hidden flex-grow-1" style="min-height: 350px;">
+                    <iframe
+                        src="https://www.google.com/maps?q=Rufisque,+Dakar,+Sénégal&output=embed"
+                        width="100%" height="100%" style="border:0; min-height:350px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+            <!-- Colonne droite : Formulaire de contact -->
+            <div class="col-lg-6 d-flex flex-column align-items-stretch">
+                <h4 class="contact-title text-center mb-4">
+                    <i class="bi bi-envelope-fill me-2" style="color:#0d6efd;"></i>
+                    Contactez-nous
+                </h4>
+                <div class="contact-card bg-white bg-opacity-90 rounded-4 shadow-lg p-4 p-md-5 mx-auto w-100 flex-grow-1">
                     <form>
                         <div class="row g-4">
                             <div class="col-md-6">
@@ -238,25 +272,6 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Section pour gallerie  -->
-<section class="gallery-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
-    <div class="container">
-        <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
-            <span class="me-2">📸</span>Galerie<span class="ms-2">📸</span>
-        </h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <img src="image/gallery1.jpg" alt="Image 1" class="img-fluid rounded-4 shadow-lg">
-            </div>
-            <div class="col-md-4">
-                <img src="image/gallery2.jpg" alt="Image 2" class="img-fluid rounded-4 shadow-lg">
-            </div>
-            <div class="col-md-4">
-                <img src="image/gallery3.jpg" alt="Image 3" class="img-fluid rounded-4 shadow-lg">
             </div>
         </div>
     </div>

@@ -18,3 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(section);
   });
 });
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const map = document.getElementById('user-map');
+      if (map) {
+        map.src = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+      }
+    });
+  }
+});
