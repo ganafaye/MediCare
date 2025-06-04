@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\PatienteAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,20 +18,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('patiente', function () {
-    return "Bienvenue dans l'espace patiente !";
-})->name('espace.patiente');
+//  Routes pour l'authentification des patientes
+Route::post('/login', [PatienteAuthController::class, 'login'])->name('login');
 
-Route::get('admin', function () {
-    return "Bienvenue dans l'espace administrateur !";
-})->name('espace.admin');
+Route::get('/dashboard_patiente', function () {
+    return view('espace_patiente.dashboard_patiente');
+})->name('dashboard.patiente');
 
-Route::get('medecin', function () {
-    return "Bienvenue dans l'espace médecin !";
-})->name('espace.medecin');
-
-Route::get('secretaire', function () {
-    return "Bienvenue dans l'espace secrétaire !";
-})->name('espace.secretaire');
+route::get('/inscription_patiente', function () {
+    return view('espace_patiente.auth.inscription_patiente');
+})->name('inscription.patiente');
 
 

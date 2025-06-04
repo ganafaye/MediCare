@@ -130,6 +130,72 @@
     </div>
 </section>
 
+<!-- Section pour les differentes espaces du plateforme (patiente , medecin, admin , secretaire) -->
+
+<section class="platform-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
+            <span class="me-2">🌐</span>Accédez à votre espace<span class="ms-2">🌐</span>
+        </h2>
+        <div class="row g-4">
+
+            <!-- Espace Patient -->
+
+            <div class="col-md-3">
+                <div class="card platform-card h-100 shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-person-circle mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
+                        <h5 class="card-title fw-bold mb-3">Espace Patiente</h5>
+                        <p class="card-text mb-4">Accédez à vos informations médicales, prenez rendez-vous et suivez votre santé.</p>
+                        <a href="" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">Accéder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Espace Médecin -->
+
+            <div class="col-md-3">
+                <div class="card platform-card h-100 shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-heart-pulse mb-3" style="font-size: 3rem; color: #fd0d99;"></i>
+                        <h5 class="card-title fw-bold mb-3">Espace Médecin</h5>
+                        <p class="card-text mb-4">Gérez vos consultations, accédez aux dossiers patients et suivez vos rendez-vous.</p>
+                        <a href="" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginMedecin">Accéder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Espace Administrateur -->
+
+            <div class="col-md-3">
+                <div class="card platform-card h-100 shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-gear-wide mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
+                        <h5 class="card-title fw-bold mb-3">Espace Administrateur</h5>
+                        <p class="card-text mb-4">Gérez les utilisateurs, les rendez-vous et les statistiques de la plateforme.</p>
+                        <!-- Pour l'admin -->
+                        <a href="#" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginAdmin">Accéder</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Espace Secrétaire -->
+
+            <div class="col-md-3">
+                <div class="card platform-card h-100 shadow-lg border-0 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-person-badge mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
+                        <h5 class="card-title fw-bold mb-3">Espace Secrétaire</h5>
+                        <p class="card-text mb-4">Gérez les rendez-vous, les dossiers patients et les communications.</p>
+                        <!-- Pour la secrétaire -->
+                        <a href="#" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginSecretaire">Accéder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Section pour les témoignages -->
 
 <section class="testimonials-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
@@ -201,70 +267,6 @@
         </div>
     </div>
 </section>
-<!-- Section pour les differentes espaces du plateforme (patiente , medecin, admin , secretaire) -->
-
-<section class="platform-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
-    <div class="container">
-        <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
-            <span class="me-2">🌐</span>Accédez à votre espace<span class="ms-2">🌐</span>
-        </h2>
-        <div class="row g-4">
-
-            <!-- Espace Patient -->
-
-            <div class="col-md-3">
-                <div class="card platform-card h-100 shadow-lg border-0 text-center">
-                    <div class="card-body">
-                        <i class="bi bi-person-circle mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
-                        <h5 class="card-title fw-bold mb-3">Espace Patiente</h5>
-                        <p class="card-text mb-4">Accédez à vos informations médicales, prenez rendez-vous et suivez votre santé.</p>
-                        <a href="{{ route('espace.patiente') }}" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">Accéder</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Espace Médecin -->
-
-            <div class="col-md-3">
-                <div class="card platform-card h-100 shadow-lg border-0 text-center">
-                    <div class="card-body">
-                        <i class="bi bi-heart-pulse mb-3" style="font-size: 3rem; color: #fd0d99;"></i>
-                        <h5 class="card-title fw-bold mb-3">Espace Médecin</h5>
-                        <p class="card-text mb-4">Gérez vos consultations, accédez aux dossiers patients et suivez vos rendez-vous.</p>
-                        <a href="{{ route('espace.medecin') }}" class="btn btn-pink px-4">Accéder</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Espace Administrateur -->
-
-            <div class="col-md-3">
-                <div class="card platform-card h-100 shadow-lg border-0 text-center">
-                    <div class="card-body">
-                        <i class="bi bi-gear-wide mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
-                        <h5 class="card-title fw-bold mb-3">Espace Administrateur</h5>
-                        <p class="card-text mb-4">Gérez les utilisateurs, les rendez-vous et les statistiques de la plateforme.</p>
-                        <a href="{{ route('espace.admin') }}" class="btn btn-pink px-4">Accéder</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Espace Secrétaire -->
-
-            <div class="col-md-3">
-                <div class="card platform-card h-100 shadow-lg border-0 text-center">
-                    <div class="card-body">
-                        <i class="bi bi-person-badge mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
-                        <h5 class="card-title fw-bold mb-3">Espace Secrétaire</h5>
-                        <p class="card-text mb-4">Gérez les rendez-vous, les dossiers patients et les communications.</p>
-                        <a href="{{ route('espace.secretaire') }}" class="btn btn-pink px-4">Accéder</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Section new letters  -->
 
 <section class="newsletter-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
@@ -333,6 +335,21 @@
     </div>
 </section>
 
+<!-- Section pour illustrer la responsivite du plateforme  -->
+
+<section class="responsive-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
+    <div class="container text-center">
+        <h2 class="mb-4 fw-bold" style="color: #fd0d99;">
+            <i class="bi bi-phone-fill me-2"></i>
+            Accessible partout, tout le temps
+            <i class="bi bi-phone-fill ms-2"></i>
+        </h2>
+        <p class="mb-4">Notre plateforme est optimisée pour tous les appareils : ordinateurs, tablettes et smartphones.</p>
+        <!-- centrer l'image -->
+        <div class="d-flex justify-content-center mb-4">
+        <img src="image/Design_responsive2-removebg-preview.png" alt="Responsive Design" class="img-fluid" style="max-width: 100%; height: auto;">
+    </div>
+</section>
 <!-- Footer -->
 
 <footer class="footer-section py-4" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
@@ -431,7 +448,10 @@
               </div>
             </form>
             <div class="mt-3 text-center">
-              <a href="" class="text-decoration-none" style="color:#0d6efd;">Créer un compte</a>
+              <a href="#" class="text-decoration-none" style="color:#0d6efd;"
+   data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalInscriptionPatiente">
+   Créer un compte
+</a>
             </div>
           </div>
         </div>
@@ -441,6 +461,177 @@
         <div class="col-md-6 d-none d-md-block bg-light">
           <div class="h-100 d-flex align-items-center justify-content-center">
             <img src="image/online-pregnant-consultation-9420021-7668756.webp" alt="Connexion Patiente" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Inscription Patiente -->
+<div class="modal fade" id="modalInscriptionPatiente" tabindex="-1" aria-labelledby="modalInscriptionPatienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 overflow-hidden">
+      <div class="row g-0">
+        <!-- Colonne gauche : Formulaire -->
+        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title w-100 text-center" id="modalInscriptionPatienteLabel">Inscription Patiente</h5>
+            <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body pt-0">
+            <form method="POST" action="">
+              @csrf
+              <div class="mb-3">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="telephone" class="form-label">Téléphone</label>
+                <input type="text" class="form-control" id="telephone" name="telephone">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+              </div>
+              <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-pink btn-lg rounded-pill w-100">S'inscrire</button>
+              </div>
+            </form>
+            <div class="mt-3 text-center">
+              <a href="#" class="text-decoration-none" style="color:#0d6efd;" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">Déjà inscrite ? Se connecter</a>
+            </div>
+          </div>
+        </div>
+        <!-- Colonne droite : Image -->
+        <div class="col-md-6 d-none d-md-block bg-light">
+          <div class="h-100 d-flex align-items-center justify-content-center">
+            <img src="image/online-pregnant-consultation-9420021-7668756.webp" alt="Inscription Patiente" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Login Médecin -->
+<div class="modal fade" id="modalLoginMedecin" tabindex="-1" aria-labelledby="modalLoginMedecinLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 overflow-hidden">
+      <div class="row g-0">
+        <!-- Colonne gauche : Formulaire -->
+        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title w-100 text-center" id="modalLoginMedecinLabel">Connexion Médecin</h5>
+            <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body pt-0">
+            <form method="POST" action="">
+              @csrf
+              <div class="mb-3">
+                <label for="email_medecin" class="form-label">Adresse email</label>
+                <input type="email" class="form-control" id="email_medecin" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="password_medecin" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password_medecin" name="password" required>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-pink btn-lg px-4 rounded-pill w-100">Se connecter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Colonne droite : Image -->
+        <div class="col-md-6 d-none d-md-block bg-light">
+          <div class="h-100 d-flex align-items-center justify-content-center">
+            <img src="image/pngegg (7).png" alt="Connexion Médecin" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Login Administrateur -->
+<div class="modal fade" id="modalLoginAdmin" tabindex="-1" aria-labelledby="modalLoginAdminLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 overflow-hidden">
+      <div class="row g-0">
+        <!-- Colonne gauche : Formulaire -->
+        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title w-100 text-center" id="modalLoginAdminLabel">Connexion Administrateur</h5>
+            <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body pt-0">
+            <form method="POST" action="">
+              @csrf
+              <div class="mb-3">
+                <label for="email_admin" class="form-label">Adresse email</label>
+                <input type="email" class="form-control" id="email_admin" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="password_admin" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password_admin" name="password" required>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-pink btn-lg px-4 rounded-pill w-100">Se connecter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Colonne droite : Image -->
+        <div class="col-md-6 d-none d-md-block bg-light">
+          <div class="h-100 d-flex align-items-center justify-content-center">
+            <img src="image/admin-login.png" alt="Connexion Administrateur" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Login Secrétaire -->
+<div class="modal fade" id="modalLoginSecretaire" tabindex="-1" aria-labelledby="modalLoginSecretaireLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 overflow-hidden">
+      <div class="row g-0">
+        <!-- Colonne gauche : Formulaire -->
+        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title w-100 text-center" id="modalLoginSecretaireLabel">Connexion Secrétaire</h5>
+            <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body pt-0">
+            <form method="POST" action="">
+              @csrf
+              <div class="mb-3">
+                <label for="email_secretaire" class="form-label">Adresse email</label>
+                <input type="email" class="form-control" id="email_secretaire" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="password_secretaire" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password_secretaire" name="password" required>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-pink btn-lg px-4 rounded-pill w-100">Se connecter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Colonne droite : Image -->
+        <div class="col-md-6 d-none d-md-block bg-light">
+          <div class="h-100 d-flex align-items-center justify-content-center">
+            <img src="image/secretaire-login.png" alt="Connexion Secrétaire" style="max-width: 100%; max-height: 320px; object-fit: cover;">
           </div>
         </div>
       </div>
