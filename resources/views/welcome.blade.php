@@ -47,7 +47,8 @@
             <div class="col-md-6 mb-4 mb-md-0 d-flex align-items-center justify-content-center">
                 <div class="bg-white bg-opacity-75 rounded-4 shadow-lg p-4 p-md-5 hero-fade hero-delay-1" style="backdrop-filter: blur(2px);">
                     <h1 class="display-5 fw-bold mb-3 text-primary">
-                        Bienvenue sur <span class="text-pink">MediCare</span>
+                        Bienvenue sur <br>
+                        <span class="text-pink typewriter" id="medicare-type"></span>
                     </h1>
                     <p class="lead mb-2 text-dark">
                         MediCare est une clinique gynéco et obstétrique pour le suivi des patientes enceintes.
@@ -90,10 +91,12 @@
                         </div>
                         <h5 class="card-title fw-bold mb-3">Consultation Médicale</h5>
                         <p class="card-text mb-4">Des consultations spécialisées pour un suivi optimal de votre santé.</p>
-                        <a href="#" class="btn btn-pink px-4">En savoir plus</a>
+                        <!-- Carte 1 -->
+                        <a href="#" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalConsultation">En savoir plus</a>
                     </div>
                 </div>
             </div>
+
             <!-- Carte 2 -->
             <div class="col-md-4">
                 <div class="card service-card h-100 shadow-lg border-0 animate-service" style="animation-delay: 0.2s;">
@@ -103,57 +106,95 @@
                         </div>
                         <h5 class="card-title fw-bold mb-3">Échographie</h5>
                         <p class="card-text mb-4">Des échographies de haute qualité pour un suivi précis de votre grossesse.</p>
-                        <a href="#" class="btn btn-pink px-4">En savoir plus</a>
+                        <!-- Carte 2 -->
+                        <a href="#" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalEcho">En savoir plus</a>
                     </div>
                 </div>
             </div>
+
             <!-- Carte 3 -->
+
             <div class="col-md-4">
-                <div class="card service-card h-100 shadow-lg border-0 animate-service" style="animation-delay: 0.4s;">
-                    <div class="card-body text-center">
-                        <div class="service-icon mb-3">
-                            <i class="bi bi-emoji-smile" style="font-size: 2.5rem; color: #fd0d99;"></i>
+             <div class="card service-card h-100 shadow-lg border-0 animate-service" style="animation-delay: 0.4s;">
+                <div class="card-body text-center">
+                    <div class="service-icon mb-3">
+                            <img src="image/grossesse.png" alt="Suivi de grossesse" style="height: 60px; width: auto; border-radius: 50%; box-shadow: none; display: block; margin: 0 auto;">
                         </div>
-                        <h5 class="card-title fw-bold mb-3">Suivi de grossesse</h5>
+                        <h5 class="card-title fw-bold mb-3 mt-2">Suivi de grossesse</h5>
                         <p class="card-text mb-4">Un accompagnement personnalisé à chaque étape de votre grossesse.</p>
-                        <a href="#" class="btn btn-pink px-4">En savoir plus</a>
+                        <a href="#" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalSuivi">En savoir plus</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <!-- Section pour les témoignages -->
+
 <section class="testimonials-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
             <span class="me-2">🌟</span>Témoignages<span class="ms-2">🌟</span>
         </h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card testimonial-card h-100 shadow-lg border-0">
-                    <div class="card-body text-center">
-                        <p class="card-text mb-3">"MediCare a été un véritable soutien pendant ma grossesse. Les médecins sont très compétents et à l'écoute."</p>
-                        <h5 class="card-title fw-bold">Marie Dupont</h5>
-                        <p class="card-subtitle text-muted">Patiente</p>
+        <div class="row g-4 justify-content-center">
+
+            <!-- Témoignage 1 -->
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
+                    <div class="testimonial-quote mb-3">
+                        <i class="bi bi-chat-quote-fill"></i>
+                    </div>
+                    <p class="testimonial-text mb-4 fst-italic">
+                        "MediCare a été un véritable soutien pendant ma grossesse. Les médecins sont très compétents et à l'écoute."
+                    </p>
+                    <div class="testimonial-author d-flex align-items-center gap-3">
+                        <img src="image/avatar1.png" alt="Marie Dupont" class="testimonial-avatar">
+                        <div>
+                            <h5 class="mb-0 fw-bold">Marie Dupont</h5>
+                            <span class="text-muted small">Patiente</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card testimonial-card h-100 shadow-lg border-0">
-                    <div class="card-body text-center">
-                        <p class="card-text mb-3">"J'ai été très bien suivie tout au long de ma grossesse. Je recommande vivement MediCare !"</p>
-                        <h5 class="card-title fw-bold">Sophie Martin</h5>
-                        <p class="card-subtitle text-muted">Patiente</p>
+
+            <!-- Témoignage 2 -->
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
+                    <div class="testimonial-quote mb-3">
+                        <i class="bi bi-chat-quote-fill"></i>
+                    </div>
+                    <p class="testimonial-text mb-4 fst-italic">
+                        "J'ai été très bien suivie tout au long de ma grossesse. Je recommande vivement MediCare !"
+                    </p>
+                    <div class="testimonial-author d-flex align-items-center gap-3">
+                        <img src="image/avatar2.png" alt="Sophie Martin" class="testimonial-avatar">
+                        <div>
+                            <h5 class="mb-0 fw-bold">Sophie Martin</h5>
+                            <span class="text-muted small">Patiente</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-4">
-                <div class="card testimonial-card h-100 shadow-lg border-0">
-                    <div class="card-body text-center">
-                        <p class="card-text mb-3">"Un service de qualité et un suivi personnalisé. Merci MediCare pour votre professionnalisme !"</p>
-                        <h5 class="card-title fw-bold">Claire Bernard</h5>
-                        <p class="card-subtitle text-muted">Patiente</p>
+
+            <!-- Témoignage 3 -->
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
+                    <div class="testimonial-quote mb-3">
+                        <i class="bi bi-chat-quote-fill"></i>
+                    </div>
+                    <p class="testimonial-text mb-4 fst-italic">
+                        "Un service de qualité et un suivi personnalisé. Merci MediCare pour votre professionnalisme !"
+                    </p>
+                    <div class="testimonial-author d-flex align-items-center gap-3">
+                        <img src="image/avatar3.png" alt="Claire Bernard" class="testimonial-avatar">
+                        <div>
+                            <h5 class="mb-0 fw-bold">Claire Bernard</h5>
+                            <span class="text-muted small">Patiente</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -161,53 +202,62 @@
     </div>
 </section>
 <!-- Section pour les differentes espaces du plateforme (patiente , medecin, admin , secretaire) -->
+
 <section class="platform-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
             <span class="me-2">🌐</span>Accédez à votre espace<span class="ms-2">🌐</span>
         </h2>
         <div class="row g-4">
+
             <!-- Espace Patient -->
+
             <div class="col-md-3">
                 <div class="card platform-card h-100 shadow-lg border-0 text-center">
                     <div class="card-body">
                         <i class="bi bi-person-circle mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
                         <h5 class="card-title fw-bold mb-3">Espace Patiente</h5>
                         <p class="card-text mb-4">Accédez à vos informations médicales, prenez rendez-vous et suivez votre santé.</p>
-                        <a href="#" class="btn btn-pink px-4">Accéder</a>
+                        <a href="{{ route('espace.patiente') }}" class="btn btn-pink px-4" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">Accéder</a>
                     </div>
                 </div>
             </div>
+
             <!-- Espace Médecin -->
+
             <div class="col-md-3">
                 <div class="card platform-card h-100 shadow-lg border-0 text-center">
                     <div class="card-body">
                         <i class="bi bi-heart-pulse mb-3" style="font-size: 3rem; color: #fd0d99;"></i>
                         <h5 class="card-title fw-bold mb-3">Espace Médecin</h5>
                         <p class="card-text mb-4">Gérez vos consultations, accédez aux dossiers patients et suivez vos rendez-vous.</p>
-                        <a href="#" class="btn btn-pink px-4">Accéder</a>
+                        <a href="{{ route('espace.medecin') }}" class="btn btn-pink px-4">Accéder</a>
                     </div>
                 </div>
             </div>
+
             <!-- Espace Administrateur -->
+
             <div class="col-md-3">
                 <div class="card platform-card h-100 shadow-lg border-0 text-center">
                     <div class="card-body">
                         <i class="bi bi-gear-wide mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
                         <h5 class="card-title fw-bold mb-3">Espace Administrateur</h5>
                         <p class="card-text mb-4">Gérez les utilisateurs, les rendez-vous et les statistiques de la plateforme.</p>
-                        <a href="#" class="btn btn-pink px-4">Accéder</a>
+                        <a href="{{ route('espace.admin') }}" class="btn btn-pink px-4">Accéder</a>
                     </div>
                 </div>
             </div>
+
             <!-- Espace Secrétaire -->
+
             <div class="col-md-3">
                 <div class="card platform-card h-100 shadow-lg border-0 text-center">
                     <div class="card-body">
-                        <i class="bi bi-file-earmark-text mb-3" style="font-size: 3rem; color: #fd0d99;"></i>
+                        <i class="bi bi-person-badge mb-3" style="font-size: 3rem; color: #0d6efd;"></i>
                         <h5 class="card-title fw-bold mb-3">Espace Secrétaire</h5>
                         <p class="card-text mb-4">Gérez les rendez-vous, les dossiers patients et les communications.</p>
-                        <a href="#" class="btn btn-pink px-4">Accéder</a>
+                        <a href="{{ route('espace.secretaire') }}" class="btn btn-pink px-4">Accéder</a>
                     </div>
                 </div>
             </div>
@@ -216,6 +266,7 @@
 </section>
 
 <!-- Section new letters  -->
+
 <section class="newsletter-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container text-center">
         <h2 class="mb-4 fw-bold" style="color: #fd0d99;">
@@ -232,10 +283,13 @@
 </section>
 
 <!-- contact section -->
+
 <section class="contact-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <div class="row justify-content-center align-items-stretch">
+
             <!-- Colonne gauche : Google Maps -->
+
             <div class="col-lg-6 mb-4 mb-lg-0 d-flex flex-column align-items-stretch">
                 <h4 class="contact-title text-center mb-4">
                     <i class="bi bi-geo-alt-fill me-2" style="color:#fd0d99;"></i>
@@ -248,7 +302,9 @@
                     </iframe>
                 </div>
             </div>
+
             <!-- Colonne droite : Formulaire de contact -->
+
             <div class="col-lg-6 d-flex flex-column align-items-stretch">
                 <h4 class="contact-title text-center mb-4">
                     <i class="bi bi-envelope-fill me-2" style="color:#0d6efd;"></i>
@@ -278,6 +334,7 @@
 </section>
 
 <!-- Footer -->
+
 <footer class="footer-section py-4" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <div class="row align-items-center">
@@ -293,5 +350,103 @@
         </div>
     </div>
   @vite('resources/js/app.js')
+
+<!-- Modals En savoir plus -->
+
+<div class="modal fade" id="modalConsultation" tabindex="-1" aria-labelledby="modalConsultationLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConsultationLabel">Consultation Médicale</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Nos consultations médicales sont assurées par des spécialistes expérimentés pour un suivi optimal de votre santé. Prise de rendez-vous rapide, écoute et conseils personnalisés.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEcho" tabindex="-1" aria-labelledby="modalEchoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEchoLabel">Échographie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Nous proposons des échographies de haute qualité pour un suivi précis de votre grossesse, réalisées avec des équipements modernes et par des professionnels qualifiés.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSuivi" tabindex="-1" aria-labelledby="modalSuiviLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalSuiviLabel">Suivi de grossessbe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Un accompagnement personnalisé à chaque étape de votre grossesse, avec des conseils, des examens réguliers et un suivi attentif pour votre bien-être et celui de votre bébé.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Login Patiente -->
+
+<div class="modal fade" id="modalLoginPatiente" tabindex="-1" aria-labelledby="modalLoginPatienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 overflow-hidden">
+      <div class="row g-0">
+
+        <!-- Colonne gauche : Formulaire -->
+
+        <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title w-100 text-center" id="modalLoginPatienteLabel">Connectez-vous</h5>
+            <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body pt-0">
+            <form method="POST" action="">
+              @csrf
+              <div class="mb-3">
+                <label for="email" class="form-label">Adresse email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-pink btn-lg px-4 rounded-pill w-100">Se connecter</button>
+              </div>
+            </form>
+            <div class="mt-3 text-center">
+              <a href="" class="text-decoration-none" style="color:#0d6efd;">Créer un compte</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne droite : Image -->
+
+        <div class="col-md-6 d-none d-md-block bg-light">
+          <div class="h-100 d-flex align-items-center justify-content-center">
+            <img src="image/online-pregnant-consultation-9420021-7668756.webp" alt="Connexion Patiente" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
+
 </html>

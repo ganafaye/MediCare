@@ -214,8 +214,152 @@
   box-shadow: 0 2px 12px #fd0d9910;
 }
 
+/* Style général du modal */
+.modal-content {
+  border-radius: 2rem;
+  border: none;
+  background: linear-gradient(120deg, #fff 70%, #fde6f2 100%);
+  box-shadow: 0 8px 32px #fd0d9940;
+  padding: 0.5rem 0;
+}
+
+/* Titre du modal */
+.modal-title {
+  color: #fd0d99;
+  font-weight: bold;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+/* Header du modal */
+.modal-header {
+  border-bottom: none;
+  background: #f8fafc;
+  border-radius: 2rem 2rem 0 0;
+  padding-bottom: 0;
+}
+
+/* Bouton de fermeture */
+.btn-close {
+  background-color: #fde6f2;
+  border-radius: 50%;
+  padding: 0.5rem;
+  transition: background 0.2s;
+}
+.btn-close:hover {
+  background: #fd0d99;
+  opacity: 0.8;
+}
+
+/* Corps du modal */
+.modal-body {
+  color: #333;
+  font-size: 1.1rem;
+  padding: 2rem 1.5rem;
+  background: transparent;
+  border-radius: 0 0 2rem 2rem;
+}
+
+/* Typewriter effect */
+.typewriter {
+  border-right: 2px solid #fd0d99;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  animation: blink-cursor 0.8s steps(1) infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: #fd0d99; }
+  50% { border-color: transparent; }
+}
+
+/* Style du modal login */
+#modalLoginPatiente .modal-content {
+  border-radius: 2rem;
+  background: linear-gradient(120deg, #fff 70%, #fde6f2 100%);
+  box-shadow: 0 8px 32px #fd0d9940;
+  border: none;
+  padding: 0.5rem 0;
+  min-height: 350px;
+}
+
+#modalLoginPatiente .modal-header {
+  border-bottom: none;
+  background: none;
+  border-radius: 2rem 2rem 0 0;
+  padding-bottom: 0;
+}
+
+#modalLoginPatiente .modal-title {
+  color: #fd0d99;
+  font-weight: bold;
+}
+
+#modalLoginPatiente .btn-close {
+  background-color: #fde6f2;
+  border-radius: 50%;
+  padding: 0.5rem;
+  transition: background 0.2s;
+}
+#modalLoginPatiente .btn-close:hover {
+  background: #fd0d99;
+  opacity: 0.8;
+}
+
+#modalLoginPatiente .modal-body {
+  padding: 2rem 1.5rem;
+}
+
+#modalLoginPatiente .form-label {
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+#modalLoginPatiente .form-control:focus {
+  border-color: #fd0d99;
+  box-shadow: 0 0 0 0.2rem #fd0d9922;
+}
+
+#modalLoginPatiente .btn-pink {
+  background: linear-gradient(90deg, #fd0d99 60%, #f8fafc 100%);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 2rem;
+  transition: background 0.2s;
+}
+#modalLoginPatiente .btn-pink:hover {
+  background: linear-gradient(90deg, #f8fafc 0%, #fd0d99 100%);
+  color: #fd0d99;
+}
+
 @media (max-width: 575.98px) {
   .contact-title { font-size: 1rem; padding: 0.5rem; }
   .contact-card { padding: 1rem !important; }
   .btn-pink { font-size: 1rem; padding: 0.5rem 1.2rem; }
+  .modal-content {
+    border-radius: 1rem;
+    padding: 0.2rem 0;
+  }
+  .modal-body {
+    padding: 1rem 0.5rem;
+    font-size: 1rem;
+  }
+  #modalLoginPatiente .modal-content {
+    border-radius: 1rem;
+    padding: 0.2rem 0;
+  }
+  #modalLoginPatiente .modal-body {
+    padding: 1rem 0.5rem;
+  }
+  #modalLoginPatiente .modal-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Flou sur l'arrière-plan quand un modal Bootstrap est ouvert */
+.modal-backdrop.show {
+  backdrop-filter: blur(6px);
+  background-color: rgba(0,0,0,0.15); /* Optionnel : léger assombrissement */
 }

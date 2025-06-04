@@ -31,3 +31,32 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const text = "MediCare";
+    const el = document.getElementById('medicare-type');
+    let i = 0;
+    let reverse = false;
+
+    function typeWriter() {
+        if (!reverse && i <= text.length) {
+            el.textContent = text.substring(0, i);
+            i++;
+            if (i > text.length) {
+                setTimeout(() => { reverse = true; typeWriter(); }, 1800); // Pause avant effacement
+            } else {
+                setTimeout(typeWriter, 120);
+            }
+        } else if (reverse && i >= 0) {
+            el.textContent = text.substring(0, i);
+            i--;
+            if (i < 0) {
+                reverse = false;
+                setTimeout(typeWriter, 800); // Pause avant de retaper
+            } else {
+                setTimeout(typeWriter, 60);
+            }
+        }
+    }
+    typeWriter();
+});
