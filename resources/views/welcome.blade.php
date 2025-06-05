@@ -592,7 +592,7 @@
         <!-- Colonne droite : Image -->
         <div class="col-md-6 d-none d-md-block bg-light">
           <div class="h-100 d-flex align-items-center justify-content-center">
-            <img src="image/admin-login.png" alt="Connexion Administrateur" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+            <img src="image/img_admin.png" alt="Connexion Administrateur" style="max-width: 100%; max-height: 320px; object-fit: cover;">
           </div>
         </div>
       </div>
@@ -631,7 +631,7 @@
         <!-- Colonne droite : Image -->
         <div class="col-md-6 d-none d-md-block bg-light">
           <div class="h-100 d-flex align-items-center justify-content-center">
-            <img src="image/secretaire-login.png" alt="Connexion Secrétaire" style="max-width: 100%; max-height: 320px; object-fit: cover;">
+            <img src="image/secretaire_img2.jpg" alt="Connexion Secrétaire" style="max-width: 100%; max-height: 320px; object-fit: cover;">
           </div>
         </div>
       </div>
