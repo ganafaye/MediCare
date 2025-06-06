@@ -29,4 +29,14 @@ route::get('/inscription_patiente', function () {
     return view('espace_patiente.auth.inscription_patiente');
 })->name('inscription.patiente');
 
+// Routes pour la page dashbord admin
+Route::get('/dashboard_admin', function () {
+    return view('espace_admin.dashboard_admin');
+})->name('dashboard.admin');
+
+// Routes pour la page dashbord medecin
+Route::get('/dashboard_medecin', function () {
+    return view('espace_medecin.dashboard_medecin');
+})->name('dashboard.medecin');
+
 
