@@ -39,4 +39,9 @@ Route::get('/dashboard_medecin', function () {
     return view('espace_medecin.dashboard_medecin');
 })->name('dashboard.medecin');
 
+// Routes pour la page dashbord secretaire
+Route::get('/dashboard_secretaire', function () {
+    return view('espace_secretaire.dashboard_secretaire');
+})->name('dashboard.secretaire');
+
 
