@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use BotMan\BotMan\BotMan;
 use Illuminate\Support\Facades\Http;
 
@@ -10,35 +9,34 @@ class BotManController extends Controller
 {
     public function handle()
     {
-        // Initialisation du bot
         $botman = app('botman');
 
-        // Capture des messages utilisateurs
         $botman->hears('{message}', function (BotMan $botman, $message) {
             try {
-                // Envoi de la requête à Hugging Face
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . env('HUGGINGFACE_API_KEY'),
+                    'Authorization' => 'Bearer ' . env('GROQ_API_KEY'),
                     'Content-Type' => 'application/json',
-                ])->post('https://api-inference.huggingface.co/models/facebook/blenderbot-3B', [
-                    'inputs' => $message,
+                ])->post('https://api.groq.com/openai/v1/chat/completions', [
+                    'model' => 'llama3-70b-8192', // modèle supporté par Groq
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'Tu es Mm Khare Tall assistante médicale bienveillante pour une patiente.'],
+                        ['role' => 'user', 'content' => $message],
+                    ],
+                    'max_tokens' => 200,
                 ]);
 
-                // Vérification de la réponse API
                 if ($response->successful()) {
                     $data = $response->json();
-                    $text = $data['generated_text'] ?? "Je n'ai pas compris.";
-                    $botman->reply($text);
+                    $reply = $data['choices'][0]['message']['content'] ?? "Je n'ai pas compris.";
+                    $botman->reply($reply);
                 } else {
-                    $botman->reply("Erreur API Hugging Face : " . $response->body());
+                    $botman->reply("Erreur API Groq : " . $response->body());
                 }
             } catch (\Exception $e) {
-                // Gestion des erreurs techniques
                 $botman->reply("Erreur technique : " . $e->getMessage());
             }
         });
 
-        // Activation de l’écoute du chatbot
         $botman->listen();
     }
 }

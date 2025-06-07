@@ -363,3 +363,26 @@
   backdrop-filter: blur(6px);
   background-color: rgba(0,0,0,0.15); /* Optionnel : léger assombrissement */
 }
+
+.botman-widget-frame {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px #fd0d9940 !important;
+    overflow: hidden !important;
+}
+.botman-chat-widget {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px #fd0d9940 !important;
+}
+.botman-widget-frame {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px #fd0d9940 !important;
+    overflow: hidden !important;
+}
+.botman-widget-dialog {
+    border-radius: 18px !important;
+}
+@media (max-width: 480px) {
+    .botman-widget {
+        display: none !important;
+    }
+}

@@ -67,3 +67,6 @@ Route::get('/mes_document', function () {
 
 // BotMan routes
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
+
+Route::view('/chat', 'chat');
+

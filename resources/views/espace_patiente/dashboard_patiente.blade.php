@@ -447,9 +447,23 @@
 <!-- À placer juste avant </body> -->
 <script>
     var botmanWidget = {
-        aboutText: 'MediCare Assistance',
-        introMessage: "👋 Bonjour, je suis votre assistante virtuelle. Posez-moi vos questions !"
-    };
+    title: 'Assistante MediCare',
+    aboutText: 'Assistante MediCare',
+    introMessage: "👋 Bonjour, je suis Khare Tall, votre assistante médicale virtuelle. Comment puis-je vous aider ?",
+    mainColor: '#fd0d99',
+    bubbleBackground: 'transparent', // Fond de la bulle transparent
+    bubbleAvatarUrl: "{{ asset('image/pngegg (9).png') }}", // Ton icône de discussion
+    headerTextColor: '#fff',
+    headerBackgroundColor: '#fd0d99',
+    desktopHeight: 400,
+    desktopWidth: 320,
+    mobileHeight: 350,
+    mobileWidth: '100%',
+    placeholderText: "Écrivez votre question ici...",
+    sendButtonText: "Envoyer",
+    chatBackgroundColor: "#fff",
+    fontFamily: "Poppins, Arial, sans-serif"
+};
 </script>
 <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 
