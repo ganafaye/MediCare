@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PatienteAuthController;
+use App\Http\Controllers\BotManController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,4 +45,25 @@ Route::get('/dashboard_secretaire', function () {
     return view('espace_secretaire.dashboard_secretaire');
 })->name('dashboard.secretaire');
 
+// Routes pour les elements du menu dashbord patiente
+Route::get('/mes_rendez_vous', function () {
+    return view('espace_patiente.rendezVous');
+})->name('patiente.rendezvous');
 
+//route pour les consultations
+Route::get('/mes_consultation', function () {
+    return view('espace_patiente.mes_consultation');
+})->name('patiente.consultations');
+//route pour le suivi de la grossesse
+Route::get('/suivi_grossesse', function () {
+    return view('espace_patiente.suivi_grossesse');
+})->name('suivi_grossesse');
+
+// route pour la page mes doc
+Route::get('/mes_document', function () {
+    return view('espace_patiente.mes_document');
+
+});
+
+// BotMan routes
+Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);

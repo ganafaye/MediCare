@@ -26,25 +26,25 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRdv">
                             <i class="bi bi-calendar-check me-2"></i>
                             Mes rendez-vous
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
                             <i class="bi bi-file-medical me-2"></i>
                             Mes consultations
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('suivi_grossesse') }}">
                             <i class="bi bi-heart-pulse me-2"></i>
                             Suivre ma grossesse
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDocuments">
                             <i class="bi bi-file-earmark-medical me-2"></i>
                             Mes documents
                         </a>
@@ -115,7 +115,7 @@
                                 <i class="bi bi-calendar-check mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes rendez-vous</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir mes rendez-vous</a>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRdv" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir mes rendez-vous</a>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                                 <i class="bi bi-file-medical mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes consultations</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir mes consultations</a>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir mes consultations</a>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                             <div class="card-body text-center">
                                 <i class="bi bi-heart-pulse mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Suivi de grossesse</h5>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">Voir mon suivi</a>
+                                <a href="{{ route('suivi_grossesse') }}" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">Voir mon suivi</a>
                             </div>
                         </div>
                     </div>
@@ -143,7 +143,10 @@
                             <div class="card-body text-center">
                                 <i class="bi bi-file-earmark-medical mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes documents</h5>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">Voir mes documents</a>
+                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2"
+                                   data-bs-toggle="modal" data-bs-target="#modalDocuments">
+                                    Voir mes documents
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -152,7 +155,10 @@
                             <div class="card-body text-center">
                                 <i class="bi bi-person-circle mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes informations</h5>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">Modifier mes infos</a>
+                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2"
+                                   data-bs-toggle="modal" data-bs-target="#modalInfos">
+                                    Modifier mes infos
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -219,5 +225,233 @@
     transform: translateY(-2px) scale(1.02);
 }
 </style>
+
+<!-- Modal Gestion des rendez-vous -->
+<div class="modal fade" id="modalGestionRdv" tabindex="-1" aria-labelledby="modalGestionRdvLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalGestionRdvLabel">
+            <i class="bi bi-calendar-check me-2"></i>Mes rendez-vous
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Bouton pour ouvrir le sous-modal de prise de rendez-vous -->
+        <div class="d-flex justify-content-end mb-3">
+            <a href="#" class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalRdv" data-bs-dismiss="modal">
+                <i class="bi bi-plus-lg me-1"></i>Prendre un rendez-vous
+            </a>
+        </div>
+        <!-- Tableau des rendez-vous -->
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Médecin</th>
+                                <th>Motif</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Exemple statique, à remplacer par une boucle dynamique -->
+                            <tr>
+                                <td>12/06/2025</td>
+                                <td>09:00</td>
+                                <td>Dr. Faye</td>
+                                <td>Consultation prénatale</td>
+                                <td><span class="badge bg-success">Confirmé</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-x"></i></button>
+                                </td>
+                            </tr>
+                            <!-- ... -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Prendre un rendez-vous (déjà prêt dans ton code) -->
+<div class="modal fade" id="modalRdv" tabindex="-1" aria-labelledby="modalRdvLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalRdvLabel">Prendre un rendez-vous</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" required>
+          </div>
+          <div class="mb-3">
+            <label for="heure" class="form-label">Heure</label>
+            <input type="time" class="form-control" id="heure" required>
+          </div>
+          <div class="mb-3">
+            <label for="medecin" class="form-label">Médecin</label>
+            <select class="form-select" id="medecin" required>
+              <option value="">Choisir...</option>
+              <option>Dr. Faye</option>
+              <option>Dr. Diop</option>
+              <!-- ... -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="motif" class="form-label">Motif</label>
+            <input type="text" class="form-control" id="motif" required>
+          </div>
+          <button type="submit" class="btn btn-pink rounded-pill w-100">Valider</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mes consultations -->
+<div class="modal fade" id="modalConsultations" tabindex="-1" aria-labelledby="modalConsultationsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConsultationsLabel">
+            <i class="bi bi-file-medical me-2"></i>Mes consultations
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Médecin</th>
+                                <th>Motif</th>
+                                <th>Compte rendu</th>
+                                <th>Ordonnance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Exemple statique, à remplacer par une boucle dynamique -->
+                            <tr>
+                                <td>10/06/2025</td>
+                                <td>Dr. Faye</td>
+                                <td>Consultation prénatale</td>
+                                <td>Tout va bien, suivi normal.</td>
+                                <td>
+                                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+                                    </a>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
+                                </td>
+                            </tr>
+                            <!-- ... -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mes documents -->
+<div class="modal fade" id="modalDocuments" tabindex="-1" aria-labelledby="modalDocumentsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDocumentsLabel">
+            <i class="bi bi-file-earmark-medical me-2"></i>Mes documents
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Fichier</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>12/06/2025</td>
+                        <td>Ordonnance</td>
+                        <td>Prescription suite à consultation</td>
+                        <td>
+                            <span class="badge bg-secondary">ordonnance_120625.pdf</span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
+                                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+                            </a>
+                        </td>
+                    </tr>
+                    <!-- ... -->
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Mes informations -->
+<div class="modal fade" id="modalInfos" tabindex="-1" aria-labelledby="modalInfosLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalInfosLabel">
+            <i class="bi bi-person-circle me-2"></i>Mes informations
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item"><strong>Nom :</strong> {{ Auth::user()->name ?? '--' }}</li>
+          <li class="list-group-item"><strong>Email :</strong> {{ Auth::user()->email ?? '--' }}</li>
+          <li class="list-group-item"><strong>Âge :</strong> {{ Auth::user()->age ?? '--' }} ans</li>
+          <li class="list-group-item"><strong>Téléphone :</strong> {{ Auth::user()->telephone ?? '--' }}</li>
+          <li class="list-group-item"><strong>Adresse :</strong> {{ Auth::user()->adresse ?? '--' }}</li>
+          <li class="list-group-item"><strong>Groupe sanguin :</strong> {{ Auth::user()->groupe_sanguin ?? '--' }}</li>
+        </ul>
+        <div class="text-end">
+          <a href="#" class="btn btn-pink rounded-pill">Modifier mes infos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- À placer juste avant </body> -->
+<script>
+    var botmanWidget = {
+        aboutText: 'MediCare Assistance',
+        introMessage: "👋 Bonjour, je suis votre assistante virtuelle. Posez-moi vos questions !"
+    };
+</script>
+<script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
+
 </body>
 </html>
