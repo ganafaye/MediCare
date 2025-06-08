@@ -206,7 +206,6 @@
         <div class="row g-4 justify-content-center">
 
             <!-- Témoignage 1 -->
-
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
                     <div class="testimonial-quote mb-3">
@@ -216,7 +215,9 @@
                         "MediCare a été un véritable soutien pendant ma grossesse. Les médecins sont très compétents et à l'écoute."
                     </p>
                     <div class="testimonial-author d-flex align-items-center gap-3">
-                        <img src="image/avatar1.png" alt="Marie Dupont" class="testimonial-avatar">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-pink" style="width:48px; height:48px;">
+                            <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
+                        </span>
                         <div>
                             <h5 class="mb-0 fw-bold">Marie Dupont</h5>
                             <span class="text-muted small">Patiente</span>
@@ -226,7 +227,6 @@
             </div>
 
             <!-- Témoignage 2 -->
-
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
                     <div class="testimonial-quote mb-3">
@@ -236,7 +236,9 @@
                         "J'ai été très bien suivie tout au long de ma grossesse. Je recommande vivement MediCare !"
                     </p>
                     <div class="testimonial-author d-flex align-items-center gap-3">
-                        <img src="image/avatar2.png" alt="Sophie Martin" class="testimonial-avatar">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-pink" style="width:48px; height:48px;">
+                            <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
+                        </span>
                         <div>
                             <h5 class="mb-0 fw-bold">Sophie Martin</h5>
                             <span class="text-muted small">Patiente</span>
@@ -246,7 +248,6 @@
             </div>
 
             <!-- Témoignage 3 -->
-
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="testimonial-card p-4 h-100 shadow-lg border-0 rounded-4 position-relative">
                     <div class="testimonial-quote mb-3">
@@ -256,14 +257,15 @@
                         "Un service de qualité et un suivi personnalisé. Merci MediCare pour votre professionnalisme !"
                     </p>
                     <div class="testimonial-author d-flex align-items-center gap-3">
-                        <img src="image/avatar3.png" alt="Claire Bernard" class="testimonial-avatar">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-pink" style="width:48px; height:48px;">
+                            <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
+                        </span>
                         <div>
                             <h5 class="mb-0 fw-bold">Claire Bernard</h5>
                             <span class="text-muted small">Patiente</span>
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -469,7 +471,7 @@
   </div>
 </div>
 
-<!-- Modal Inscription Patiente -->
+<!-- Modal Inscription Patiente (présentation améliorée en 2 colonnes) -->
 <div class="modal fade" id="modalInscriptionPatiente" tabindex="-1" aria-labelledby="modalInscriptionPatienteLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content rounded-4 overflow-hidden">
@@ -483,25 +485,43 @@
           <div class="modal-body pt-0">
             <form method="POST" action="">
               @csrf
-              <div class="mb-3">
-                <label for="nom" class="form-label">Nom</label>
-                <input type="text" class="form-control" id="nom" name="nom" required>
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Adresse email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-              </div>
-              <div class="mb-3">
-                <label for="telephone" class="form-label">Téléphone</label>
-                <input type="text" class="form-control" id="telephone" name="telephone">
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Mot de passe</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-              </div>
-              <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
-                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nom" class="form-label">Nom</label>
+                  <input type="text" class="form-control" id="nom" name="nom" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="prenom" class="form-label">Prénom</label>
+                  <input type="text" class="form-control" id="prenom" name="prenom" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="date_naissance" class="form-label">Date de naissance</label>
+                  <input type="date" class="form-control" id="date_naissance" name="date_naissance" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="telephone" class="form-label">Téléphone</label>
+                  <input type="text" class="form-control" id="telephone" name="telephone" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Adresse email</label>
+                  <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="groupe_sanguin" class="form-label">Groupe sanguin</label>
+                  <input type="text" class="form-control" id="groupe_sanguin" name="groupe_sanguin" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="profession" class="form-label">Profession</label>
+                  <input type="text" class="form-control" id="profession" name="profession" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">Mot de passe</label>
+                  <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                  <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                </div>
               </div>
               <div class="d-grid">
                 <button type="submit" class="btn btn-pink btn-lg rounded-pill w-100">S'inscrire</button>

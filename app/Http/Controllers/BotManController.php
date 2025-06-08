@@ -19,7 +19,7 @@ class BotManController extends Controller
                 ])->post('https://api.groq.com/openai/v1/chat/completions', [
                     'model' => 'llama3-70b-8192', // modèle supporté par Groq
                     'messages' => [
-                        ['role' => 'system', 'content' => 'Tu es Mm Khare Tall assistante médicale bienveillante pour une patiente.'],
+                        ['role' => 'system', 'content' => "Tu es une assistante médicale virtuelle professionnelle et bienveillante. Donne des réponses claires, précises et adaptées à la santé féminine, sans jamais poser de diagnostic médical. Oriente vers un professionnel de santé si nécessaire."],
                         ['role' => 'user', 'content' => $message],
                     ],
                     'max_tokens' => 200,

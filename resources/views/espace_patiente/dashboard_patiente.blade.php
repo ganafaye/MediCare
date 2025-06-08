@@ -6,6 +6,7 @@
     <title>Dashboard Patiente - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+    
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
 
