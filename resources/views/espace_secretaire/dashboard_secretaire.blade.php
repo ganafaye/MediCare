@@ -26,19 +26,19 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
                             <i class="bi bi-calendar-check me-2"></i>
                             Gérer les rendez-vous
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">
                             <i class="bi bi-people-fill me-2"></i>
                             Patientes
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
+                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalMedecins">
                             <i class="bi bi-person-badge me-2"></i>
                             Médecins
                         </a>
@@ -50,7 +50,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                      <a class="nav-link" href="#">
+                      <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalFactures">
                        <i class="bi bi-receipt me-2"></i>
                               Factures
                      </a>
@@ -235,6 +235,456 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Section Rendez-vous (avec bouton création) -->
+                <div class="row mt-5" id="section-rendezvous">
+                    <div class="col-12">
+                        <div class="card shadow border-0 rounded-4">
+                            <div class="card-header bg-white border-0 rounded-top-4 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold" style="color:#fd0d99;">Gérer les rendez-vous</h5>
+                                <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalNouveauRdv">
+                                    <i class="bi bi-plus-circle me-2"></i>Nouveau rendez-vous
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table align-middle mb-0 table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Heure</th>
+                                                <th>Patiente</th>
+                                                <th>Médecin</th>
+                                                <th>Motif</th>
+                                                <th>Statut</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>12/06/2025</td>
+                                                <td>09:00</td>
+                                                <td>Fatou Ndiaye</td>
+                                                <td>Dr. Faye</td>
+                                                <td>Consultation prénatale</td>
+                                                <td><span class="badge bg-success">Confirmé</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>13/06/2025</td>
+                                                <td>11:30</td>
+                                                <td>Awa Diop</td>
+                                                <td>Dr. Sarr</td>
+                                                <td>Suivi postnatal</td>
+                                                <td><span class="badge bg-secondary">En attente</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                                    <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Gérer les rendez-vous -->
+                <div class="modal fade" id="modalRendezVous" tabindex="-1" aria-labelledby="modalRendezVousLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalRendezVousLabel" style="color:#fd0d99;">
+                            <i class="bi bi-calendar-check me-2"></i> Gérer les rendez-vous
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-4 text-end">
+                            <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalNouveauRdv">
+                                <i class="bi bi-plus-circle me-2"></i>Nouveau rendez-vous
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Heure</th>
+                                        <th>Patiente</th>
+                                        <th>Médecin</th>
+                                        <th>Motif</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>12/06/2025</td>
+                                        <td>09:00</td>
+                                        <td>Fatou Ndiaye</td>
+                                        <td>Dr. Faye</td>
+                                        <td>Consultation prénatale</td>
+                                        <td><span class="badge bg-success">Confirmé</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>13/06/2025</td>
+                                        <td>11:30</td>
+                                        <td>Awa Diop</td>
+                                        <td>Dr. Sarr</td>
+                                        <td>Suivi postnatal</td>
+                                        <td><span class="badge bg-secondary">En attente</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Nouveau Rendez-vous -->
+                <div class="modal fade" id="modalNouveauRdv" tabindex="-1" aria-labelledby="modalNouveauRdvLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalNouveauRdvLabel" style="color:#fd0d99;">
+                            <i class="bi bi-calendar-plus me-2"></i>Nouveau rendez-vous
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form>
+                          <div class="mb-3">
+                            <label class="form-label">Patiente</label>
+                            <select class="form-select" required>
+                              <option selected disabled>Choisir une patiente</option>
+                              <option>Fatou Ndiaye</option>
+                              <option>Awa Diop</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Médecin</label>
+                            <select class="form-select" required>
+                              <option selected disabled>Choisir un médecin</option>
+                              <option>Dr. Faye</option>
+                              <option>Dr. Sarr</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Heure</label>
+                            <input type="time" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Motif</label>
+                            <input type="text" class="form-control" placeholder="Motif du rendez-vous" required>
+                          </div>
+                          <div class="text-end">
+                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Patientes -->
+                <div class="modal fade" id="modalPatientes" tabindex="-1" aria-labelledby="modalPatientesLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalPatientesLabel" style="color:#fd0d99;">
+                            <i class="bi bi-people-fill me-2"></i> Liste des patientes
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-4 text-end">
+                            <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalAjouterPatiente">
+                                <i class="bi bi-plus-circle me-2"></i>Ajouter une patiente
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Date de naissance</th>
+                                        <th>Téléphone</th>
+                                        <th>Email</th>
+                                        <th>Groupe sanguin</th>
+                                        <th>Profession</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ndiaye</td>
+                                        <td>Fatou</td>
+                                        <td>15/03/1992</td>
+                                        <td>77 123 45 67</td>
+                                        <td>fatou.ndiaye@email.com</td>
+                                        <td>O+</td>
+                                        <td>Comptable</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Diop</td>
+                                        <td>Awa</td>
+                                        <td>22/07/1988</td>
+                                        <td>76 234 56 78</td>
+                                        <td>awa.diop@email.com</td>
+                                        <td>A-</td>
+                                        <td>Enseignante</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sarr</td>
+                                        <td>Marie</td>
+                                        <td>09/11/1995</td>
+                                        <td>78 345 67 89</td>
+                                        <td>marie.sarr@email.com</td>
+                                        <td>B+</td>
+                                        <td>Infirmière</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Ajouter une patiente -->
+                <div class="modal fade" id="modalAjouterPatiente" tabindex="-1" aria-labelledby="modalAjouterPatienteLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalAjouterPatienteLabel" style="color:#fd0d99;">
+                            <i class="bi bi-person-plus me-2"></i>Ajouter une patiente
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form>
+                          <div class="mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Date de naissance</label>
+                            <input type="date" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Téléphone</label>
+                            <input type="text" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Groupe sanguin</label>
+                            <input type="text" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Profession</label>
+                            <input type="text" class="form-control" required>
+                          </div>
+                          <div class="text-end">
+                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Ajouter</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Médecins -->
+                <div class="modal fade" id="modalMedecins" tabindex="-1" aria-labelledby="modalMedecinsLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalMedecinsLabel" style="color:#fd0d99;">
+                            <i class="bi bi-person-badge me-2"></i> Liste des médecins
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Spécialité</th>
+                                        <th>Téléphone</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Faye</td>
+                                        <td>Moussa</td>
+                                        <td>Gynécologue</td>
+                                        <td>77 111 22 33</td>
+                                        <td>m.faye@email.com</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sarr</td>
+                                        <td>Fatou</td>
+                                        <td>Sage-femme</td>
+                                        <td>76 222 33 44</td>
+                                        <td>f.sarr@email.com</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Factures -->
+                <div class="modal fade" id="modalFactures" tabindex="-1" aria-labelledby="modalFacturesLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalFacturesLabel" style="color:#fd0d99;">
+                            <i class="bi bi-receipt me-2"></i> Liste des factures
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-4 text-end">
+                            <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalAjouterFacture">
+                                <i class="bi bi-plus-circle me-2"></i>Nouvelle facture
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Patiente</th>
+                                        <th>Montant</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10/06/2025</td>
+                                        <td>Fatou Ndiaye</td>
+                                        <td>25 000 FCFA</td>
+                                        <td><span class="badge bg-success">Payée</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>09/06/2025</td>
+                                        <td>Awa Diop</td>
+                                        <td>18 000 FCFA</td>
+                                        <td><span class="badge bg-warning text-dark">En attente</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Nouvelle facture -->
+                <div class="modal fade" id="modalAjouterFacture" tabindex="-1" aria-labelledby="modalAjouterFactureLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content rounded-4">
+                      <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="modalAjouterFactureLabel" style="color:#fd0d99;">
+                            <i class="bi bi-receipt me-2"></i>Nouvelle facture
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form>
+                          <div class="mb-3">
+                            <label class="form-label">Patiente</label>
+                            <select class="form-select" required>
+                              <option selected disabled>Choisir une patiente</option>
+                              <option>Fatou Ndiaye</option>
+                              <option>Awa Diop</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Montant</label>
+                            <input type="number" class="form-control" placeholder="Montant en FCFA" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Statut</label>
+                            <select class="form-select" required>
+                              <option value="payée">Payée</option>
+                              <option value="en attente">En attente</option>
+                            </select>
+                          </div>
+                          <div class="text-end">
+                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </main>
         </div>

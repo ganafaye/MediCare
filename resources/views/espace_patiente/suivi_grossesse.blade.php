@@ -75,29 +75,22 @@
         </div>
     </div>
 
-    <!-- Animation silhouette -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4 hover-shadow">
-        <div class="card-body text-center">
-            <h5 class="fw-bold mb-3" style="color:#fd0d99;">Évolution du ventre</h5>
-            <div class="d-flex flex-column align-items-center">
-                <svg id="silhouette-svg" width="120" height="220" viewBox="0 0 120 220">
-                    <!-- Corps -->
-                    <ellipse cx="60" cy="110" rx="38" ry="90" fill="#fde6f2"/>
-                    <!-- Ventre (cercle qui grossit) -->
-                    <ellipse id="ventre-svg" class="ventre-anim" cx="60" cy="150" rx="22" ry="14" fill="#fd0d99" opacity="0.8"/>
-                    <!-- Tête -->
-                    <ellipse cx="60" cy="40" rx="18" ry="18" fill="#fd0d99"/>
-                </svg>
-                <div class="mt-3 small text-muted">
-                    Semaine <span id="semaine-grossesse-anim">{{ $semaine }}</span> sur 40 &mdash; Taille estimée : <span id="bebe-taille">28</span> cm
+    <!-- Animation silhouette alignée avec les autres cards -->
+    <div class="row mb-4">
+        <div class="col-12 col-md-4 mb-3 mb-md-0">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow text-center">
+                <h5 class="fw-bold mb-3 mt-3" style="color:#fd0d99;">Évolution du ventre</h5>
+                <div class="d-flex flex-column align-items-center">
+                    <div style="max-width:120px;">
+                        <img src="{{ asset('image/femme_enceinte.png') }}" alt="Silhouette femme enceinte" style="width:100%; height:auto; display:block;">
+                    </div>
+                    <div class="mt-3 small text-muted">
+                        Semaine <span id="semaine-grossesse-anim">{{ $semaine }}</span> sur 40 &mdash; Taille estimée : <span id="bebe-taille">28</span> cm
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Derniers examens et conseils -->
-    <div class="row mb-4">
-        <div class="col-12 col-md-6 mb-3 mb-md-0">
+        <div class="col-12 col-md-4 mb-3 mb-md-0">
             <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
                 <div class="card-body">
                     <h5 class="fw-bold mb-3" style="color:#fd0d99;">Derniers examens</h5>
@@ -109,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
                 <div class="card-body">
                     <h5 class="fw-bold mb-3" style="color:#fd0d99;">Conseils personnalisés</h5>
@@ -230,20 +223,20 @@
 <script>
     // Animation ventre selon la semaine
     let semaine = {{ $semaine }};
-    let tailles = [
-        0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.5, 7.0, 8.7, 10.1, 11.6, 13.0, 14.2, 16.4,
-        18.0, 20.0, 22.0, 25.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0, 51.0, 52.0, 53.0, 54.0
-    ];
-    let taille = tailles[semaine-1] ?? 0.1;
-    document.getElementById('semaine-grossesse').textContent = semaine;
-    document.getElementById('semaine-grossesse-anim').textContent = semaine;
-    document.getElementById('bebe-taille').textContent = taille;
-    // Animation SVG ventre
-    let rx = 12 + (semaine/40)*18; // de 12 à 30
-    let ry = 8 + (semaine/40)*14;  // de 8 à 22
-    let ventre = document.getElementById('ventre-svg');
-    ventre.setAttribute('rx', rx);
-    ventre.setAttribute('ry', ry);
+let tailles = [
+    0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.5, 7.0, 8.7, 10.1, 11.6, 13.0, 14.2, 16.4,
+    18.0, 20.0, 22.0, 25.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0, 51.0, 52.0, 53.0, 54.0
+];
+let taille = tailles[semaine-1] ?? 0.1;
+document.getElementById('semaine-grossesse-anim').textContent = semaine;
+document.getElementById('bebe-taille').textContent = taille;
+
+// Animation SVG ventre (rx et ry varient selon la semaine)
+let rx = 18 + (semaine/40)*20; // de 18 à 38
+let ry = 12 + (semaine/40)*16; // de 12 à 28
+let ventre = document.getElementById('ventre-svg');
+ventre.setAttribute('rx', rx);
+ventre.setAttribute('ry', ry);
 </script>
 </body>
 </html>

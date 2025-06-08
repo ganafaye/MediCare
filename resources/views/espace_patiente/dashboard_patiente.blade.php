@@ -61,6 +61,12 @@
                             Notifications
                         </a>
                     </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
+                            <i class="bi bi-folder2-open me-2"></i>
+                                 Dossier médical
+                        </a>
+                    </li>
                     <li class="nav-item mt-4">
                         <a class="nav-link text-danger" href="#">
                             <i class="bi bi-box-arrow-right me-2"></i>
@@ -443,13 +449,48 @@
     </div>
   </div>
 </div>
-
+<!-- Modal Dossier médical -->
+<div class="modal fade" id="modalDossierMedical" tabindex="-1" aria-labelledby="modalDossierMedicalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDossierMedicalLabel">
+            <i class="bi bi-folder2-open me-2"></i>Dossier médical
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item"><strong>ID Dossier :</strong> {{ $dossier->id ?? '--' }}</li>
+          <li class="list-group-item"><strong>Date de création :</strong> {{ $dossier->date_creation ?? '--' }}</li>
+          <li class="list-group-item"><strong>Antécédents :</strong> {{ $dossier->antecedant ?? '--' }}</li>
+          <li class="list-group-item"><strong>Traitement :</strong> {{ $dossier->traitement ?? '--' }}</li>
+          <li class="list-group-item"><strong>Documents :</strong>
+            @if(isset($dossier->documents) && count($dossier->documents))
+                <ul class="mb-0">
+                  @foreach($dossier->documents as $doc)
+                    <li>
+                      <a href="{{ asset('storage/'.$doc->chemin) }}" target="_blank">
+                        {{ $doc->nom }}
+                      </a>
+                    </li>
+                  @endforeach
+                </ul>
+            @else
+                Aucun document.
+            @endif
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- À placer juste avant </body> -->
 <script>
     var botmanWidget = {
     title: 'Assistante MediCare',
     aboutText: 'Assistante MediCare',
-    introMessage: "👋 Bonjour, je suis Khare Tall, votre assistante médicale virtuelle. Comment puis-je vous aider ?",
+    introMessage: "Bonjour ! Je suis l'assistante virtuelle de MediCare. Comment puis-je vous aider aujourd'hui ?",
     mainColor: '#fd0d99',
     bubbleBackground: 'transparent', // Fond de la bulle transparent
     bubbleAvatarUrl: "{{ asset('image/pngegg (9).png') }}", // Ton icône de discussion
