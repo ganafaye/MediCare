@@ -18,5 +18,24 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        \App\Models\Medecin::create([
+            'nom' => 'faye',
+            'prenom' => 'Gana',
+            'email' => 'fayegana@example.com',
+            'password' => bcrypt('gana123'),
+            'telephone' => '0600000001',
+            'specialite' => 'Cardiologie',
+            'numeros_professionel' => '123456'
+        ]);
+        \App\Models\Medecin::create([
+            'nom' => 'khar',
+            'prenom' => 'tall',
+            'email' => 'khartall@example.com',
+            'password' => bcrypt('khartall123'),
+            'telephone' => '0600000002',
+            'specialite' => 'Gynécologie',
+            'numeros_professionel' => '654321'
+        ]);
     }
 }

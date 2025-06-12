@@ -78,15 +78,18 @@
                             <i class="bi bi-person-circle" style="font-size:2.5rem; color:#fd0d99;"></i>
                         </div>
                         <div>
+                            @php
+                                $medecin = Auth::guard('medecin')->user();
+                            @endphp
                             <span class="fw-bold fs-5" style="color:#fd0d99;">
-                                Dr. {{ Auth::user()->name ?? 'Médecin' }}
+                                Dr. {{ Auth::guard('medecin')->user()->prenom ?? '' }} {{ Auth::guard('medecin')->user()->nom ?? 'Médecin' }}
                             </span>
                             <div class="d-flex gap-2 mt-1">
                                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Spécialité : {{ Auth::user()->specialite ?? '--' }}
+                                    Spécialité : {{ Auth::guard('medecin')->user()->specialite ?? '--' }}
                                 </span>
                                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Email : {{ Auth::user()->email ?? '--' }}
+                                    Email : {{ Auth::guard('medecin')->user()->email ?? '--' }}
                                 </span>
                             </div>
                         </div>

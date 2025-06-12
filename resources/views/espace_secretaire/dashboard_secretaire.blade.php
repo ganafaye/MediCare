@@ -78,12 +78,15 @@
                             <i class="bi bi-person-circle" style="font-size:2.5rem; color:#fd0d99;"></i>
                         </div>
                         <div>
+                             @php
+                                $secretaire = Auth::guard('secretaire')->user();
+                            @endphp
                             <span class="fw-bold fs-5" style="color:#fd0d99;">
-                                {{ Auth::user()->name ?? 'Secrétaire' }}
+                                {{ Auth::guard('secretaire')->user()->name ?? 'Secrétaire' }}
                             </span>
                             <div class="d-flex gap-2 mt-1">
                                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Email : {{ Auth::user()->email ?? '--' }}
+                                    Email : {{ Auth::guard('secretaire')->user()->email ?? '--' }}
                                 </span>
                             </div>
                         </div>

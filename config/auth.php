@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -40,6 +39,22 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'patiente' => [
+            'driver' => 'session',
+            'provider' => 'patientes',
+        ],
+        'medecin' => [
+            'driver' => 'session',
+            'provider' => 'medecins',
+        ],
+        'secretaire' => [
+            'driver' => 'session',
+            'provider' => 'secretaires',
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'administrateurs',
+        ],
     ],
 
     /*
@@ -64,11 +79,22 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'patientes' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Patiente::class,
+        ],
+        'medecins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Medecin::class,
+        ],
+        'secretaires' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Secretaire::class,
+        ],
+        'administrateurs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Administrateur::class,
+        ],
     ],
 
     /*
@@ -111,5 +137,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
 ];

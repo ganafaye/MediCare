@@ -59,6 +59,12 @@
         </nav>
         <!-- Contenu principal -->
         <main class="col px-3 px-md-5 py-4 ms-md-0">
+            @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+@endif
             <!-- Bouton menu mobile -->
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
@@ -166,7 +172,6 @@
         </main>
     </div>
 </div>
-
 <!-- Modal Gestion patientes -->
 <div class="modal fade" id="modalGestionPatientes" tabindex="-1" aria-labelledby="modalGestionPatientesLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -197,36 +202,32 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Ndiaye</td>
-                        <td>Fatou</td>
-                        <td>15/03/1992</td>
-                        <td>fatou.ndiaye@email.com</td>
-                        <td>77 123 45 67</td>
-                        <td>O+</td>
-                        <td>Comptable</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Diop</td>
-                        <td>Awa</td>
-                        <td>22/07/1988</td>
-                        <td>awa.diop@email.com</td>
-                        <td>76 234 56 78</td>
-                        <td>A-</td>
-                        <td>Enseignante</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
+              <tbody>
+    @forelse($patientes as $patiente)
+        <tr>
+            <td>{{ $patiente->nom }}</td>
+            <td>{{ $patiente->prenom }}</td>
+            <td>{{ $patiente->date_naissance }}</td>
+            <td>{{ $patiente->email }}</td>
+            <td>{{ $patiente->telephone }}</td>
+            <td>{{ $patiente->groupe_sanguin }}</td>
+            <td>{{ $patiente->profession }}</td>
+            <td>
+               <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirPatiente{{ $patiente->id }}" title="Voir"><i class="bi bi-eye"></i></button>
+                <button class="btn btn-sm btn-outline-success rounded-pill" data-bs-toggle="modal" data-bs-target="#modalEditPatiente{{ $patiente->id }}" title="Modifier"> <i class="bi bi-pencil"></i></button>
+           <form method="POST" action="{{ route('admin.patiente.destroy', $patiente->id) }}" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer" onclick="return confirm('Supprimer cette patiente ?')"><i class="bi bi-trash"></i></button>
+            </form>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="8" class="text-center">Aucune patiente trouvée.</td>
+        </tr>
+    @endforelse
+</tbody>
             </table>
         </div>
       </div>
@@ -245,38 +246,39 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
+       <form method="POST" action="{{ route('admin.patiente.store') }}">
+         @csrf
           <div class="mb-3">
             <label class="form-label">Nom</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="nom" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Prénom</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="prenom" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Date de naissance</label>
-            <input type="date" class="form-control" required>
+            <input type="date" class="form-control" name="date_naissance" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" required>
+            <input type="email" class="form-control" name="email" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Téléphone</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="telephone" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Groupe sanguin</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="groupe_sanguin" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Profession</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="profession" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" required>
+            <input type="password" class="form-control" name="password" required>
           </div>
           <div class="text-end">
             <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
@@ -309,6 +311,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>Nom</th>
+                        <th>Prenom</th>
                         <th>Téléphone</th>
                         <th>Email</th>
                         <th>Spécialité</th>
@@ -316,28 +319,43 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Faye Moussa</td>
-                        <td>77 111 22 33</td>
-                        <td>m.faye@email.com</td>
-                        <td>Gynécologue</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Sarr Fatou</td>
-                        <td>76 222 33 44</td>
-                        <td>f.sarr@email.com</td>
-                        <td>Sage-femme</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
+                    @forelse($medecins as $medecin)
+<tr>
+    <td>{{ $medecin->nom }}</td>
+    <td>{{ $medecin->prenom }}</td>
+    <td>{{ $medecin->telephone }}</td>
+    <td>{{ $medecin->email }}</td>
+    <td>{{ $medecin->specialite }}</td>
+    <td>
+        <!-- Bouton Voir -->
+        <button class="btn btn-sm btn-outline-primary rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#modalVoirMedecin{{ $medecin->id }}"
+                title="Voir">
+            <i class="bi bi-eye"></i>
+        </button>
+        <!-- Bouton Modifier -->
+        <button class="btn btn-sm btn-outline-success rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#modalEditMedecin{{ $medecin->id }}"
+                title="Modifier">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <!-- Bouton Supprimer -->
+        <form method="POST" action="{{ route('admin.medecin.destroy', $medecin->id) }}" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer" onclick="return confirm('Supprimer ce médecin ?')">
+                <i class="bi bi-trash"></i>
+            </button>
+        </form>
+    </td>
+</tr>
+@empty
+<tr>
+    <td colspan="6" class="text-center">Aucun médecin trouvé.</td>
+</tr>
+@endforelse
                 </tbody>
             </table>
         </div>
@@ -357,26 +375,31 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="{{ route('admin.medecin.store') }}" method="POST">
+            @csrf
           <div class="mb-3">
             <label class="form-label">Nom</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="nom" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prenom</label>
+            <input type="text" class="form-control" name="prenom" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Téléphone</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="telephone" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" required>
+            <input type="email" class="form-control" name="email" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Spécialité</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="specialite" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" required>
+            <input type="password" class="form-control" name="password" required>
           </div>
           <div class="text-end">
             <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
@@ -427,17 +450,7 @@
                             <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Diallo</td>
-                        <td>Mariama</td>
-                        <td>mariama.diallo@email.com</td>
-                        <td>76 888 99 00</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
+
                 </tbody>
             </table>
         </div>
@@ -457,26 +470,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="" method="POST">
+            @csrf
           <div class="mb-3">
             <label class="form-label">Nom</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="nom" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Prénom</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="prenom" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" required>
+            <input type="email" class="form-control" name="email" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Téléphone</label>
-            <input type="text" class="form-control" required>
+            <input type="text" class="form-control" name="telephone" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" required>
+            <input type="password" class="form-control" name="password" required>
           </div>
           <div class="text-end">
             <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
@@ -609,6 +623,146 @@
     </div>
   </div>
 </div>
+<!-- Modals pour voir les détails des patientes-->
+@foreach($patientes as $patiente)
+<div class="modal fade" id="modalVoirPatiente{{ $patiente->id }}" tabindex="-1" aria-labelledby="modalVoirPatienteLabel{{ $patiente->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVoirPatienteLabel{{ $patiente->id }}">Détails de la patiente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nom :</strong> {{ $patiente->nom }}</p>
+        <p><strong>Prénom :</strong> {{ $patiente->prenom }}</p>
+        <p><strong>Date de naissance :</strong> {{ $patiente->date_naissance }}</p>
+        <p><strong>Email :</strong> {{ $patiente->email }}</p>
+        <p><strong>Téléphone :</strong> {{ $patiente->telephone }}</p>
+        <p><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin }}</p>
+        <p><strong>Profession :</strong> {{ $patiente->profession }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+<!-- Modals pour modifier les informations des patientes -->
+@foreach($patientes as $patiente)
+<div class="modal fade" id="modalEditPatiente{{ $patiente->id }}" tabindex="-1" aria-labelledby="modalEditPatienteLabel{{ $patiente->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditPatienteLabel{{ $patiente->id }}">Modifier la patiente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <form method="POST" action="{{ route('admin.patiente.update', $patiente->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ $patiente->nom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ $patiente->prenom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date de naissance</label>
+            <input type="date" name="date_naissance" class="form-control" value="{{ $patiente->date_naissance }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ $patiente->email }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ $patiente->telephone }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Groupe sanguin</label>
+            <input type="text" name="groupe_sanguin" class="form-control" value="{{ $patiente->groupe_sanguin }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Profession</label>
+            <input type="text" name="profession" class="form-control" value="{{ $patiente->profession }}" required>
+          </div>
+          <!-- Ne pas afficher le champ mot de passe ici sauf si tu veux permettre la modification -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach($medecins as $medecin)
+<div class="modal fade" id="modalVoirMedecin{{ $medecin->id }}" tabindex="-1" aria-labelledby="modalVoirMedecinLabel{{ $medecin->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVoirMedecinLabel{{ $medecin->id }}">Détails du médecin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nom :</strong> {{ $medecin->nom }}</p>
+        <p><strong>Prénom :</strong> {{ $medecin->prenom }}</p>
+        <p><strong>Téléphone :</strong> {{ $medecin->telephone }}</p>
+        <p><strong>Email :</strong> {{ $medecin->email }}</p>
+        <p><strong>Spécialité :</strong> {{ $medecin->specialite }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach($medecins as $medecin)
+<div class="modal fade" id="modalEditMedecin{{ $medecin->id }}" tabindex="-1" aria-labelledby="modalEditMedecinLabel{{ $medecin->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditMedecinLabel{{ $medecin->id }}">Modifier le médecin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <form method="POST" action="{{ route('admin.medecin.update', $medecin->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ $medecin->nom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ $medecin->prenom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ $medecin->telephone }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ $medecin->email }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Spécialité</label>
+            <input type="text" name="specialite" class="form-control" value="{{ $medecin->specialite }}" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+<!-- Modal pour voir les détails des secrétaires -->
+
 
 @vite('resources/js/app.js')
 </body>

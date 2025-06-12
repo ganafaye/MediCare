@@ -2,10 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class secretaire extends Model
+class Secretaire extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'nom', 'prenom', 'email', 'password', 'telephone',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

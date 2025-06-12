@@ -2,7 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PatienteAuthController;
+use App\Http\Controllers\Auth\PatienteRegisterController;
 use App\Http\Controllers\BotManController;
+use Illuminate\Http\Request;
+use App\Models\Patiente;
+use App\Http\Controllers\DashboardPatienteController;
+use App\Http\Controllers\Auth\MedecinAuthController;
+use App\Http\Controllers\DashboardMedecinController;
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\Admin\PatienteAdminController;
+use App\Http\Controllers\Admin\MedecinAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,13 +32,26 @@ Route::get('/', function () {
 //  Routes pour l'authentification des patientes
 Route::post('/login', [PatienteAuthController::class, 'login'])->name('login');
 
-Route::get('/dashboard_patiente', function () {
-    return view('espace_patiente.dashboard_patiente');
-})->name('dashboard.patiente');
+
+// route pour proteger l'espace patiente
+Route::get('/dashboard_patiente', [DashboardPatienteController::class, 'index'])
+    ->name('dashboard.patiente')
+    ->middleware('auth:patiente');
+
+// route pour proteger l'espace medecin
+Route::get('/dashboard_medecin', [DashboardMedecinController::class, 'index'])
+    ->name('dashboard.medecin')
+    ->middleware('auth:medecin');
 
 route::get('/inscription_patiente', function () {
     return view('espace_patiente.auth.inscription_patiente');
 })->name('inscription.patiente');
+
+Route::get('/login', function () {
+    return view('welcome'); // ou la vue de ton formulaire de connexion
+})->name('login');
+// Route pour l'inscription des patientes
+Route::post('/patiente/register', [PatienteRegisterController::class, 'register'])->name('patiente.register');
 
 // Routes pour la page dashbord admin
 Route::get('/dashboard_admin', function () {
@@ -36,9 +59,11 @@ Route::get('/dashboard_admin', function () {
 })->name('dashboard.admin');
 
 // Routes pour la page dashbord medecin
-Route::get('/dashboard_medecin', function () {
-    return view('espace_medecin.dashboard_medecin');
-})->name('dashboard.medecin');
+Route::post('/login_medecin', [MedecinAuthController::class, 'login'])->name('login.medecin');
+
+Route::get('/dashboard_medecin', [DashboardMedecinController::class, 'index'])
+    ->name('dashboard.medecin')
+    ->middleware('auth:medecin');
 
 // Routes pour la page dashbord secretaire
 Route::get('/dashboard_secretaire', function () {
@@ -69,4 +94,41 @@ Route::get('/mes_document', function () {
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
 
 Route::view('/chat', 'chat');
+
+Route::get('/check-email-patiente', function(Request $request){
+    $exists = Patiente::where('email', $request->email)->exists();
+    return response()->json(['exists' => $exists]);
+});
+
+// Routes pour l'authentification des administrateurs
+
+Route::post('/login_admin', [AdminAuthController::class, 'login'])->name('login.admin');
+
+Route::get('/dashboard_admin', [DashboardAdminController::class, 'index'])
+    ->name('dashboard.admin')
+    ->middleware('auth:admin');
+
+// Admin routes pour la gestion des patientes par l'administrateur
+Route::post('/admin/patientes', [PatienteAdminController::class, 'store'])
+    ->name('admin.patiente.store')
+    ->middleware('auth:admin');
+
+Route::put('/admin/patientes/{id}', [PatienteAdminController::class, 'update'])->name('admin.patiente.update');
+
+Route::delete('/admin/patientes/{id}', [PatienteAdminController::class, 'destroy'])->name('admin.patiente.destroy');
+
+Route::get('/admin/patientes/{id}/edit', [PatienteAdminController::class, 'edit'])
+    ->name('admin.patiente.edit')
+    ->middleware('auth:admin');
+
+Route::get('/admin/patientes/{id}', [PatienteAdminController::class, 'show'])
+    ->name('admin.patiente.show')
+    ->middleware('auth:admin');
+
+// Route pour la gestion des medecins par l'administrateur
+Route::post('/admin/medecins', [MedecinAdminController::class, 'store'])->name('admin.medecin.store')->middleware('auth:admin');
+Route::put('/admin/medecins/{id}', [MedecinAdminController::class, 'update'])->name('admin.medecin.update')->middleware('auth:admin');
+Route::delete('/admin/medecins/{id}', [MedecinAdminController::class, 'destroy'])->name('admin.medecin.destroy')->middleware('auth:admin');
+
+//Route pour la gestion du secretaire par l'admin
 

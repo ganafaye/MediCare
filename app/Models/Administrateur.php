@@ -2,10 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class administrateur extends Model
+class Administrateur extends Authenticatable
 {
-    use HasFactory;
+    protected $fillable = [
+        'prenom',
+        'email',
+        'password',
+        'telephone',
+        'niveau_acces',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

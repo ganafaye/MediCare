@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Patiente;
+use App\Models\Medecin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-class PatienteAuthController extends Controller
+class MedecinAuthController extends Controller
 {
     public function login(Request $request)
     {
@@ -17,11 +17,11 @@ class PatienteAuthController extends Controller
             'password' => 'required',
         ]);
 
-        $patiente = Patiente::where('email', $request->email)->first();
+        $medecin = Medecin::where('email', $request->email)->first();
 
-        if ($patiente && Hash::check($request->password, $patiente->password)) {
-            Auth::guard('patiente')->login($patiente);
-            return redirect()->route('dashboard.patiente');
+        if ($medecin && Hash::check($request->password, $medecin->password)) {
+            Auth::guard('medecin')->login($medecin, true); // true pour "remember me"
+            return redirect()->route('dashboard.medecin');
         } else {
             return back()->withErrors(['email' => 'Identifiants incorrects'])->withInput();
         }

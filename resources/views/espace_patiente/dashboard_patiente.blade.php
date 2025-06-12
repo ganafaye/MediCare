@@ -6,10 +6,9 @@
     <title>Dashboard Patiente - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
-    
+
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
-
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
@@ -93,17 +92,25 @@
                             <i class="bi bi-person-circle" style="font-size:2.5rem; color:#fd0d99;"></i>
                         </div>
                         <div>
-                            <span class="fw-bold fs-5" style="color:#fd0d99;">
-                                {{ Auth::user()->name ?? 'Patiente' }}
-                            </span>
-                            <div class="d-flex gap-2 mt-1">
-                                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Âge : {{ Auth::user()->age ?? '--' }} ans
+                            @php
+                                use Carbon\Carbon;
+                                $user = Auth::guard('patiente')->user();
+                                $age = $user && $user->date_naissance ? Carbon::parse($user->date_naissance)->age : null;
+                            @endphp
+
+                            @if($user)
+                                <span class="fw-bold fs-5" style="color:#fd0d99;">
+                                    {{ $user->prenom ?? '' }} {{ $user->nom ?? 'Patiente' }}
                                 </span>
-                                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Groupe sanguin : {{ Auth::user()->groupe_sanguin ?? '--' }}
-                                </span>
-                            </div>
+                                <div class="d-flex gap-2 mt-1">
+                                    <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                                        Âge : {{ $age !== null ? $age : '--' }} ans
+                                    </span>
+                                    <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                                        Groupe sanguin : {{ $user->groupe_sanguin ?? '--' }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="mt-3 mt-md-0 d-flex align-items-center gap-2">
@@ -435,14 +442,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <ul class="list-group list-group-flush mb-3">
-          <li class="list-group-item"><strong>Nom :</strong> {{ Auth::user()->name ?? '--' }}</li>
-          <li class="list-group-item"><strong>Email :</strong> {{ Auth::user()->email ?? '--' }}</li>
-          <li class="list-group-item"><strong>Âge :</strong> {{ Auth::user()->age ?? '--' }} ans</li>
-          <li class="list-group-item"><strong>Téléphone :</strong> {{ Auth::user()->telephone ?? '--' }}</li>
-          <li class="list-group-item"><strong>Adresse :</strong> {{ Auth::user()->adresse ?? '--' }}</li>
-          <li class="list-group-item"><strong>Groupe sanguin :</strong> {{ Auth::user()->groupe_sanguin ?? '--' }}</li>
-        </ul>
+       @php
+    $patiente = Auth::guard('patiente')->user();
+    $dateNaissance = $patiente->date_naissance ?? null;
+    $ageModal = $dateNaissance ? Carbon::parse($dateNaissance)->age : null;
+@endphp
+<ul class="list-group list-group-flush mb-3">
+  <li class="list-group-item"><strong>Nom :</strong> {{ $patiente->nom ?? '--' }}</li>
+  <li class="list-group-item"><strong>Prenom :</strong> {{ $patiente->prenom ?? '--' }}</li>
+  <li class="list-group-item"><strong>Email :</strong> {{ $patiente->email ?? '--' }}</li>
+  <li class="list-group-item"><strong>Âge :</strong> {{ $ageModal !== null ? $ageModal : '--' }} ans</li>
+  <li class="list-group-item"><strong>Téléphone :</strong> {{ $patiente->telephone ?? '--' }}</li>
+  <li class="list-group-item"><strong>Adresse :</strong> {{ $patiente->adresse ?? '--' }}</li>
+  <li class="list-group-item"><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin ?? '--' }}</li>
+</ul>
         <div class="text-end">
           <a href="#" class="btn btn-pink rounded-pill">Modifier mes infos</a>
         </div>

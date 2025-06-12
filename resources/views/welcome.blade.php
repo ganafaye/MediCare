@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MediCare - Clinique Gynéco Obstétrique </title>
   @vite('resources/css/app.css')
+  @vite('resources/js/app.js')
+
   <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
 </head>
 <body>
@@ -422,21 +424,32 @@
 </div>
 
 <!-- Modal Login Patiente -->
-
 <div class="modal fade" id="modalLoginPatiente" tabindex="-1" aria-labelledby="modalLoginPatienteLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content rounded-4 overflow-hidden">
       <div class="row g-0">
-
         <!-- Colonne gauche : Formulaire -->
-
         <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
           <div class="modal-header border-0 pb-0">
             <h5 class="modal-title w-100 text-center" id="modalLoginPatienteLabel">Connectez-vous</h5>
             <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
+          @if (session('inscription_success'))
+              <div class="alert alert-success">
+                  {{ session('inscription_success') }}
+              </div>
+          @endif
+          @if ($errors->any())
+              <div class="alert alert-danger">
+                  <ul class="mb-0">
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
           <div class="modal-body pt-0">
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('login') }}">
               @csrf
               <div class="mb-3">
                 <label for="email" class="form-label">Adresse email</label>
@@ -452,15 +465,22 @@
             </form>
             <div class="mt-3 text-center">
               <a href="#" class="text-decoration-none" style="color:#0d6efd;"
-   data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalInscriptionPatiente">
-   Créer un compte
-</a>
+                 data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalInscriptionPatiente">
+                 Créer un compte
+              </a>
             </div>
           </div>
         </div>
-
+        @if ($errors->any() && !old('nom'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        alert('Identifiants incorrects. Veuillez réessayer.');
+        var modal = new bootstrap.Modal(document.getElementById('modalLoginPatiente'));
+        modal.show();
+    });
+</script>
+@endif
         <!-- Colonne droite : Image -->
-
         <div class="col-md-6 d-none d-md-block bg-light">
           <div class="h-100 d-flex align-items-center justify-content-center">
             <img src="image/online-pregnant-consultation-9420021-7668756.webp" alt="Connexion Patiente" style="max-width: 100%; max-height: 320px; object-fit: cover;">
@@ -483,7 +503,18 @@
             <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
           <div class="modal-body pt-0">
-            <form method="POST" action="">
+            <!-- Affichage des erreurs ici -->
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('patiente.register') }}" id="formInscriptionPatiente">
               @csrf
               <div class="row">
                 <div class="col-md-6 mb-3">
@@ -555,7 +586,7 @@
             <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
           <div class="modal-body pt-0">
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('login.medecin') }}">
               @csrf
               <div class="mb-3">
                 <label for="email_medecin" class="form-label">Adresse email</label>
@@ -594,7 +625,7 @@
             <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
           <div class="modal-body pt-0">
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('login.admin') }}">
               @csrf
               <div class="mb-3">
                 <label for="email_admin" class="form-label">Adresse email</label>
@@ -659,6 +690,53 @@
     </div>
   </div>
 </div>
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = new bootstrap.Modal(document.getElementById('modalInscriptionPatiente'));
+        modal.show();
+    });
+</script>
+@endif
+@if (session('inscription_success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Affiche le message (tu peux aussi le mettre dans le modal login)
+            alert("{{ session('inscription_success') }}");
+            // Ouvre le modal de connexion patiente
+            var modal = new bootstrap.Modal(document.getElementById('modalLoginPatiente'));
+            modal.show();
+        });
+    </script>
+@endif
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('formInscriptionPatiente');
+    if(form){
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            const email = form.querySelector('input[name="email"]').value;
+            // Vérification AJAX de l'email
+            fetch('/check-email-patiente?email=' + encodeURIComponent(email))
+                .then(response => response.json())
+                .then(data => {
+                    if(data.exists){
+                        // Affiche l'erreur dans le modal
+                        let errorDiv = form.querySelector('.alert-danger');
+                        if(!errorDiv){
+                            errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-danger mt-2';
+                            form.prepend(errorDiv);
+                        }
+                        errorDiv.innerHTML = '<ul class="mb-0"><li>Cette adresse email est déjà utilisée.</li></ul>';
+                    }else{
+                        form.submit(); // Envoie le formulaire si tout est OK
+                    }
+                });
+        });
+    }
+});
+</script>
 </body>
 
 </html>
