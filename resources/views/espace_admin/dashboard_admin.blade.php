@@ -438,19 +438,38 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+               <tbody>
+                    @forelse($secretaires as $secretaire)
                     <tr>
-                        <td>Ba</td>
-                        <td>Astou</td>
-                        <td>astou.ba@email.com</td>
-                        <td>77 555 66 77</td>
+                        <td>{{ $secretaire->nom }}</td>
+                        <td>{{ $secretaire->prenom }}</td>
+                        <td>{{ $secretaire->telephone }}</td>
+                        <td>{{ $secretaire->email }}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-primary rounded-pill"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalVoirSecretaire{{ $secretaire->id }}">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success rounded-pill"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditSecretaire{{ $secretaire->id }}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form method="POST" action="{{ route('admin.secretaire.destroy', $secretaire->id) }}" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Supprimer ce secrétaire ?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
-
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center">Aucun secrétaire trouvé.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -470,7 +489,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="POST">
+         <form action="{{ route('admin.secretaire.store') }}" method="POST">
             @csrf
           <div class="mb-3">
             <label class="form-label">Nom</label>
@@ -760,8 +779,86 @@
   </div>
 </div>
 @endforeach
-
+<!-- il reste a jouter les modals pour les secrétaires et les rendez-vous -->
 <!-- Modal pour voir les détails des secrétaires -->
+@foreach($secretaires as $secretaire)
+<div class="modal fade" id="modalVoirSecretaire{{ $secretaire->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-body">
+        <p><strong>Nom :</strong> {{ $secretaire->nom }}</p>
+        <p><strong>Prénom :</strong> {{ $secretaire->prenom }}</p>
+        <p><strong>Téléphone :</strong> {{ $secretaire->telephone }}</p>
+        <p><strong>Email :</strong> {{ $secretaire->email }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+<!-- Modal du bouton modifier des secrétaires -->
+@foreach($secretaires as $secretaire)
+<div class="modal fade" id="modalEditSecretaire{{ $secretaire->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifier le secrétaire</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ route('admin.secretaire.update', $secretaire->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ $secretaire->nom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ $secretaire->prenom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ $secretaire->telephone }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ $secretaire->email }}" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+<!-- Modal du bouton  des secrétaires -->
+@foreach($secretaires as $secretaire)
+<div class="modal fade" id="modalDeleteSecretaire{{ $secretaire->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header text-danger">
+        <h5 class="modal-title">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer <strong>{{ $secretaire->nom }} {{ $secretaire->prenom }}</strong> ?</p>
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{{ route('admin.secretaire.destroy', $secretaire->id) }}">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 
 
 @vite('resources/js/app.js')

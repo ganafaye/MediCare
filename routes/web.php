@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\PatienteAuthController;
 use App\Http\Controllers\Auth\PatienteRegisterController;
+use App\Http\Controllers\Auth\SecretaireAuthController;
 use App\Http\Controllers\BotManController;
 use Illuminate\Http\Request;
 use App\Models\Patiente;
@@ -13,7 +14,8 @@ use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\Admin\PatienteAdminController;
 use App\Http\Controllers\Admin\MedecinAdminController;
-
+use App\Http\Controllers\Admin\SecretaireAdminController;
+use App\Http\Controllers\DashboardSecretaireController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -131,4 +133,15 @@ Route::put('/admin/medecins/{id}', [MedecinAdminController::class, 'update'])->n
 Route::delete('/admin/medecins/{id}', [MedecinAdminController::class, 'destroy'])->name('admin.medecin.destroy')->middleware('auth:admin');
 
 //Route pour la gestion du secretaire par l'admin
+Route::post('/admin/secretaire', [SecretaireAdminController::class, 'store'])->name('admin.secretaire.store')->middleware('auth:admin');
+Route::put('/admin/secretaire/{id}', [SecretaireAdminController::class, 'update'])->name('admin.secretaire.update')->middleware('auth:admin');
+Route::delete('/admin/secretaire/{id}', [SecretaireAdminController::class, 'destroy'])->name('admin.secretaire.destroy')->middleware('auth:admin');
 
+// Route connexion pour la secrétaire
+Route::post('/login_secretaire', [SecretaireAuthController::class, 'login'])->name('login.secretaire');
+
+Route::get('/dashboard_secretaire', [DashboardSecretaireController::class, 'index'])
+    ->name('dashboard.secretaire')
+    ->middleware('auth:secretaire');
+
+Route::post('/logout_secretaire', [SecretaireAuthController::class, 'logout'])->name('logout.secretaire');

@@ -664,7 +664,7 @@
             <button type="button" class="btn-close position-absolute end-0 me-3 mt-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
           </div>
           <div class="modal-body pt-0">
-            <form method="POST" action="">
+           <form method="POST" action="/login_secretaire">
               @csrf
               <div class="mb-3">
                 <label for="email_secretaire" class="form-label">Adresse email</label>

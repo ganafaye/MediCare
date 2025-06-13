@@ -78,11 +78,13 @@
                             <i class="bi bi-person-circle" style="font-size:2.5rem; color:#fd0d99;"></i>
                         </div>
                         <div>
-                             @php
+                            @php
                                 $secretaire = Auth::guard('secretaire')->user();
                             @endphp
+
                             <span class="fw-bold fs-5" style="color:#fd0d99;">
-                                {{ Auth::guard('secretaire')->user()->name ?? 'Secrétaire' }}
+                            {{ $secretaire ? $secretaire->nom . ' ' . $secretaire->prenom : 'Secrétaire' }}
+                            </span>
                             </span>
                             <div class="d-flex gap-2 mt-1">
                                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">

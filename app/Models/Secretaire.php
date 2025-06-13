@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Secretaire extends Model
+class Secretaire extends Authenticatable
 {
     use HasFactory;
 
