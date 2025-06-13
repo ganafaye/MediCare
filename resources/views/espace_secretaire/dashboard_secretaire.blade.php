@@ -71,6 +71,12 @@
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             <main class="px-3 px-md-5 py-4 ms-md-0">
+                 @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+@endif
                 <!-- En-tête stylisé -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow" style="background: linear-gradient(90deg, #fde6f2 60%, #fff 100%); border-left: 6px solid #fd0d99;">
                     <div class="d-flex align-items-center gap-3">
@@ -345,47 +351,37 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Ndiaye</td>
-                                        <td>Fatou</td>
-                                        <td>15/03/1992</td>
-                                        <td>77 123 45 67</td>
-                                        <td>fatou.ndiaye@email.com</td>
-                                        <td>O+</td>
-                                        <td>Comptable</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Diop</td>
-                                        <td>Awa</td>
-                                        <td>22/07/1988</td>
-                                        <td>76 234 56 78</td>
-                                        <td>awa.diop@email.com</td>
-                                        <td>A-</td>
-                                        <td>Enseignante</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sarr</td>
-                                        <td>Marie</td>
-                                        <td>09/11/1995</td>
-                                        <td>78 345 67 89</td>
-                                        <td>marie.sarr@email.com</td>
-                                        <td>B+</td>
-                                        <td>Infirmière</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                              <tbody>
+    @forelse($patientes as $patiente)
+        <tr>
+            <td>{{ $patiente->nom }}</td>
+            <td>{{ $patiente->prenom }}</td>
+            <td>{{ $patiente->date_naissance }}</td>
+            <td>{{ $patiente->telephone }}</td>
+            <td>{{ $patiente->email }}</td>
+            <td>{{ $patiente->groupe_sanguin }}</td>
+            <td>{{ $patiente->profession }}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalVoirPatiente{{ $patiente->id }}"
+                        title="Voir">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalEditPatiente{{ $patiente->id }}"
+                        title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                </button>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="8" class="text-center">Aucune patiente trouvée.</td>
+        </tr>
+    @endforelse
+</tbody>
                             </table>
                         </div>
                       </div>
@@ -404,44 +400,50 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                       </div>
                       <div class="modal-body">
-                        <form>
-                          <div class="mb-3">
-                            <label class="form-label">Nom</label>
-                            <input type="text" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Prénom</label>
-                            <input type="text" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Date de naissance</label>
-                            <input type="date" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Téléphone</label>
-                            <input type="text" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Groupe sanguin</label>
-                            <input type="text" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Profession</label>
-                            <input type="text" class="form-control" required>
-                          </div>
-                          <div class="text-end">
-                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Ajouter</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                        <form  action="{{ route('secretaire.patiente.store') }}" method="POST">
+                            @csrf
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" class="form-control" name="nom" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" class="form-control" name="prenom" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date de naissance</label>
+            <input type="date" class="form-control" name="date_naissance" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" class="form-control" name="telephone" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Groupe sanguin</label>
+            <input type="text" class="form-control" name="groupe_sanguin" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Profession</label>
+            <input type="text" class="form-control" name="profession" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
                 <!-- Modal Médecins -->
                 <div class="modal fade" id="modalMedecins" tabindex="-1" aria-labelledby="modalMedecinsLabel" aria-hidden="true">
@@ -467,26 +469,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Faye</td>
-                                        <td>Moussa</td>
-                                        <td>Gynécologue</td>
-                                        <td>77 111 22 33</td>
-                                        <td>m.faye@email.com</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sarr</td>
-                                        <td>Fatou</td>
-                                        <td>Sage-femme</td>
-                                        <td>76 222 33 44</td>
-                                        <td>f.sarr@email.com</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                        </td>
-                                    </tr>
+                                      @foreach($medecins as $medecin)
+    <tr>
+        <td>{{ $medecin->nom }}</td>
+        <td>{{ $medecin->prenom }}</td>
+        <td>{{ $medecin->specialite }}</td>
+        <td>{{ $medecin->telephone }}</td>
+        <td>{{ $medecin->email }}</td>
+        <td>
+            <button class="btn btn-sm btn-outline-primary rounded-pill"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalVoirMedecin{{ $medecin->id }}"
+                    title="Voir">
+                <i class="bi bi-eye"></i>
+            </button>
+        </td>
+    </tr>
+    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -599,6 +598,100 @@
         </div>
     </div>
 </div>
+
+@foreach($patientes as $patiente)
+<div class="modal fade" id="modalVoirPatiente{{ $patiente->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails de la patiente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nom :</strong> {{ $patiente->nom }}</p>
+        <p><strong>Prénom :</strong> {{ $patiente->prenom }}</p>
+        <p><strong>Date de naissance :</strong> {{ $patiente->date_naissance }}</p>
+        <p><strong>Téléphone :</strong> {{ $patiente->telephone }}</p>
+        <p><strong>Email :</strong> {{ $patiente->email }}</p>
+        <p><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin }}</p>
+        <p><strong>Profession :</strong> {{ $patiente->profession }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach($patientes as $patiente)
+<div class="modal fade" id="modalEditPatiente{{ $patiente->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifier la patiente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ route('secretaire.patiente.update', $patiente->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ $patiente->nom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ $patiente->prenom }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date de naissance</label>
+            <input type="date" name="date_naissance" class="form-control" value="{{ $patiente->date_naissance }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ $patiente->telephone }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" value="{{ $patiente->email }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Groupe sanguin</label>
+            <input type="text" name="groupe_sanguin" class="form-control" value="{{ $patiente->groupe_sanguin }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Profession</label>
+            <input type="text" name="profession" class="form-control" value="{{ $patiente->profession }}" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach($medecins as $medecin)
+<div class="modal fade" id="modalVoirMedecin{{ $medecin->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails du médecin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nom :</strong> {{ $medecin->nom }}</p>
+        <p><strong>Prénom :</strong> {{ $medecin->prenom }}</p>
+        <p><strong>Spécialité :</strong> {{ $medecin->specialite }}</p>
+        <p><strong>Téléphone :</strong> {{ $medecin->telephone }}</p>
+        <p><strong>Email :</strong> {{ $medecin->email }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
 <style>
 .hover-shadow:hover {
     box-shadow: 0 0 0 4px #fd0d9922, 0 4px 24px #fd0d9933 !important;

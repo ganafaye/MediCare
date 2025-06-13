@@ -145,3 +145,18 @@ Route::get('/dashboard_secretaire', [DashboardSecretaireController::class, 'inde
     ->middleware('auth:secretaire');
 
 Route::post('/logout_secretaire', [SecretaireAuthController::class, 'logout'])->name('logout.secretaire');
+
+// Route pour ajout patiente de la part du secretaire
+use App\Http\Controllers\SecretairePatienteController;
+
+Route::post('/secretaire/patiente/store', [SecretairePatienteController::class, 'store'])
+    ->name('secretaire.patiente.store')
+    ->middleware('auth:secretaire');
+
+Route::put('/secretaire/patiente/{id}', [SecretairePatienteController::class, 'update'])
+    ->name('secretaire.patiente.update')
+    ->middleware('auth:secretaire');
+
+Route::delete('/secretaire/patiente/{id}', [SecretairePatienteController::class, 'destroy'])
+    ->name('secretaire.patiente.destroy')
+    ->middleware('auth:secretaire');
