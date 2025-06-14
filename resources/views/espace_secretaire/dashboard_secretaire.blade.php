@@ -115,7 +115,7 @@
                                 <i class="bi bi-calendar-check mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Rendez-vous du jour</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir les rendez-vous</a>
+                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalRendezVous">Voir les rendez-vous</a>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                                 <i class="bi bi-people-fill mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Patientes</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow">Voir les patientes</a>
+                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalPatientes">Voir les patientes</a>
                             </div>
                         </div>
                     </div>
@@ -135,7 +135,7 @@
                                 <i class="bi bi-person-badge mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Médecins</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow">Voir les médecins</a>
+                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalMedecins">Voir les médecins</a>
                             </div>
                         </div>
                     </div>
@@ -151,31 +151,49 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table align-middle mb-0 table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Heure</th>
-                                                <th>Patiente</th>
-                                                <th>Médecin</th>
-                                                <th>Motif</th>
-                                                <th>Statut</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>09:00</td>
-                                                <td>Fatou Ndiaye</td>
-                                                <td>Dr. Faye</td>
-                                                <td>Consultation prénatale</td>
-                                                <td><span class="badge bg-success">Confirmé</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                                                    <button class="btn btn-sm btn-outline-success rounded-pill"><i class="bi bi-pencil"></i></button>
-                                                </td>
-                                            </tr>
-                                            <!-- ... -->
-                                        </tbody>
-                                    </table>
+    <thead class="table-light">
+        <tr>
+            <th>Heure</th>
+            <th>Patiente</th>
+            <th>Médecin</th>
+            <th>Motif</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($rendezvous as $rdv)
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+            <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+            <td>Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</td>
+            <td>{{ $rdv->motif }}</td>
+            <td>
+                @if($rdv->statut === 'confirmé')
+                    <span class="badge bg-success">Confirmé</span>
+                @elseif($rdv->statut === 'en_attente')
+                    <span class="badge bg-warning text-dark">En attente</span>
+                @else
+                    <span class="badge bg-danger">Annulé</span>
+                @endif
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+                    <i class="bi bi-pencil"></i>
+                </button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
                                 </div>
                             </div>
                         </div>
@@ -238,32 +256,42 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>12/06/2025</td>
-                                        <td>09:00</td>
-                                        <td>Fatou Ndiaye</td>
-                                        <td>Dr. Faye</td>
-                                        <td>Consultation prénatale</td>
-                                        <td><span class="badge bg-success">Confirmé</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>13/06/2025</td>
-                                        <td>11:30</td>
-                                        <td>Awa Diop</td>
-                                        <td>Dr. Sarr</td>
-                                        <td>Suivi postnatal</td>
-                                        <td><span class="badge bg-secondary">En attente</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
+<tbody>
+    @foreach($rendezvous as $rdv)
+    <tr>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+        <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+        <td>{{ $rdv->medecin->nom }}</td>
+        <td>{{ $rdv->motif }}</td>
+        <td>
+            @if($rdv->statut === 'confirmé')
+                <span class="badge bg-success">Confirmé</span>
+            @elseif($rdv->statut === 'en_attente')
+                <span class="badge bg-warning text-dark">En attente</span>
+            @else
+                <span class="badge bg-danger">Annulé</span>
+            @endif
+        </td>
+        <td>
+            <!-- Voir -->
+            <button class="btn btn-sm btn-outline-primary rounded-pill"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <!-- Modifier -->
+            <button class="btn btn-sm btn-outline-success rounded-pill"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+                <i class="bi bi-pencil"></i>
+            </button>
+        </td>
+    </tr>
+    @endforeach
+</tbody>
+
                             </table>
                         </div>
                       </div>
@@ -273,53 +301,53 @@
 
                 <!-- Modal Nouveau Rendez-vous -->
                 <div class="modal fade" id="modalNouveauRdv" tabindex="-1" aria-labelledby="modalNouveauRdvLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content rounded-4">
-                      <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold" id="modalNouveauRdvLabel" style="color:#fd0d99;">
-                            <i class="bi bi-calendar-plus me-2"></i>Nouveau rendez-vous
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                      </div>
-                      <div class="modal-body">
-                        <form>
-                          <div class="mb-3">
-                            <label class="form-label">Patiente</label>
-                            <select class="form-select" required>
-                              <option selected disabled>Choisir une patiente</option>
-                              <option>Fatou Ndiaye</option>
-                              <option>Awa Diop</option>
-                            </select>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Médecin</label>
-                            <select class="form-select" required>
-                              <option selected disabled>Choisir un médecin</option>
-                              <option>Dr. Faye</option>
-                              <option>Dr. Sarr</option>
-                            </select>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Heure</label>
-                            <input type="time" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Motif</label>
-                            <input type="text" class="form-control" placeholder="Motif du rendez-vous" required>
-                          </div>
-                          <div class="text-end">
-                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
-                          </div>
-                        </form>
-                      </div>
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalNouveauRdvLabel" style="color:#fd0d99;">
+                    <i class="bi bi-calendar-plus me-2"></i> Nouveau rendez-vous
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('rendezvous.store') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Patiente</label>
+                        <select class="form-select" name="patiente_id" required>
+                            <option selected disabled>Choisir une patiente</option>
+                            @foreach($patientes as $patiente)
+                                <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                  </div>
-                </div>
+                    <div class="mb-3">
+                        <label class="form-label">Médecin</label>
+                        <select class="form-select" name="medecin_id" required>
+                            <option selected disabled>Choisir un médecin</option>
+                            @foreach($medecins as $medecin)
+                                <option value="{{ $medecin->id }}">Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date et Heure</label>
+                        <input type="datetime-local" class="form-control" name="date_heure" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motif</label>
+                        <input type="text" class="form-control" name="motif" placeholder="Motif du rendez-vous" required>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Modal Patientes -->
                 <div class="modal fade" id="modalPatientes" tabindex="-1" aria-labelledby="modalPatientesLabel" aria-hidden="true">
@@ -443,8 +471,6 @@
     </div>
   </div>
 </div>
-
-
                 <!-- Modal Médecins -->
                 <div class="modal fade" id="modalMedecins" tabindex="-1" aria-labelledby="modalMedecinsLabel" aria-hidden="true">
                   <div class="modal-dialog modal-xl">
@@ -689,6 +715,70 @@
       </div>
     </div>
   </div>
+</div>
+@endforeach
+<!--modal voir rendez-vous-->
+@foreach($rendezvous as $rdv)
+<div class="modal fade" id="modalVoirRendezVous{{ $rdv->id }}" tabindex="-1" aria-labelledby="modalVoirRendezVousLabel{{ $rdv->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalVoirRendezVousLabel{{ $rdv->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-eye me-2"></i> Détails du rendez-vous
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Patiente :</strong> {{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</p>
+                <p><strong>Médecin :</strong> {{ $rdv->medecin->nom }}</p>
+                <p><strong>Date :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</p>
+                <p><strong>Heure :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</p>
+                <p><strong>Motif :</strong> {{ $rdv->motif }}</p>
+                <p><strong>Statut :</strong>
+                    @if($rdv->statut === 'confirmé')
+                        <span class="badge bg-success">Confirmé</span>
+                    @elseif($rdv->statut === 'en_attente')
+                        <span class="badge bg-warning text-dark">En attente</span>
+                    @else
+                        <span class="badge bg-danger">Annulé</span>
+                    @endif
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+<!--modal modifier rendez-vous-->
+@foreach($rendezvous as $rdv)
+<div class="modal fade" id="modalModifierRendezVous{{ $rdv->id }}" tabindex="-1" aria-labelledby="modalModifierRendezVousLabel{{ $rdv->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalModifierRendezVousLabel{{ $rdv->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-pencil me-2"></i> Modifier le rendez-vous
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('rendezvous.update', $rdv->id) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label class="form-label">Date et Heure</label>
+                        <input type="datetime-local" class="form-control" name="date_heure" value="{{ \Carbon\Carbon::parse($rdv->date_heure)->format('Y-m-d\TH:i') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motif</label>
+                        <input type="text" class="form-control" name="motif" value="{{ $rdv->motif }}" required>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-pink rounded-pill ms-2">Modifier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 @endforeach
 

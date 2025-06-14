@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\PatienteAdminController;
 use App\Http\Controllers\Admin\MedecinAdminController;
 use App\Http\Controllers\Admin\SecretaireAdminController;
 use App\Http\Controllers\DashboardSecretaireController;
+use App\Http\Controllers\RendezVousController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -160,3 +162,39 @@ Route::put('/secretaire/patiente/{id}', [SecretairePatienteController::class, 'u
 Route::delete('/secretaire/patiente/{id}', [SecretairePatienteController::class, 'destroy'])
     ->name('secretaire.patiente.destroy')
     ->middleware('auth:secretaire');
+
+// 📅 Création d'un rendez-vous (Patiente ou Secrétaire)
+Route::post('/rendezvous/store', [RendezVousController::class, 'store'])
+    ->name('rendezvous.store')
+    ->middleware('auth:patiente,secretaire');
+
+// ✅ Afficher les rendez-vous selon le rôle
+Route::get('/rendezvous', [RendezVousController::class, 'index'])
+    ->name('rendezvous.index')
+    ->middleware('auth');
+
+// 🏥 Confirmation d'un rendez-vous (Médecin uniquement)
+Route::put('/rendezvous/confirm/{id}', [RendezVousController::class, 'confirm'])
+    ->name('rendezvous.confirm')
+    ->middleware('auth:medecin');
+// route pour la mise à jour d'un rendez-vous (Secrétaire uniquement)
+    Route::put('/rendezvous/update/{id}', [RendezVousController::class, 'update'])
+    ->name('rendezvous.update')
+    ->middleware('auth:secretaire');
+
+// ❌ Annulation d'un rendez-vous (Secrétaire uniquement)
+Route::put('/rendezvous/cancel/{id}', [RendezVousController::class, 'cancel'])
+    ->name('rendezvous.cancel')
+    ->middleware('auth:secretaire');
+
+// ❌ Annulation d'un rendez-vous (patiente)
+
+Route::put('/rendezvous/cancel/patient/{id}', [RendezVousController::class, 'cancelByPatiente'])
+    ->name('rendezvous.cancel.patiente')
+    ->middleware('auth:patiente');
+
+// ❌ Annulation d'un rendez-vous (Médecin uniquement)
+Route::put('/rendezvous/cancel/medecin/{id}', [RendezVousController::class, 'cancelByMedecin'])
+    ->name('rendezvous.cancel.medecin')
+    ->middleware('auth:medecin');
+

@@ -71,6 +71,12 @@
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             <main class="px-3 px-md-5 py-4 ms-md-0">
+                    @if(session()->has('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
                 <!-- En-tête stylisé -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow" style="background: linear-gradient(90deg, #fde6f2 60%, #fff 100%); border-left: 6px solid #fd0d99;">
                     <div class="d-flex align-items-center gap-3">
@@ -110,7 +116,7 @@
                                 <i class="bi bi-calendar-check mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Rendez-vous du jour</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow">Voir mes rendez-vous</a>
+                                <a href="#" class="btn btn-pink btn-sm rounded-pill px-4 shadow"  data-bs-toggle="modal" data-bs-target="#modalRendezVous">Voir mes rendez-vous</a>
                             </div>
                         </div>
                     </div>
@@ -120,7 +126,7 @@
                                 <i class="bi bi-person-lines-fill mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes patientes</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow">Voir mes patientes</a>
+                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#modalPatientes"> Voir mes patientes</a>
                             </div>
                         </div>
                     </div>
@@ -137,44 +143,49 @@
                 </div>
 
                 <!-- Historique des rendez-vous (exemple) -->
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <div class="card shadow border-0 rounded-4">
-                            <div class="card-header bg-white border-0 rounded-top-4">
-                                <h5 class="mb-0 fw-bold" style="color:#fd0d99;">Rendez-vous à venir</h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table align-middle mb-0 table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Heure</th>
-                                                <th>Patiente</th>
-                                                <th>Motif</th>
-                                                <th>Statut</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>12/06/2025</td>
-                                                <td>09:00</td>
-                                                <td>Fatou Ndiaye</td>
-                                                <td>Consultation prénatale</td>
-                                                <td><span class="badge bg-success">Confirmé</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                            <!-- ... -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+               <div class="row mt-5">
+    <div class="col-12">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-white border-0 rounded-top-4">
+                <h5 class="mb-0 fw-bold" style="color:#fd0d99;">Historique des rendez-vous</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Heure</th>
+                                <th>Patiente</th>
+                                <th>Motif</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($rendezvous as $rdv)
+                            <tr>
+                                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+                                <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+                                <td>{{ $rdv->motif }}</td>
+                                <td>
+                                    @if($rdv->statut === 'confirmé')
+                                        <span class="badge bg-success">Confirmé</span>
+                                    @elseif($rdv->statut === 'en_attente')
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                    @else
+                                        <span class="badge bg-danger">Annulé</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Statistiques (exemple) -->
                 <div class="row mt-5">
@@ -236,38 +247,49 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>12/06/2025</td>
-                        <td>09:00</td>
-                        <td>Fatou Ndiaye</td>
-                        <td>Consultation prénatale</td>
-                        <td><span class="badge bg-success">Confirmé</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>13/06/2025</td>
-                        <td>11:30</td>
-                        <td>Awa Diop</td>
-                        <td>Suivi postnatal</td>
-                        <td><span class="badge bg-secondary">En attente</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>14/06/2025</td>
-                        <td>15:00</td>
-                        <td>Marie Sarr</td>
-                        <td>Échographie</td>
-                        <td><span class="badge bg-danger">Annulé</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
+             <tbody>
+    @foreach($rendezvous as $rdv)
+    <tr>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+       <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+        <td>{{ $rdv->motif }}</td>
+        <td>
+            @if($rdv->statut === 'confirmé')
+                <span class="badge bg-success">Confirmé</span>
+            @elseif($rdv->statut === 'en_attente')
+                <span class="badge bg-warning text-dark">En attente</span>
+            @else
+                <span class="badge bg-danger">Annulé</span>
+            @endif
+        </td>
+        <td>
+            @if($rdv->statut === 'en_attente')
+                <!-- Confirmer -->
+                <form method="POST" action="{{ route('rendezvous.confirm', $rdv->id) }}" style="display:inline;">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill" title="Confirmer">
+                        <i class="bi bi-check"></i>
+                    </button>
+                </form>
+
+                <!-- Annuler -->
+                <form method="POST" action="{{ route('rendezvous.cancel.medecin', $rdv->id) }}" style="display:inline;">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Annuler">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </form>
+            @else
+                <span class="text-muted">Action non disponible</span>
+            @endif
+        </td>
+    </tr>
+    @endforeach
+</tbody>
+
             </table>
         </div>
       </div>
@@ -288,57 +310,41 @@
       <div class="modal-body">
         <div class="table-responsive">
             <table class="table align-middle mb-0 table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Date de naissance</th>
-                        <th>Téléphone</th>
-                        <th>Email</th>
-                        <th>Groupe sanguin</th>
-                        <th>Profession</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ndiaye</td>
-                        <td>Fatou</td>
-                        <td>15/03/1992</td>
-                        <td>77 123 45 67</td>
-                        <td>fatou.ndiaye@email.com</td>
-                        <td>O+</td>
-                        <td>Comptable</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Diop</td>
-                        <td>Awa</td>
-                        <td>22/07/1988</td>
-                        <td>76 234 56 78</td>
-                        <td>awa.diop@email.com</td>
-                        <td>A-</td>
-                        <td>Enseignante</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Sarr</td>
-                        <td>Marie</td>
-                        <td>09/11/1995</td>
-                        <td>78 345 67 89</td>
-                        <td>marie.sarr@email.com</td>
-                        <td>B+</td>
-                        <td>Infirmière</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <thead class="table-light">
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de naissance</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>Groupe sanguin</th>
+            <th>Profession</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($patientes as $patiente)
+        <tr>
+            <td>{{ $patiente->nom }}</td>
+            <td>{{ $patiente->prenom }}</td>
+            <td>{{ \Carbon\Carbon::parse($patiente->date_naissance)->format('d/m/Y') }}</td>
+            <td>{{ $patiente->telephone }}</td>
+            <td>{{ $patiente->email }}</td>
+            <td>{{ $patiente->groupe_sanguin }}</td>
+            <td>{{ $patiente->profession }}</td>
+             <td>
+        <!-- Voir -->
+        <button class="btn btn-sm btn-outline-primary rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#modalVoirPatiente{{$patiente->id}}">
+            <i class="bi bi-eye"></i>
+        </button>
+    </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
         </div>
       </div>
     </div>
@@ -553,6 +559,31 @@
     </div>
   </div>
 </div>
+<!-- Modal Voir Patiente -->
+@foreach($patientes as $patiente)
+<div class="modal fade" id="modalVoirPatiente{{ $patiente->id }}" tabindex="-1" aria-labelledby="modalVoirPatienteLabel{{ $patiente->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalVoirPatienteLabel{{ $patiente->id }}">Détails de la patiente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nom :</strong> {{ $patiente->nom }}</p>
+                <p><strong>Prénom :</strong> {{ $patiente->prenom }}</p>
+                <p><strong>Date de naissance :</strong> {{ \Carbon\Carbon::parse($patiente->date_naissance)->format('d/m/Y') }}</p>
+                <p><strong>Téléphone :</strong> {{ $patiente->telephone }}</p>
+                <p><strong>Email :</strong> {{ $patiente->email }}</p>
+                <p><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin }}</p>
+                <p><strong>Profession :</strong> {{ $patiente->profession }}</p>
+                <p><strong>Date du rendez-vous :</strong> {{ \Carbon\Carbon::parse($patiente->rendezvous->first()->date_heure)->format('d/m/Y H:i') }}</p>
+                <p><strong>Motif :</strong> {{ $patiente->rendezvous->first()->motif }}</p>
+                <p><strong>Statut :</strong> {{ $patiente->rendezvous->first()->statut }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 
 <!-- Ajoute ce bouton dans la sidebar pour ouvrir le modal -->
 <script>

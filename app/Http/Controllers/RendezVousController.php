@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\RendezVous;
+
+class RendezVousController extends Controller
+{
+    // Afficher les rendez-vous pour chaque rôle
+    public function index()
+    {
+        if (Auth::user()->role === 'secretaire') {
+            $rendezvous = RendezVous::where('secretaire_id', Auth::id())->where('statut', '!=', 'annulé')->get();
+        } elseif (Auth::user()->role === 'medecin') {
+            $rendezvous = RendezVous::where('medecin_id', Auth::id())->where('statut', '!=', 'annulé')->get();
+        } else {
+            $rendezvous = RendezVous::where('patiente_id', Auth::id())->where('statut', '!=', 'annulé')->get();
+        }
+
+        return view('espace_secretaire.rendezvous', compact('rendezvous'));
+    }
+
+    // Créer un rendez-vous par la patiente ou le secrétaire
+   public function store(Request $request)
+{
+
+    $request->validate([
+        'medecin_id' => 'required|exists:medecins,id',
+        'date_heure' => 'required|date|after:today',
+        'motif' => 'nullable|string|max:255',
+    ]);
+
+    $rendezvous = RendezVous::create([
+        'patiente_id' => Auth::id(),
+        'medecin_id' => $request->medecin_id,
+        'date_heure' => $request->date_heure,
+        'statut' => 'en_attente',
+        'motif' => $request->motif,
+    ]);
+
+    return back()->with('success', 'Rendez-vous programmé avec succès !');
+}
+
+    // Confirmer un rendez-vous (Médecin uniquement)
+    public function confirm($id)
+    {
+        $rendezvous = RendezVous::where('id', $id)->where('medecin_id', Auth::id())->firstOrFail();
+        $rendezvous->update(['statut' => 'confirmé']);
+
+        return back()->with('success', 'Rendez-vous confirmé avec succès !');
+    }
+
+    // Annuler un rendez-vous (Secrétaire uniquement)
+    public function cancel($id)
+    {
+        $rendezvous = RendezVous::where('id', $id)->where('secretaire_id', Auth::id())->firstOrFail();
+        $rendezvous->update(['statut' => 'annulé']);
+
+        return back()->with('success', 'Rendez-vous annulé avec succès.');
+    }
+
+    public function cancelByPatiente($id)
+{
+    $rendezvous = RendezVous::where('id', $id)
+                            ->where('patiente_id', Auth::id()) // 🔥 Vérifie que la patiente annule SON rendez-vous
+                            ->firstOrFail();
+
+    $rendezvous->update(['statut' => 'annulé']);
+
+    return back()->with('success', 'Votre rendez-vous a été annulé avec succès !');
+}
+
+public function cancelByMedecin($id)
+{
+    $rendezvous = RendezVous::where('id', $id)
+                            ->where('medecin_id', Auth::id()) // 🔥 Vérifie que le médecin annule SON rendez-vous
+                            ->firstOrFail();
+
+    $rendezvous->update(['statut' => 'annulé']);
+
+    return back()->with('success', 'Rendez-vous annulé avec succès !');
+}
+
+}

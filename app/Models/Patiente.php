@@ -17,4 +17,9 @@ class Patiente extends Authenticatable
         'password',
         'remember_token',
     ];
+
+     public function rendezvous()
+    {
+        return $this->hasMany(RendezVous::class, 'patiente_id');
+    }
 }

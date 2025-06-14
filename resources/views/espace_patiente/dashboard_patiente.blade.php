@@ -83,6 +83,12 @@
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             <main class="px-3 px-md-5 py-4 ms-md-0">
+                @if(session()->has('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
                 <h2 class="fw-bold mb-4" style="color:#fd0d99;">Tableau de bord Patiente</h2>
 
                 <!-- En-tête stylisé -->
@@ -197,29 +203,41 @@
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table align-middle mb-0 table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Heure</th>
-                                                <th>Médecin</th>
-                                                <th>Statut</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Exemple de ligne -->
-                                            <tr>
-                                                <td>10/06/2025</td>
-                                                <td>10:00</td>
-                                                <td>Dr. Faye</td>
-                                                <td><span class="badge bg-success">Confirmé</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                            <!-- ... -->
-                                        </tbody>
-                                    </table>
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Médecin</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse($rendezvous as $rdv)
+            <tr>
+                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+                <td>{{ $rdv->medecin->nom ?? 'Non spécifié' }}</td>
+                <td>
+                    @if($rdv->statut === 'confirmé')
+                        <span class="badge bg-success">Confirmé</span>
+                    @elseif($rdv->statut === 'en_attente')
+                        <span class="badge bg-warning text-dark">En attente</span>
+                    @else
+                        <span class="badge bg-danger">Annulé</span>
+                    @endif
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="5" class="text-center">Aucun rendez-vous trouvé.</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
                                 </div>
                             </div>
                         </div>
@@ -272,21 +290,42 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Exemple statique, à remplacer par une boucle dynamique -->
-                            <tr>
-                                <td>12/06/2025</td>
-                                <td>09:00</td>
-                                <td>Dr. Faye</td>
-                                <td>Consultation prénatale</td>
-                                <td><span class="badge bg-success">Confirmé</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                                    <button class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-x"></i></button>
-                                </td>
-                            </tr>
-                            <!-- ... -->
-                        </tbody>
+                       <tbody>
+    @foreach($rendezvous as $rdv)
+    <tr>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+        <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+        <td>{{ $rdv->medecin->nom }} - {{ $rdv->medecin->specialite }}</td>
+        <td>{{ $rdv->motif }}</td>
+        <td>
+            @if($rdv->statut == 'confirmé')
+                <span class="badge bg-success">Confirmé</span>
+            @elseif($rdv->statut == 'en_attente')
+                <span class="badge bg-warning text-dark">En attente</span>
+            @else
+                <span class="badge bg-danger">Annulé</span>
+            @endif
+        </td>
+        <td>
+            <button class="btn btn-sm btn-outline-primary rounded-pill"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalVoirRendezVous{{ $rdv->id }}"
+                    title="Voir">
+                <i class="bi bi-eye"></i>
+            </button>
+            @if($rdv->statut == 'en_attente')
+                <form method="POST"  action="{{ route('rendezvous.cancel.patiente', ['id' => $rdv->id]) }}" style="display:inline;">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Annuler">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </form>
+            @endif
+        </td>
+    </tr>
+    @endforeach
+</tbody>
                     </table>
                 </div>
             </div>
@@ -305,30 +344,27 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="date" class="form-label">Date</label>
-            <input type="date" class="form-control" id="date" required>
-          </div>
-          <div class="mb-3">
-            <label for="heure" class="form-label">Heure</label>
-            <input type="time" class="form-control" id="heure" required>
-          </div>
-          <div class="mb-3">
-            <label for="medecin" class="form-label">Médecin</label>
-            <select class="form-select" id="medecin" required>
-              <option value="">Choisir...</option>
-              <option>Dr. Faye</option>
-              <option>Dr. Diop</option>
-              <!-- ... -->
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="motif" class="form-label">Motif</label>
-            <input type="text" class="form-control" id="motif" required>
-          </div>
-          <button type="submit" class="btn btn-pink rounded-pill w-100">Valider</button>
-        </form>
+       <form  action="{{ route('rendezvous.store') }}" method="POST">
+         @csrf
+    <div class="mb-3">
+        <label for="date_heure" class="form-label">Date et Heure</label>
+        <input type="datetime-local" class="form-control" name="date_heure" required>
+    </div>
+    <div class="mb-3">
+        <label for="medecin_id" class="form-label">Médecin</label>
+        <select class="form-select" name="medecin_id" required>
+            <option value="">Choisir...</option>
+            @foreach($medecins as $medecin)
+                <option value="{{ $medecin->id }}">{{ $medecin->nom }} - {{ $medecin->specialite }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="motif" class="form-label">Motif</label>
+        <input type="text" class="form-control" name="motif" required>
+    </div>
+    <button type="submit" class="btn btn-pink rounded-pill w-100">Valider</button>
+</form>
       </div>
     </div>
   </div>
@@ -499,6 +535,35 @@
     </div>
   </div>
 </div>
+
+@foreach($rendezvous as $rdv)
+<div class="modal fade" id="modalVoirRendezVous{{ $rdv->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails du rendez-vous</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Date :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</p>
+        <p><strong>Heure :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</p>
+        <p><strong>Médecin :</strong> {{ $rdv->medecin->nom }} - {{ $rdv->medecin->specialite }}</p>
+        <p><strong>Motif :</strong> {{ $rdv->motif }}</p>
+        <p><strong>Statut :</strong>
+            @if($rdv->statut == 'confirmé')
+                <span class="badge bg-success">Confirmé</span>
+            @elseif($rdv->statut == 'en_attente')
+                <span class="badge bg-warning text-dark">En attente</span>
+            @else
+                <span class="badge bg-danger">Annulé</span>
+            @endif
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
 <!-- À placer juste avant </body> -->
 <script>
     var botmanWidget = {
