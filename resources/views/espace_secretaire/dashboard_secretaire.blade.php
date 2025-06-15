@@ -56,11 +56,16 @@
                      </a>
                    </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-danger" href="#">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Déconnexion
-                        </a>
-                    </li>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="nav-link text-danger"
+                style="border: none; background: none; cursor: pointer;"
+                onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Déconnexion
+        </button>
+    </form>
+</li>
                 </ul>
             </div>
         </nav>
@@ -220,7 +225,7 @@
                                     <i class="bi bi-pie-chart me-2"></i>
                                     Statut des rendez-vous
                                 </h5>
-                                <canvas id="statutChart" height="180"></canvas>
+                                <canvas id="statutChart" class="chart-canvas-circle"></canvas>
                             </div>
                         </div>
                     </div>
@@ -788,6 +793,46 @@
     transform: translateY(-2px) scale(1.02);
 }
 </style>
+<script>
+    window.rdvParMois = @json(array_values($rdvParMois));
+    window.statutRdv = @json(array_values($statutRdv));
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Rendez-vous par mois (Bar chart)
+        var ctx1 = document.getElementById("rdvChart").getContext("2d");
+        new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                datasets: [{
+                    label: "Rendez-vous",
+                    data: window.rdvParMois,
+                    backgroundColor: "rgba(54, 162, 235, 0.5)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+
+        });
+
+        // Statut des rendez-vous (Pie chart)
+        var ctx2 = document.getElementById("statutChart").getContext("2d");
+new Chart(ctx2, {
+    type: "pie",
+    data: {
+        labels: ["Confirmés", "Annulés", "En attente"], // ✅ Ajoute explicitement "En attente"
+        datasets: [{
+            label: "Statut des rendez-vous",
+            data: @json(array_values($statutRdv)), // ✅ Assure que toutes les valeurs sont prises en compte
+            backgroundColor: ["#28a745", "#dc3545", "#ffc107"]
+        }]
+    },
+
+        });
+    });
+</script>
+
 @vite('resources/js/app.js')
 </body>
 </html>

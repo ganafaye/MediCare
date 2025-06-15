@@ -49,11 +49,17 @@
                         </a>
                     </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link text-danger" href="#">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Déconnexion
-                        </a>
-                    </li>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="nav-link text-danger"
+                style="border: none; background: none; cursor: pointer;"
+                onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Déconnexion
+        </button>
+    </form>
+</li>
+
                 </ul>
             </div>
         </nav>
@@ -64,13 +70,13 @@
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
     </div>
-@endif
+ @endif
             <!-- Bouton menu mobile -->
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold mb-3 mb-md-0" style="color:#fd0d99;">Bienvenue sur le Dashboard Administrateur</h2>
+                <h2 class="fw-bold mb-3 mb-md-0" style="color:#fd0d99;">Clinique MediCare : </h2>
                 <p class="mb-0 px-3 py-2 rounded-pill shadow-sm d-flex align-items-center"
                    style="background:#fde6f2; color:#fd0d99; font-weight:500; font-size:1.05rem;">
                     <i class="bi bi-calendar-event me-2" style="font-size:1.3rem; color:#fd0d99;"></i>
@@ -84,7 +90,7 @@
                         <div class="card-body text-center">
                             <i class="bi bi-people-fill" style="font-size:2rem; color:#fd0d99;"></i>
                             <h5 class="mt-2">Nombre de patientes</h5>
-                            <p class="fw-bold fs-4">--</p>
+                            <p class="fw-bold fs-4">{{ $nombrePatientes }}</p>
                         </div>
                     </div>
                 </div>
@@ -93,7 +99,7 @@
                         <div class="card-body text-center">
                             <i class="bi bi-person-badge-fill" style="font-size:2rem; color:#fd0d99;"></i>
                             <h5 class="mt-2">Nombre de médecins</h5>
-                            <p class="fw-bold fs-4">--</p>
+                             <p class="fw-bold fs-4">{{ $nombreMedecins }}</p>
                         </div>
                     </div>
                 </div>
@@ -102,73 +108,69 @@
                         <div class="card-body text-center">
                             <i class="bi bi-calendar-check-fill" style="font-size:2rem; color:#fd0d99;"></i>
                             <h5 class="mt-2">Rendez-vous aujourd'hui</h5>
-                            <p class="fw-bold fs-4">--</p>
+                            <p class="fw-bold fs-4">{{ $rendezVousDuJour }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Graphiques statistiques -->
-            <div class="row mt-4">
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" style="color:#fd0d99;">
-                                <i class="bi bi-bar-chart-fill me-2"></i>
-                                Consultations par mois
-                            </h5>
-                            <canvas id="consultationsChart" height="180"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" style="color:#fd0d99;">
-                                <i class="bi bi-graph-up-arrow me-2"></i>
-                                Rendez-vous par mois
-                            </h5>
-                            <canvas id="rendezvousChart" height="180"></canvas>
-                        </div>
-                    </div>
+           <div class="container mt-4">
+
+    <div class="row">
+
+<!-- Consultations par médecin -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4" style="color:#fd0d99;">
+                        <i class="bi bi-bar-chart-steps me-2"></i>Consultations par médecin
+                    </h5>
+                    <canvas id="medecinsChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" style="color:#fd0d99;">
-                                <i class="bi bi-pie-chart-fill me-2"></i>
-                                Répartition patientes par âge
-                            </h5>
-                            <canvas id="ageChart" height="180"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" style="color:#fd0d99;">
-                                <i class="bi bi-bar-chart-steps me-2"></i>
-                                Consultations par médecin
-                            </h5>
-                            <canvas id="medecinsChart" height="180"></canvas>
-                        </div>
-                    </div>
+        </div>
+        <!-- Rendez-vous par mois -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4" style="color:#fd0d99;">
+                        <i class="bi bi-graph-up-arrow me-2"></i>Rendez-vous par mois
+                    </h5>
+                    <canvas id="rendezvousChart" class="chart-canvas"></canvas>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4" style="color:#fd0d99;">
-                                <i class="bi bi-pie-chart me-2"></i>
-                                Taux rendez-vous honorés/annulés
-                            </h5>
-                            <canvas id="tauxChart" height="180"></canvas>
-                        </div>
-                    </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Répartition patientes par âge (agrandi) -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4" style="color:#fd0d99;">
+                        <i class="bi bi-pie-chart-fill me-2"></i>Répartition patientes par âge
+                    </h5>
+                    <canvas id="ageChart" class="chart-canvas-circle"></canvas>
                 </div>
             </div>
+        </div>
+ <!-- Taux rendez-vous honorés/annulés (remplace consultations par mois) -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-4" style="color:#fd0d99;">
+                        <i class="bi bi-pie-chart me-2"></i>Taux rendez-vous honorés/annulés
+                    </h5>
+                    <canvas id="tauxChart" class="chart-canvas-circle"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+        </div>
+        </div>
         </main>
     </div>
 </div>
@@ -538,47 +540,57 @@
             </button>
         </div>
         <div class="table-responsive">
-            <table class="table align-middle mb-0 table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Heure</th>
-                        <th>Patiente</th>
-                        <th>Médecin</th>
-                        <th>Motif</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>12/06/2025</td>
-                        <td>09:00</td>
-                        <td>Fatou Ndiaye</td>
-                        <td>Dr. Faye</td>
-                        <td>Consultation prénatale</td>
-                        <td><span class="badge bg-success">Confirmé</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>13/06/2025</td>
-                        <td>11:30</td>
-                        <td>Awa Diop</td>
-                        <td>Dr. Sarr</td>
-                        <td>Suivi postnatal</td>
-                        <td><span class="badge bg-secondary">En attente</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+          <table class="table align-middle mb-0 table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Patiente</th>
+            <th>Médecin</th>
+            <th>Motif</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($rendezvous as $rdv)
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
+            <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+            <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+            <td>Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</td>
+            <td>{{ $rdv->motif }}</td>
+            <td>
+                @if($rdv->statut === 'confirmé')
+                    <span class="badge bg-success">Confirmé</span>
+                @elseif($rdv->statut === 'en_attente')
+                    <span class="badge bg-warning text-dark">En attente</span>
+                @else
+                    <span class="badge bg-danger">Annulé</span>
+                @endif
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success rounded-pill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <form method="POST" action="{{ route('rendezvous.admin.delete', $rdv->id) }}" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-trash"></i></button>
+                </form>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
         </div>
       </div>
     </div>
@@ -596,48 +608,51 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label class="form-label">Patiente</label>
-            <select class="form-select" required>
-              <option selected disabled>Choisir une patiente</option>
-              <option>Fatou Ndiaye</option>
-              <option>Awa Diop</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Médecin</label>
-            <select class="form-select" required>
-              <option selected disabled>Choisir un médecin</option>
-              <option>Dr. Faye</option>
-              <option>Dr. Sarr</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Date</label>
-            <input type="date" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Heure</label>
-            <input type="time" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Motif</label>
-            <input type="text" class="form-control" placeholder="Motif du rendez-vous" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Statut</label>
-            <select class="form-select" required>
-              <option value="confirmé">Confirmé</option>
-              <option value="en attente">En attente</option>
-              <option value="annulé">Annulé</option>
-            </select>
-          </div>
-          <div class="text-end">
-            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
-          </div>
-        </form>
+      <form method="POST" action="{{ route('rendezvous.admin.store') }}">
+    @csrf
+    <div class="mb-3">
+        <label class="form-label">Patiente</label>
+        <select class="form-select" name="patiente_id" required>
+            <option selected disabled>Choisir une patiente</option>
+            @foreach($patientes as $patiente)
+                <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Médecin</label>
+        <select class="form-select" name="medecin_id" required>
+            <option selected disabled>Choisir un médecin</option>
+            @foreach($medecins as $medecin)
+                <option value="{{ $medecin->id }}">Dr. {{ $medecin->prenom }} {{ $medecin->nom }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Date et Heure</label>
+        <input type="datetime-local" class="form-control" name="date_heure" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Motif</label>
+        <input type="text" class="form-control" name="motif" placeholder="Motif du rendez-vous" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Statut</label>
+        <select class="form-select" name="statut" required>
+            <option value="en attente">En attente</option>
+        </select>
+    </div>
+
+    <div class="text-end">
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+    </div>
+</form>
+
       </div>
     </div>
   </div>
@@ -859,8 +874,137 @@
   </div>
 </div>
 @endforeach
+<!-- Modal pour voir les détails des rendez-vous -->
+@foreach($rendezvous as $rdv)
+<div class="modal fade" id="modalVoirRendezVous{{ $rdv->id }}" tabindex="-1" aria-labelledby="modalVoirRendezVousLabel{{ $rdv->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalVoirRendezVousLabel{{ $rdv->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-eye me-2"></i> Détails du rendez-vous
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Patiente :</strong> {{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</p>
+                <p><strong>Médecin :</strong> Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</p>
+                <p><strong>Date :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</p>
+                <p><strong>Heure :</strong> {{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</p>
+                <p><strong>Motif :</strong> {{ $rdv->motif }}</p>
+                <p><strong>Statut :</strong>
+                    @if($rdv->statut === 'confirmé')
+                        <span class="badge bg-success">Confirmé</span>
+                    @elseif($rdv->statut === 'en_attente')
+                        <span class="badge bg-warning text-dark">En attente</span>
+                    @else
+                        <span class="badge bg-danger">Annulé</span>
+                    @endif
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+<!-- Modal pour modifier les informations des rendez-vous -->
+@foreach($rendezvous as $rdv)
+<div class="modal fade" id="modalModifierRendezVous{{ $rdv->id }}" tabindex="-1" aria-labelledby="modalModifierRendezVousLabel{{ $rdv->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="modalModifierRendezVousLabel{{ $rdv->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-pencil me-2"></i> Modifier le rendez-vous
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('rendezvous.admin.update', $rdv->id) }}">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label class="form-label">Date et Heure</label>
+                        <input type="datetime-local" class="form-control" name="date_heure" value="{{ \Carbon\Carbon::parse($rdv->date_heure)->format('Y-m-d\TH:i') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motif</label>
+                        <input type="text" class="form-control" name="motif" value="{{ $rdv->motif }}" required>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-pink rounded-pill ms-2">Modifier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Rendez-vous par mois (Bar chart)
+       var ctx1 = document.getElementById("rendezvousChart").getContext("2d");
+new Chart(ctx1, {
+    type: "bar",
+    data: {
+        labels: [ "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"], // ✅ Ne prend que les mois jusqu'à juin
+        datasets: [{
+            label: "Rendez-vous",
+            data: @json(array_values($rendezvousParMois)),
+            backgroundColor: "rgba(54, 162, 235, 0.5)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1
+        }]
+    }
+
+});
 
 
+        // Répartition des âges des patientes (Pie chart)
+        var ctx2 = document.getElementById("ageChart").getContext("2d");
+        new Chart(ctx2, {
+            type: "pie",
+            data: {
+                labels: @json(array_keys($repartitionAgePatientes)),
+                datasets: [{
+                    label: "Répartition des âges",
+                    data: @json(array_values($repartitionAgePatientes)),
+                    backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff"],
+                }]
+            }
+        });
+
+        // Consultations par médecin (Bar chart)
+       var ctx3 = document.getElementById("medecinsChart").getContext("2d");
+new Chart(ctx3, {
+    type: "bar",
+    data: {
+        labels: @json(array_keys($consultationsParMedecin)), // 🔥 Affiche les noms des médecins
+        datasets: [{
+            label: "Consultations",
+            data: @json(array_values($consultationsParMedecin)),
+            backgroundColor: "rgba(75, 192, 192, 0.5)",
+            borderColor: "rgba(75, 192, 192, 1)",
+            borderWidth: 1
+        }]
+    }
+});
+
+        // Taux de rendez-vous honorés vs annulés (Doughnut chart)
+        var ctx4 = document.getElementById("tauxChart").getContext("2d");
+        new Chart(ctx4, {
+            type: "doughnut",
+            data: {
+                labels: ["Confirmés", "Annulés"],
+                datasets: [{
+                    label: "Taux Rendez-vous",
+                    data: @json(array_values($tauxRendezVous)),
+                    backgroundColor: ["#28a745", "#dc3545"]
+                }]
+            }
+        });
+    });
+
+</script>
 @vite('resources/js/app.js')
+
 </body>
 </html>

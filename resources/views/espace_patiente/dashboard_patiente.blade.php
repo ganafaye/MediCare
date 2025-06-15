@@ -67,12 +67,17 @@
                                  Dossier médical
                         </a>
                     </li>
-                    <li class="nav-item mt-4">
-                        <a class="nav-link text-danger" href="#">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Déconnexion
-                        </a>
-                    </li>
+                     <li class="nav-item mt-4">
+    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="nav-link text-danger"
+                style="border: none; background: none; cursor: pointer;"
+                onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Déconnexion
+        </button>
+    </form>
+</li>
                 </ul>
             </div>
         </nav>

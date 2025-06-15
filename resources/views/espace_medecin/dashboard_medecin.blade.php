@@ -55,12 +55,17 @@
                             Messagerie
                         </a>
                     </li>
-                    <li class="nav-item mt-4">
-                        <a class="nav-link text-danger" href="#">
-                            <i class="bi bi-box-arrow-right me-2"></i>
-                            Déconnexion
-                        </a>
-                    </li>
+                     <li class="nav-item mt-4">
+    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="nav-link text-danger"
+                style="border: none; background: none; cursor: pointer;"
+                onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Déconnexion
+        </button>
+    </form>
+</li>
                 </ul>
             </div>
         </nav>
@@ -207,7 +212,7 @@
                                     <i class="bi bi-pie-chart me-2"></i>
                                     Répartition des motifs
                                 </h5>
-                                <canvas id="motifsChart" height="180"></canvas>
+                                <canvas id="motifsChart" class="chart-canvas-circle"></canvas>
                             </div>
                         </div>
                     </div>
@@ -594,5 +599,54 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
     });
 });
 </script>
+<style>
+    .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 250px; /* ✅ Fixe une hauteur identique */
+        max-width: 100%;
+    }
+</style>
+<script>
+    window.consultationsParMois = @json(array_values($consultationsParMois));
+    window.repartitionMotifs = @json(array_values($repartitionMotifs));
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Consultations par mois (Bar chart)
+        var ctx1 = document.getElementById("consultationsChart").getContext("2d");
+        new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                datasets: [{
+                    label: "Consultations",
+                    data: window.consultationsParMois,
+                    backgroundColor: "rgba(54, 162, 235, 0.5)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+
+        });
+
+        // Répartition des motifs (Pie chart)
+        var ctx2 = document.getElementById("motifsChart").getContext("2d");
+        new Chart(ctx2, {
+            type: "pie",
+            data: {
+                labels: @json(array_keys($repartitionMotifs)),
+                datasets: [{
+                    label: "Motifs",
+                    data: window.repartitionMotifs,
+                    backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff"]
+                }]
+            },
+
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -81,5 +81,49 @@ public function cancelByMedecin($id)
 
     return back()->with('success', 'Rendez-vous annulé avec succès !');
 }
+public function deleteByAdmin($id)
+{
+    $rendezvous = RendezVous::findOrFail($id);
+    $rendezvous->delete();
+
+    return back()->with('success', 'Rendez-vous supprimé avec succès.');
+}
+
+
+public function updateByAdmin(Request $request, $id)
+{
+    $request->validate([
+        'date_heure' => 'required|date',
+        'motif' => 'required|string|max:255',
+    ]);
+
+    $rendezvous = RendezVous::findOrFail($id);
+    $rendezvous->update([
+        'date_heure' => $request->date_heure,
+        'motif' => $request->motif,
+    ]);
+
+    return back()->with('success', 'Rendez-vous mis à jour avec succès !');
+}
+
+public function storeByAdmin(Request $request)
+{
+    $request->validate([
+        'patiente_id' => 'required|exists:patientes,id',
+        'medecin_id' => 'required|exists:medecins,id',
+        'date_heure' => 'required|date',
+        'motif' => 'required|string|max:255',
+    ]);
+
+    RendezVous::create([
+        'patiente_id' => $request->patiente_id,
+        'medecin_id' => $request->medecin_id,
+        'date_heure' => $request->date_heure,
+        'motif' => $request->motif,
+        'statut' => 'en_attente',
+    ]);
+
+    return back()->with('success', 'Rendez-vous programmé avec succès !');
+}
 
 }

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\MedecinAdminController;
 use App\Http\Controllers\Admin\SecretaireAdminController;
 use App\Http\Controllers\DashboardSecretaireController;
 use App\Http\Controllers\RendezVousController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -198,3 +199,20 @@ Route::put('/rendezvous/cancel/medecin/{id}', [RendezVousController::class, 'can
     ->name('rendezvous.cancel.medecin')
     ->middleware('auth:medecin');
 
+// Gestion rendez vous par l'administrateur
+Route::delete('/rendezvous/admin/delete/{id}', [RendezVousController::class, 'deleteByAdmin'])
+    ->name('rendezvous.admin.delete')
+    ->middleware('auth:admin');
+
+Route::put('/rendezvous/admin/update/{id}', [RendezVousController::class, 'updateByAdmin'])
+    ->name('rendezvous.admin.update')
+    ->middleware('auth:admin');
+// Route pour la creation d'un rendez-vous par l'administrateur
+Route::post('/rendezvous/admin/store', [RendezVousController::class, 'storeByAdmin'])
+    ->name('rendezvous.admin.store')
+    ->middleware('auth:admin');
+// Deconnexion des users  : administrateur, secretaire, medecin et patiente
+Route::post('/logout', function () {
+    Auth::logout(); // ✅ Déconnecte l'utilisateur
+    return redirect('/login'); // ✅ Redirige vers la page de connexion
+})->name('logout');
