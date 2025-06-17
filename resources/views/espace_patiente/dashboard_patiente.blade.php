@@ -56,11 +56,11 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-bell me-2"></i>
-                            Notifications
-                        </a>
-                    </li>
+    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+        <i class="bi bi-bell me-2"></i>
+        Notifications
+    </a>
+</li>
                     <li class="nav-item mb-2">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
                             <i class="bi bi-folder2-open me-2"></i>
@@ -94,7 +94,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
-                <h2 class="fw-bold mb-4" style="color:#fd0d99;">Tableau de bord Patiente</h2>
+                <h2 class="fw-bold mb-4" style="color:#fd0d99;"></h2>
 
                 <!-- En-tête stylisé -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow" style="background: linear-gradient(90deg, #fde6f2 60%, #fff 100%); border-left: 6px solid #fd0d99;">
@@ -449,22 +449,23 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>12/06/2025</td>
-                        <td>Ordonnance</td>
-                        <td>Prescription suite à consultation</td>
-                        <td>
-                            <span class="badge bg-secondary">ordonnance_120625.pdf</span>
-                        </td>
-                        <td>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
-                                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
-                            </a>
-                        </td>
-                    </tr>
-                    <!-- ... -->
-                </tbody>
+               <tbody>
+  @foreach ($ordonnances as $ordonnance)
+    <tr>
+        <td>{{ \Carbon\Carbon::parse($ordonnance->date_prescription)->format('d/m/Y') }}</td>
+        <td>Ordonnance</td>
+        <td>Prescription de {{ $ordonnance->medecin->nom }}</td>
+        <td>
+            <span class="badge bg-secondary">Ordonnance_{{ $ordonnance->id }}.pdf</span>
+        </td>
+        <td>
+            <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+            </a>
+        </td>
+    </tr>
+  @endforeach
+</tbody>
             </table>
         </div>
       </div>
@@ -504,42 +505,65 @@
     </div>
   </div>
 </div>
-<!-- Modal Dossier médical -->
+<!-- Modal Dossier Médical -->
+<!-- Modal Dossier Médical -->
 <div class="modal fade" id="modalDossierMedical" tabindex="-1" aria-labelledby="modalDossierMedicalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content rounded-4">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalDossierMedicalLabel">
-            <i class="bi bi-folder2-open me-2"></i>Dossier médical
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <div class="d-flex align-items-center">
+          <img src="{{ asset('image/logo medecin.png') }}" alt="Logo Clinique" class="me-3" width="50">
+          <h5 class="modal-title fw-bold" id="modalDossierMedicalLabel">
+            Clinique  MediCare - Dossier Médical
+<button class="btn btn-sm btn-outline-success rounded-pill" id="exportDossier"><i class="bi bi-file-image"></i> Télécharger mon dossier </button>
+          </h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <ul class="list-group list-group-flush mb-3">
-          <li class="list-group-item"><strong>ID Dossier :</strong> {{ $dossier->id ?? '--' }}</li>
-          <li class="list-group-item"><strong>Date de création :</strong> {{ $dossier->date_creation ?? '--' }}</li>
-          <li class="list-group-item"><strong>Antécédents :</strong> {{ $dossier->antecedant ?? '--' }}</li>
-          <li class="list-group-item"><strong>Traitement :</strong> {{ $dossier->traitement ?? '--' }}</li>
-          <li class="list-group-item"><strong>Documents :</strong>
-            @if(isset($dossier->documents) && count($dossier->documents))
+          <li class="list-group-item"><strong>Nom & Prénom :</strong> {{ $patiente->prenom }} {{ $patiente->nom }}</li>
+          <li class="list-group-item"><strong>Âge :</strong> {{ \Carbon\Carbon::parse($patiente->date_naissance)->age }} ans</li>
+          <li class="list-group-item"><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin ?? 'Non renseigné' }}</li>
+        </ul>
+
+        @if ($dossier)
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item"><strong>ID Dossier :</strong> {{ $dossier->id ?? '--' }}</li>
+            <li class="list-group-item"><strong>Date de création :</strong> {{ $dossier->created_at->format('d/m/Y à H:i') }}</li>
+            <li class="list-group-item"><strong>Diagnostic :</strong> {{ $dossier->diagnostic ?? '--' }}</li>
+            <li class="list-group-item"><strong>Traitement :</strong> {{ $dossier->traitement ?? 'Non renseigné' }}</li>
+            <li class="list-group-item"><strong>Observations :</strong> {{ $dossier->observations ?? 'Non renseigné' }}</li>
+            <li class="list-group-item"><strong>Grossesse :</strong>
+                <span class="badge bg-{{ isset($dossier->grossesse) && $dossier->grossesse ? 'success' : 'danger' }}">
+                    {{ isset($dossier->grossesse) && $dossier->grossesse ? 'Oui' : 'Non' }}
+                </span>
+            </li>
+            <li class="list-group-item"><strong>Documents :</strong>
+              @if(isset($dossier->documents) && count($dossier->documents))
                 <ul class="mb-0">
                   @foreach($dossier->documents as $doc)
                     <li>
+                      <i class="bi bi-file-earmark-pdf text-danger"></i>
                       <a href="{{ asset('storage/'.$doc->chemin) }}" target="_blank">
                         {{ $doc->nom }}
                       </a>
                     </li>
                   @endforeach
                 </ul>
-            @else
-                Aucun document.
-            @endif
-          </li>
-        </ul>
+              @else
+                <span class="text-muted">Aucun document disponible.</span>
+              @endif
+            </li>
+          </ul>
+        @else
+          <p class="text-muted">Aucun dossier médical disponible.</p>
+        @endif
       </div>
     </div>
   </div>
 </div>
+
 
 @foreach($rendezvous as $rdv)
 <div class="modal fade" id="modalVoirRendezVous{{ $rdv->id }}" tabindex="-1">
@@ -568,6 +592,23 @@
   </div>
 </div>
 @endforeach
+<!-- Modal Notifications -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationsModalLabel">📢 Vos Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- À placer juste avant </body> -->
 <script>
@@ -590,6 +631,27 @@
     fontFamily: "Poppins, Arial, sans-serif"
 };
 </script>
+
+<script>
+document.getElementById("exportDossier").addEventListener("click", function() {
+    let dossierMedical = document.getElementById("modalDossierMedical");
+
+    html2canvas(dossierMedical, {
+        scale: 3, // 🔥 Augmente la résolution (x3 la qualité normale)
+        useCORS: true, // ✅ Active le support des images externes (si besoin)
+        allowTaint: true, // ✅ Permet d'inclure des images du domaine
+        logging: true, // ✅ Active le debug
+        backgroundColor: "#ffffff", // 🔥 Assure un fond blanc au lieu d'un fond transparent
+    }).then(canvas => {
+        let link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png", 1.0); // 🔥 Qualité maximale
+        link.download = "dossier_medical_hd.png";
+        link.click();
+    });
+});
+</script>
+
+
 <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 
 </body>

@@ -368,6 +368,7 @@
       </div>
       <div class="modal-body">
         <!-- Bouton Créer un dossier médical -->
+       <!-- Bouton Créer un dossier médical -->
         <div class="mb-4 text-end">
             <button class="btn btn-pink rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalCreerDossier">
                 <i class="bi bi-plus-circle me-2"></i>Créer un dossier médical
@@ -385,44 +386,37 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Fatou Ndiaye</td>
-                        <td>10/04/2024</td>
-                        <td>05/06/2025</td>
-                        <td>Fer + Vitamines</td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="bi bi-file-earmark-pdf"></i> 2</a>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Awa Diop</td>
-                        <td>22/08/2023</td>
-                        <td>01/06/2025</td>
-                        <td>Repos</td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="bi bi-file-earmark-pdf"></i> 1</a>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Marie Sarr</td>
-                        <td>15/01/2025</td>
-                        <td>15/05/2025</td>
-                        <td>Suivi grossesse</td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill"><i class="bi bi-file-earmark-pdf"></i> 3</a>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
+               <tbody>
+    @foreach ($dossiers as $dossier)
+        <tr>
+            <td>{{ $dossier->patiente->prenom }} {{ $dossier->patiente->nom }}</td>
+            <td>{{ $dossier->created_at->format('d/m/Y') }}</td>
+            <td>{{ $dossier->updated_at->format('d/m/Y') }}</td>
+            <td>{{ $dossier->traitement ?? 'Non renseigné' }}</td>
+            <td>
+@if (isset($dossier->documents) && is_iterable($dossier->documents))
+    <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill">
+        <i class="bi bi-file-earmark-pdf"></i> {{ count($dossier->documents) }}
+    </a>
+@else
+    <span class="text-muted">Aucun document</span>
+@endif
+            </td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir" data-bs-toggle="modal" data-bs-target="#modalVoirDossier">
+                      <i class="bi bi-eye"></i>
+                </button>
+
+                 <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalModifierDossier{{ $dossier->id }}">
+        <i class="bi bi-pencil"></i> Modifier
+    </button>
+    <button class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#modalSupprimerDossier{{ $dossier->id }}">
+        <i class="bi bi-trash"></i> Supprimer
+    </button>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
             </table>
         </div>
       </div>
@@ -441,29 +435,53 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="patiente" class="form-label">Patiente</label>
-            <select class="form-select" id="patiente" required>
-              <option selected disabled>Choisir une patiente</option>
-              <option>Fatou Ndiaye</option>
-              <option>Awa Diop</option>
-              <option>Marie Sarr</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="traitement" class="form-label">Traitement en cours</label>
-            <input type="text" class="form-control" id="traitement" placeholder="Ex : Fer + Vitamines">
-          </div>
-          <div class="mb-3">
-            <label for="documents" class="form-label">Ajouter des documents</label>
-            <input class="form-control" type="file" id="documents" multiple>
-          </div>
-          <div class="text-end">
-            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
-          </div>
-        </form>
+       <form action="{{ route('dossier.creer') }}" method="POST" enctype="multipart/form-data">
+  @csrf
+
+  <div class="mb-3">
+    <label for="patiente" class="form-label">Patiente</label>
+    <select class="form-select" id="patiente" name="patiente_id" required>
+      <option selected disabled>Choisir une patiente</option>
+      @foreach ($patientes as $patiente)
+        <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+      @endforeach
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="diagnostic" class="form-label">Diagnostic</label>
+    <textarea class="form-control" id="diagnostic" name="diagnostic" placeholder="Ex : Anémie sévère" required></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="traitement" class="form-label">Traitement en cours</label>
+    <input type="text" class="form-control" id="traitement" name="traitement" placeholder="Ex : Fer + Vitamines">
+  </div>
+
+  <div class="mb-3">
+    <label for="observations" class="form-label">Observations</label>
+    <textarea class="form-control" id="observations" name="observations" placeholder="Ex : À surveiller dans 15 jours"></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="grossesse" class="form-label">Grossesse</label>
+    <select class="form-select" id="grossesse" name="grossesse" required>
+      <option selected disabled>En état de grossesse ?</option>
+      <option value="oui">Oui</option>
+      <option value="non">Non</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="documents" class="form-label">Ajouter des documents</label>
+    <input class="form-control" type="file" id="documents" name="documents[]" multiple>
+  </div>
+
+  <div class="text-end">
+    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+    <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+  </div>
+</form>
       </div>
     </div>
   </div>
@@ -486,6 +504,8 @@
                 <i class="bi bi-plus-circle me-2"></i>Créer une ordonnance
             </button>
         </div>
+
+        <!-- Tableau des ordonnances dynamiques -->
         <div class="table-responsive">
             <table class="table align-middle mb-0 table-hover">
                 <thead class="table-light">
@@ -498,26 +518,28 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($ordonnances as $ordonnance)
                     <tr>
-                        <td>Fatou Ndiaye</td>
-                        <td>08/06/2025</td>
-                        <td>Fer, Vitamine B9</td>
-                        <td><span class="badge bg-success">Envoyée</span></td>
+                        <td>{{ $ordonnance->patiente->prenom }} {{ $ordonnance->patiente->nom }}</td>
+                        <td>{{ $ordonnance->date_prescription->format('d/m/Y') }}</td>
+                        <td>{{ $ordonnance->contenu }}</td>
+                        <td><span class="badge bg-{{ $ordonnance->statut == 'Envoyée' ? 'success' : 'secondary' }}">{{ $ordonnance->statut }}</span></td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger"><i class="bi bi-download"></i></button>
+                            <!-- Voir ordonnance -->
+                            <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirOrdonnance{{ $ordonnance->id }}" title="Voir">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <!-- Modifier ordonnance -->
+                            <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalModifierOrdonnance{{ $ordonnance->id }}" title="Modifier">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <!-- Télécharger ordonnance -->
+                            <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger">
+                                <i class="bi bi-download"></i>
+                            </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>Awa Diop</td>
-                        <td>05/06/2025</td>
-                        <td>Paracétamol</td>
-                        <td><span class="badge bg-secondary">Brouillon</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger"><i class="bi bi-download"></i></button>
-                        </td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -525,6 +547,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- Modal Créer une ordonnance -->
 <div class="modal fade" id="modalCreerOrdonnance" tabindex="-1" aria-labelledby="modalCreerOrdonnanceLabel" aria-hidden="true">
@@ -537,24 +560,33 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="{{ route('ordonnance.store') }}" method="POST">
+          @csrf
+
+          <!-- Sélection de la patiente -->
           <div class="mb-3">
             <label for="patienteOrd" class="form-label">Patiente</label>
-            <select class="form-select" id="patienteOrd" required>
+            <select class="form-select" id="patienteOrd" name="patiente_id" required>
               <option selected disabled>Choisir une patiente</option>
-              <option>Fatou Ndiaye</option>
-              <option>Awa Diop</option>
-              <option>Marie Sarr</option>
+              @foreach ($patientes as $patiente)
+                <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+              @endforeach
             </select>
           </div>
+
+          <!-- Médicaments prescrits -->
           <div class="mb-3">
             <label for="medicaments" class="form-label">Médicaments</label>
-            <textarea class="form-control" id="medicaments" rows="3" placeholder="Ex : Fer 1cp/j, Vitamine B9 1cp/j"></textarea>
+            <textarea class="form-control" id="medicaments" name="contenu" rows="3" placeholder="Ex : Fer 1cp/j, Vitamine B9 1cp/j"></textarea>
           </div>
+
+          <!-- Date de prescription -->
           <div class="mb-3">
-            <label for="instructions" class="form-label">Instructions complémentaires</label>
-            <textarea class="form-control" id="instructions" rows="2" placeholder="Ex : Prendre après le repas"></textarea>
+            <label for="date_prescription" class="form-label">Date de prescription</label>
+            <input type="date" class="form-control" id="date_prescription" name="date_prescription" required>
           </div>
+
+          <!-- Boutons d'action -->
           <div class="text-end">
             <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
             <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
@@ -564,6 +596,7 @@
     </div>
   </div>
 </div>
+
 <!-- Modal Voir Patiente -->
 @foreach($patientes as $patiente)
 <div class="modal fade" id="modalVoirPatiente{{ $patiente->id }}" tabindex="-1" aria-labelledby="modalVoirPatienteLabel{{ $patiente->id }}" aria-hidden="true">
@@ -583,7 +616,12 @@
                 <p><strong>Profession :</strong> {{ $patiente->profession }}</p>
                 <p><strong>Date du rendez-vous :</strong> {{ \Carbon\Carbon::parse($patiente->rendezvous->first()->date_heure)->format('d/m/Y H:i') }}</p>
                 <p><strong>Motif :</strong> {{ $patiente->rendezvous->first()->motif }}</p>
-                <p><strong>Statut :</strong> {{ $patiente->rendezvous->first()->statut }}</p>
+                <p><strong>Statut :</strong>
+   <span class="badge bg-{{ $patiente->rendezvous->first()->statut == 'Confirmé' ? 'success' : ($patiente->rendezvous->first()->statut == 'En attente' ? 'warning' : 'danger') }}">
+       {{ $patiente->rendezvous->first()->statut }}
+   </span>
+</p>
+
             </div>
         </div>
     </div>
@@ -647,6 +685,161 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
         });
     });
 </script>
+<!-- Modal Voir Dossier Médical -->
+<div class="modal fade" id="modalVoirDossier" tabindex="-1" aria-labelledby="modalVoirDossierLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalVoirDossierLabel" style="color:#fd0d99;">
+          <i class="bi bi-folder2-open me-2"></i> Dossier Médical de {{ $dossier->patiente->prenom }} {{ $dossier->patiente->nom }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Diagnostic :</strong> {{ $dossier->diagnostic }}</p>
+        <p><strong>Traitement :</strong> {{ $dossier->traitement ?? 'Non renseigné' }}</p>
+        <p><strong>Observations :</strong> {{ $dossier->observations ?? 'Non renseigné' }}</p>
+        <p><strong>Grossesse :</strong>
+          <span class="badge bg-{{ $dossier->grossesse ? 'success' : 'danger' }}">
+            {{ $dossier->grossesse ? 'Oui' : 'Non' }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+@foreach ($dossiers as $dossier)
+<!-- Modal Modifier Dossier Médical -->
+<div class="modal fade" id="modalModifierDossier{{ $dossier->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">Modifier Dossier Médical</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('dossier.update', $dossier->id) }}" method="POST">
+          @csrf
+          @method('PUT')
+
+          <div class="mb-3">
+            <label for="diagnostic" class="form-label">Diagnostic</label>
+            <textarea class="form-control" id="diagnostic" name="diagnostic">{{ $dossier->diagnostic }}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="traitement" class="form-label">Traitement</label>
+            <input type="text" class="form-control" id="traitement" name="traitement" value="{{ $dossier->traitement }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="observations" class="form-label">Observations</label>
+            <textarea class="form-control" id="observations" name="observations">{{ $dossier->observations }}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="grossesse" class="form-label">Grossesse</label>
+            <select class="form-select" id="grossesse" name="grossesse">
+              <option value="1" {{ $dossier->grossesse ? 'selected' : '' }}>Oui</option>
+              <option value="0" {{ !$dossier->grossesse ? 'selected' : '' }}>Non</option>
+            </select>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-pink rounded-pill">Modifier</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach ($dossiers as $dossier)
+<!-- Modal Supprimer Dossier Médical -->
+<div class="modal fade" id="modalSupprimerDossier{{ $dossier->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-danger">Supprimer Dossier Médical</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Voulez-vous vraiment supprimer ce dossier médical ? Cette action est **irréversible**.</p>
+        <form action="{{ route('dossier.delete', $dossier->id) }}" method="POST">
+          @csrf
+          @method('DELETE')
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-danger rounded-pill">Supprimer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach ($ordonnances as $ordonnance)
+<!-- Modal Voir Ordonnance -->
+<div class="modal fade" id="modalVoirOrdonnance{{ $ordonnance->id }}" tabindex="-1" aria-labelledby="modalVoirOrdonnanceLabel{{ $ordonnance->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalVoirOrdonnanceLabel{{ $ordonnance->id }}">
+            <i class="bi bi-file-earmark-medical me-2"></i> Ordonnance - {{ $ordonnance->patiente->prenom }} {{ $ordonnance->patiente->nom }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Date de prescription :</strong> {{ $ordonnance->date_prescription->format('d/m/Y') }}</p>
+        <p><strong>Médicaments :</strong> {{ $ordonnance->contenu }}</p>
+        <p><strong>Médecin :</strong> Dr. {{ $ordonnance->medecin->nom }} ({{ $ordonnance->medecin->specialite }})</p>
+        <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach ($ordonnances as $ordonnance)
+<!-- Modal Modifier Ordonnance -->
+<div class="modal fade" id="modalModifierOrdonnance{{ $ordonnance->id }}" tabindex="-1" aria-labelledby="modalModifierOrdonnanceLabel{{ $ordonnance->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalModifierOrdonnanceLabel{{ $ordonnance->id }}">
+            <i class="bi bi-pencil-square me-2"></i> Modifier Ordonnance
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('ordonnance.update', $ordonnance->id) }}" method="POST">
+          @csrf
+          @method('PUT')
+
+          <div class="mb-3">
+            <label for="contenu{{ $ordonnance->id }}" class="form-label">Prescription</label>
+            <textarea class="form-control" id="contenu{{ $ordonnance->id }}" name="contenu">{{ $ordonnance->contenu }}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="date_prescription{{ $ordonnance->id }}" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date_prescription{{ $ordonnance->id }}" name="date_prescription" value="{{ $ordonnance->date_prescription->format('Y-m-d') }}">
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-warning rounded-pill">Modifier</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 
 </body>
 </html>

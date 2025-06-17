@@ -18,7 +18,8 @@ use App\Http\Controllers\Admin\SecretaireAdminController;
 use App\Http\Controllers\DashboardSecretaireController;
 use App\Http\Controllers\RendezVousController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\DossierMedicalController;
+use App\Http\Controllers\OrdonnanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -216,3 +217,16 @@ Route::post('/logout', function () {
     Auth::logout(); // ✅ Déconnecte l'utilisateur
     return redirect('/login'); // ✅ Redirige vers la page de connexion
 })->name('logout');
+
+
+// route pour la création d'un dossier médical
+Route::post('/dossiers/creer', [DossierMedicalController::class, 'creerDossier'])->name('dossier.creer');
+Route::get('/dossiers/{patienteId}', [DossierMedicalController::class, 'voirDossier'])->name('dossier.voir');
+Route::put('/dossiers/{id}', [DossierMedicalController::class, 'update'])->name('dossier.update');
+Route::delete('/dossiers/{id}', [DossierMedicalController::class, 'delete'])->name('dossier.delete');
+
+// Route pour la création d'une ordonnance
+Route::post('/ordonnances/store', [OrdonnanceController::class, 'store'])->name('ordonnance.store');
+Route::put('/ordonnances/update/{id}', [OrdonnanceController::class, 'update'])->name('ordonnance.update');
+Route::get('/ordonnances/download/{id}', [OrdonnanceController::class, 'download'])->name('ordonnance.download');
+

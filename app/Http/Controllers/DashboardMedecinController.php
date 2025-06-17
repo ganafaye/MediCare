@@ -8,6 +8,9 @@ use App\Models\Patiente;
 use App\Models\Medecin;
 use App\Models\RendezVous;
 use Illuminate\Support\Facades\DB;
+use App\Models\DossierMedical;
+use App\Models\Ordonnance;
+
 
 class DashboardMedecinController extends Controller
 {
@@ -38,6 +41,14 @@ $repartitionMotifs = DB::table('rendez_vous')
     ->pluck("total", "motif")
     ->toArray();
 
-        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs'));
+    //🔥Retourner variables dossier medical
+    // 🔥 Récupérer les dossiers médicaux du médecin
+    $dossiers = DossierMedical::where('medecin_id', $medecin_id)
+                              ->orderBy('created_at', 'desc')
+                              ->get();
+     $medecin = auth()->user(); // ✅ Récupère le médecin connecté
+    $ordonnances = Ordonnance::where('medecin_id', auth()->user()->id)->latest()->get();
+
+        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances'));
     }
 }

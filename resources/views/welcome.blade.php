@@ -221,7 +221,7 @@
                             <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
                         </span>
                         <div>
-                            <h5 class="mb-0 fw-bold">Marie Dupont</h5>
+                            <h5 class="mb-0 fw-bold">Khar Tall</h5>
                             <span class="text-muted small">Patiente</span>
                         </div>
                     </div>
@@ -242,7 +242,7 @@
                             <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
                         </span>
                         <div>
-                            <h5 class="mb-0 fw-bold">Sophie Martin</h5>
+                            <h5 class="mb-0 fw-bold">Fatou Faye</h5>
                             <span class="text-muted small">Patiente</span>
                         </div>
                     </div>
@@ -263,7 +263,7 @@
                             <i class="bi bi-person-circle" style="font-size:2rem; color:#fd0d99;"></i>
                         </span>
                         <div>
-                            <h5 class="mb-0 fw-bold">Claire Bernard</h5>
+                            <h5 class="mb-0 fw-bold">Astou</h5>
                             <span class="text-muted small">Patiente</span>
                         </div>
                     </div>

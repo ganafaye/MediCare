@@ -6,6 +6,8 @@ import Chart from 'chart.js/auto';
 
 window.Chart = Chart;
 
+import html2canvas from "html2canvas";
+window.html2canvas = html2canvas;
 
 document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('.section-fade');
