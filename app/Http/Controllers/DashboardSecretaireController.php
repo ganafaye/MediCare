@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RendezVous;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Facture;
 
 class DashboardSecretaireController extends Controller
 {
@@ -31,7 +32,8 @@ $statutRdv = [
     "En attente" => DB::table('rendez_vous')->where("statut", "en_attente")->count(), // ✅ Assure que les RV en attente sont bien pris en compte
 ];
 
-    return view('espace_secretaire.dashboard_secretaire', compact('patientes', 'medecins', 'rendezvous' , 'rdvParMois', 'statutRdv'));
+   $factures = Facture::latest()->get(); // Récupère toutes les factures
+    return view('espace_secretaire.dashboard_secretaire', compact('patientes', 'medecins', 'rendezvous' , 'rdvParMois', 'statutRdv' , 'factures'));
 }
 
 }

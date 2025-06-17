@@ -400,24 +400,26 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Exemple statique, à remplacer par une boucle dynamique -->
-                            <tr>
-                                <td>10/06/2025</td>
-                                <td>Dr. Faye</td>
-                                <td>Consultation prénatale</td>
-                                <td>Tout va bien, suivi normal.</td>
-                                <td>
-                                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">
-                                        <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
-                                    </a>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-primary rounded-pill"><i class="bi bi-eye"></i></button>
-                                </td>
-                            </tr>
-                            <!-- ... -->
-                        </tbody>
+<tbody>
+    @foreach ($consultations as $consultation)
+    <tr>
+        <td>{{ \Carbon\Carbon::parse($consultation->date_consultation)->format('d/m/Y') }}</td>
+        <td>Dr. {{ $consultation->medecin->nom }}</td>
+        <td>{{ $consultation->motif }}</td>
+        <td>{{ $consultation->diagnostic ?? 'Non renseigné' }}</td>
+        <td>
+            <a href="{{ route('consultation.download', $consultation->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+            </a>
+        </td>
+        <td>
+            <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirConsultation{{ $consultation->id }}">
+                <i class="bi bi-eye"></i>
+            </button>
+        </td>
+    </tr>
+    @endforeach
+</tbody>
                     </table>
                 </div>
             </div>
@@ -440,33 +442,50 @@
       <div class="modal-body">
         <div class="table-responsive">
             <table class="table align-middle mb-0 table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Fichier</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-               <tbody>
-  @foreach ($ordonnances as $ordonnance)
-    <tr>
-        <td>{{ \Carbon\Carbon::parse($ordonnance->date_prescription)->format('d/m/Y') }}</td>
-        <td>Ordonnance</td>
-        <td>Prescription de {{ $ordonnance->medecin->nom }}</td>
-        <td>
-            <span class="badge bg-secondary">Ordonnance_{{ $ordonnance->id }}.pdf</span>
-        </td>
-        <td>
-            <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">
-                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
-            </a>
-        </td>
-    </tr>
-  @endforeach
-</tbody>
-            </table>
+    <thead class="table-light">
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Fichier</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($ordonnances as $ordonnance)
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($ordonnance->date_prescription)->format('d/m/Y') }}</td>
+            <td>Ordonnance</td>
+            <td>Prescription de {{ $ordonnance->medecin->nom }}</td>
+            <td>
+                <span class="badge bg-secondary">Ordonnance_{{ $ordonnance->id }}.pdf</span>
+            </td>
+            <td>
+                <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+                </a>
+            </td>
+        </tr>
+        @endforeach
+
+        @foreach ($factures as $facture)
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</td>
+            <td>Facture</td>
+            <td>Facture liée à la consultation du {{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</td>
+            <td>
+                <span class="badge bg-secondary">Facture_{{ $facture->id }}.pdf</span>
+            </td>
+            <td>
+                <a href="{{ route('facture.download', $facture->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">
+                    <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+                </a>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
         </div>
       </div>
     </div>
@@ -592,6 +611,41 @@
   </div>
 </div>
 @endforeach
+<!-- Modal Voir Consultation -->
+
+@foreach ($consultations as $consultation)
+<!-- Modal Voir Consultation -->
+<div class="modal fade" id="modalVoirConsultation{{ $consultation->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">
+            <i class="bi bi-file-medical me-2"></i> Consultation - {{ \Carbon\Carbon::parse($consultation->date_consultation)->format('d/m/Y') }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Médecin :</strong> Dr. {{ $consultation->medecin->nom }}</p>
+        <p><strong>Motif :</strong> {{ $consultation->motif }}</p>
+        <p><strong>Diagnostic :</strong> {{ $consultation->diagnostic ?? 'Non renseigné' }}</p>
+        <p><strong>Prescription :</strong> {{ $consultation->prescription ?? 'Non renseigné' }}</p>
+        <p><strong>Poids :</strong> {{ $consultation->poids ? $consultation->poids . ' kg' : 'N/A' }}</p>
+        <p><strong>Tension :</strong> {{ $consultation->tension ?? 'N/A' }} mmHg</p>
+        <p><strong>Nombre de grossesses :</strong> {{ $consultation->nombre_grossesses ?? 'N/A' }}</p>
+        <p><strong>Antécédents médicaux :</strong> {{ $consultation->antecedents ?? 'Non renseigné' }}</p>
+
+        <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Fermer</button>
+            <a href="{{ route('consultation.download', $consultation->id) }}" class="btn btn-pink rounded-pill">
+                <i class="bi bi-file-earmark-pdf"></i> Télécharger PDF
+            </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
 <!-- Modal Notifications -->
 <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
     <div class="modal-dialog">

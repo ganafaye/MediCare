@@ -50,6 +50,12 @@
                         </a>
                     </li>
                     <li class="nav-item mb-2">
+    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
+        <i class="bi bi-file-medical me-2"></i>
+        Mes consultations
+    </a>
+</li>
+                    <li class="nav-item mb-2">
                         <a class="nav-link" href="#">
                             <i class="bi bi-chat-dots me-2"></i>
                             Messagerie
@@ -833,6 +839,280 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
 
           <div class="text-end">
             <button type="submit" class="btn btn-warning rounded-pill">Modifier</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@endforeach
+<!-- Modal Mes consultations -->
+<div class="modal fade" id="modalConsultations" tabindex="-1" aria-labelledby="modalConsultationsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalConsultationsLabel" style="color:#fd0d99;">
+            <i class="bi bi-file-medical me-2"></i> Mes consultations
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Bouton Créer une consultation -->
+        <div class="mb-4 text-end">
+            <button class="btn btn-pink rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalCreerConsultation">
+                <i class="bi bi-plus-circle me-2"></i>Créer une consultation
+            </button>
+        </div>
+
+        <!-- Tableau des consultations -->
+<div class="table-responsive">
+    <table class="table align-middle mb-0 table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>Date</th>
+                <th>Heure</th>
+                <th>Patiente</th>
+                <th>Motif</th>
+                <th>Diagnostic</th>
+                <th>Poids</th>
+                <th>Tension</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($consultations as $consultation)
+            <tr>
+                <td>{{ \Carbon\Carbon::parse($consultation->date_consultation)->format('d/m/Y') }}</td>
+                <td>{{ \Carbon\Carbon::parse($consultation->heure_consultation)->format('H:i') }}</td>
+                <td>{{ $consultation->patiente->prenom }} {{ $consultation->patiente->nom }}</td>
+                <td>{{ $consultation->motif }}</td>
+                <td>{{ $consultation->diagnostic ?? 'Non renseigné' }}</td>
+                <td>{{ $consultation->poids ? $consultation->poids . ' kg' : 'N/A' }}</td>
+                <td>{{ $consultation->tension ?? 'N/A' }}</td>
+                <td>
+                     <!-- Voir consultation -->
+                    <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirConsultation{{ $consultation->id }}" title="Voir">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <!-- Modifier consultation -->
+                    <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalModifierConsultation{{ $consultation->id }}" title="Modifier">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <!-- Télécharger PDF -->
+                    <a href="{{ route('consultation.download', $consultation->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger PDF">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </a>
+                    <!-- Supprimer consultation -->
+                    <form action="{{ route('consultation.destroy', $consultation->id) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Créer une consultation -->
+<div class="modal fade" id="modalCreerConsultation" tabindex="-1" aria-labelledby="modalCreerConsultationLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalCreerConsultationLabel" style="color:#fd0d99;">
+            <i class="bi bi-file-medical me-2"></i>Créer une consultation
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('consultation.store') }}" method="POST">
+          @csrf
+
+          <!-- Sélection de la patiente -->
+          <div class="mb-3">
+            <label for="patienteConsult" class="form-label">Patiente</label>
+            <select class="form-select" id="patienteConsult" name="patiente_id" required>
+              <option selected disabled>Choisir une patiente</option>
+              @foreach ($patientes as $patiente)
+                <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <!-- Date & Heure -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="date_consultation" class="form-label">Date</label>
+              <input type="date" class="form-control" id="date_consultation" name="date_consultation" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="heure_consultation" class="form-label">Heure</label>
+              <input type="time" class="form-control" id="heure_consultation" name="heure_consultation" required>
+            </div>
+          </div>
+
+          <!-- Motif de la consultation -->
+          <div class="mb-3">
+            <label for="motif" class="form-label">Motif</label>
+            <textarea class="form-control" id="motif" name="motif" rows="2" placeholder="Ex : Consultation prénatale"></textarea>
+          </div>
+
+          <!-- Diagnostic & Prescription -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="diagnostic" class="form-label">Diagnostic</label>
+              <textarea class="form-control" id="diagnostic" name="diagnostic" rows="2"></textarea>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="prescription" class="form-label">Prescription</label>
+              <textarea class="form-control" id="prescription" name="prescription" rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Poids & Tension -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="poids" class="form-label">Poids (kg)</label>
+              <input type="number" step="0.1" class="form-control" id="poids" name="poids">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="tension" class="form-label">Tension (mmHg)</label>
+              <input type="text" class="form-control" id="tension" name="tension">
+            </div>
+          </div>
+
+          <!-- Nombre de grossesses & Antécédents -->
+          <div class="mb-3">
+            <label for="nombre_grossesses" class="form-label">Nombre de grossesses</label>
+            <input type="number" class="form-control" id="nombre_grossesses" name="nombre_grossesses">
+          </div>
+
+          <div class="mb-3">
+            <label for="antecedents" class="form-label">Antécédents médicaux</label>
+            <textarea class="form-control" id="antecedents" name="antecedents" rows="2"></textarea>
+          </div>
+
+          <!-- Boutons d’action -->
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@foreach ($consultations as $consultation)
+
+<!-- Modal Voir Consultation -->
+<div class="modal fade" id="modalVoirConsultation{{ $consultation->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">
+            <i class="bi bi-file-medical me-2"></i> Consultation - {{ $consultation->date_consultation }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Patiente :</strong> {{ $consultation->patiente->prenom }} {{ $consultation->patiente->nom }}</p>
+        <p><strong>Motif :</strong> {{ $consultation->motif }}</p>
+        <p><strong>Diagnostic :</strong> {{ $consultation->diagnostic }}</p>
+        <p><strong>Prescription :</strong> {{ $consultation->prescription }}</p>
+        <p><strong>Poids :</strong> {{ $consultation->poids ?? 'N/A' }} kg</p>
+        <p><strong>Tension :</strong> {{ $consultation->tension ?? 'N/A' }} mmHg</p>
+        <p><strong>Nombre de grossesses :</strong> {{ $consultation->nombre_grossesses ?? 'N/A' }}</p>
+        <p><strong>Antécédents :</strong> {{ $consultation->antecedents ?? 'Non renseigné' }}</p>
+        <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+@foreach ($consultations as $consultation)
+<!-- Modal Modifier Consultation -->
+<div class="modal fade" id="modalModifierConsultation{{ $consultation->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">
+            <i class="bi bi-pencil-square me-2"></i> Modifier Consultation - {{ $consultation->patiente->prenom }} {{ $consultation->patiente->nom }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('consultation.update', $consultation->id) }}" method="POST">
+          @csrf
+          @method('PUT')
+
+          <!-- Date & Heure -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="date_consultation{{ $consultation->id }}" class="form-label">Date</label>
+              <input type="date" class="form-control" id="date_consultation{{ $consultation->id }}" name="date_consultation" value="{{ $consultation->date_consultation }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="heure_consultation{{ $consultation->id }}" class="form-label">Heure</label>
+              <input type="time" class="form-control" id="heure_consultation{{ $consultation->id }}" name="heure_consultation" value="{{ $consultation->heure_consultation }}" required>
+            </div>
+          </div>
+
+          <!-- Motif -->
+          <div class="mb-3">
+            <label for="motif{{ $consultation->id }}" class="form-label">Motif</label>
+            <textarea class="form-control" id="motif{{ $consultation->id }}" name="motif">{{ $consultation->motif }}</textarea>
+          </div>
+
+          <!-- Diagnostic & Prescription -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="diagnostic{{ $consultation->id }}" class="form-label">Diagnostic</label>
+              <textarea class="form-control" id="diagnostic{{ $consultation->id }}" name="diagnostic">{{ $consultation->diagnostic }}</textarea>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="prescription{{ $consultation->id }}" class="form-label">Prescription</label>
+              <textarea class="form-control" id="prescription{{ $consultation->id }}" name="prescription">{{ $consultation->prescription }}</textarea>
+            </div>
+          </div>
+
+          <!-- Poids & Tension -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="poids{{ $consultation->id }}" class="form-label">Poids (kg)</label>
+              <input type="number" step="0.1" class="form-control" id="poids{{ $consultation->id }}" name="poids" value="{{ $consultation->poids }}">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="tension{{ $consultation->id }}" class="form-label">Tension (mmHg)</label>
+              <input type="text" class="form-control" id="tension{{ $consultation->id }}" name="tension" value="{{ $consultation->tension }}">
+            </div>
+          </div>
+
+          <!-- Nombre de grossesses & Antécédents -->
+          <div class="mb-3">
+            <label for="nombre_grossesses{{ $consultation->id }}" class="form-label">Nombre de grossesses</label>
+            <input type="number" class="form-control" id="nombre_grossesses{{ $consultation->id }}" name="nombre_grossesses" value="{{ $consultation->nombre_grossesses }}">
+          </div>
+
+          <div class="mb-3">
+            <label for="antecedents{{ $consultation->id }}" class="form-label">Antécédents médicaux</label>
+            <textarea class="form-control" id="antecedents{{ $consultation->id }}" name="antecedents">{{ $consultation->antecedents }}</textarea>
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-warning rounded-pill ms-2">Modifier</button>
           </div>
         </form>
       </div>

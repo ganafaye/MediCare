@@ -145,65 +145,57 @@
                         </div>
                     </div>
                 </div>
+                <br>
+
 
                 <!-- Tableau des rendez-vous du jour (exemple) -->
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <div class="card shadow border-0 rounded-4">
-                            <div class="card-header bg-white border-0 rounded-top-4">
-                                <h5 class="mb-0 fw-bold" style="color:#fd0d99;">Rendez-vous du jour</h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table align-middle mb-0 table-hover">
-    <thead class="table-light">
-        <tr>
-            <th>Heure</th>
-            <th>Patiente</th>
-            <th>Médecin</th>
-            <th>Motif</th>
-            <th>Statut</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($rendezvous as $rdv)
-        <tr>
-            <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
-            <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
-            <td>Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</td>
-            <td>{{ $rdv->motif }}</td>
-            <td>
-                @if($rdv->statut === 'confirmé')
-                    <span class="badge bg-success">Confirmé</span>
-                @elseif($rdv->statut === 'en_attente')
-                    <span class="badge bg-warning text-dark">En attente</span>
-                @else
-                    <span class="badge bg-danger">Annulé</span>
-                @endif
-            </td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
-                    <i class="bi bi-eye"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-success rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
-                    <i class="bi bi-pencil"></i>
-                </button>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+             <div class="table-responsive shadow-sm rounded-4" style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light sticky-top">
+            <tr>
+                <th class="text-pink fw-bold">Heure</th>
+                <th class="text-pink fw-bold">Patiente</th>
+                <th class="text-pink fw-bold">Médecin</th>
+                <th class="text-pink fw-bold">Motif</th>
+                <th class="text-pink fw-bold">Statut</th>
+                <th class="text-pink fw-bold text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($rendezvous as $rdv)
+            <tr class="shadow-sm">
+                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+                <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
+                <td>Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</td>
+                <td>{{ $rdv->motif }}</td>
+                <td>
+                    @if($rdv->statut === 'confirmé')
+                        <span class="badge bg-success rounded-pill px-3 py-2">Confirmé</span>
+                    @elseif($rdv->statut === 'en_attente')
+                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">En attente</span>
+                    @else
+                        <span class="badge bg-danger rounded-pill px-3 py-2">Annulé</span>
+                    @endif
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-success rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+<br>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Graphiques d'activité -->
                 <div class="row mt-5">
@@ -526,105 +518,159 @@
                 </div>
 
                 <!-- Modal Factures -->
-                <div class="modal fade" id="modalFactures" tabindex="-1" aria-labelledby="modalFacturesLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-xl">
-                    <div class="modal-content rounded-4">
-                      <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold" id="modalFacturesLabel" style="color:#fd0d99;">
-                            <i class="bi bi-receipt me-2"></i> Liste des factures
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                      </div>
-                      <div class="modal-body">
-                        <div class="mb-4 text-end">
-                            <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalAjouterFacture">
-                                <i class="bi bi-plus-circle me-2"></i>Nouvelle facture
-                            </button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0 table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Patiente</th>
-                                        <th>Montant</th>
-                                        <th>Statut</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>10/06/2025</td>
-                                        <td>Fatou Ndiaye</td>
-                                        <td>25 000 FCFA</td>
-                                        <td><span class="badge bg-success">Payée</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>09/06/2025</td>
-                                        <td>Awa Diop</td>
-                                        <td>18 000 FCFA</td>
-                                        <td><span class="badge bg-warning text-dark">En attente</span></td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier"><i class="bi bi-pencil"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <!-- Modal Liste des Factures -->
+<div class="modal fade" id="modalFactures" tabindex="-1" aria-labelledby="modalFacturesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalFacturesLabel" style="color:#fd0d99;">
+                    <i class="bi bi-receipt me-2"></i> Liste des factures
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4 text-end">
+                    <button class="btn btn-pink rounded-pill" data-bs-toggle="modal" data-bs-target="#modalAjouterFacture">
+                        <i class="bi bi-plus-circle me-2"></i> Nouvelle facture
+                    </button>
                 </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Patiente</th>
+                                <th>Montant</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if($factures->count() > 0)
+                                @foreach ($factures as $facture)
+                                <tr>
+                                    <td>{{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</td>
+                                    <td>{{ $facture->patiente->prenom }} {{ $facture->patiente->nom }}</td>
+                                    <td>{{ number_format($facture->montant, 2, ',', ' ') }} FCFA</td>
+                                    <td>{{ $facture->type_facture }}</td>
+                                    <td>
+                                        @if ($facture->statut == 'Payée')
+                                            <span class="badge bg-success">Payée</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary rounded-pill" title="Voir" data-bs-toggle="modal" data-bs-target="#modalVoirFacture{{ $facture->id }}">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success rounded-pill" title="Modifier" data-bs-toggle="modal" data-bs-target="#modalModifierFacture{{ $facture->id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <a href="{{ route('facture.download', $facture->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <i class="bi bi-file-earmark-pdf"></i> Télécharger
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger rounded-pill" title="Supprimer" data-bs-toggle="modal" data-bs-target="#modalSupprimerFacture{{ $facture->id }}">
+    <i class="bi bi-trash"></i>
+</button>
 
-                <!-- Modal Nouvelle facture -->
-                <div class="modal fade" id="modalAjouterFacture" tabindex="-1" aria-labelledby="modalAjouterFactureLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content rounded-4">
-                      <div class="modal-header border-0">
-                        <h5 class="modal-title fw-bold" id="modalAjouterFactureLabel" style="color:#fd0d99;">
-                            <i class="bi bi-receipt me-2"></i>Nouvelle facture
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                      </div>
-                      <div class="modal-body">
-                        <form>
-                          <div class="mb-3">
-                            <label class="form-label">Patiente</label>
-                            <select class="form-select" required>
-                              <option selected disabled>Choisir une patiente</option>
-                              <option>Fatou Ndiaye</option>
-                              <option>Awa Diop</option>
-                            </select>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Montant</label>
-                            <input type="number" class="form-control" placeholder="Montant en FCFA" required>
-                          </div>
-                          <div class="mb-3">
-                            <label class="form-label">Statut</label>
-                            <select class="form-select" required>
-                              <option value="payée">Payée</option>
-                              <option value="en attente">En attente</option>
-                            </select>
-                          </div>
-                          <div class="text-end">
-                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-3">
+                                        <i class="bi bi-exclamation-circle me-2"></i> Aucune facture disponible.
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                <!-- Modal Nouvelle Facture -->
+<div class="modal fade" id="modalAjouterFacture" tabindex="-1" aria-labelledby="modalAjouterFactureLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalAjouterFactureLabel" style="color:#fd0d99;">
+                    <i class="bi bi-receipt me-2"></i> Nouvelle facture
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('facture.store') }}">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Patiente</label>
+                        <select class="form-select" name="patiente_id" id="patienteSelect" required>
+                            <option selected disabled>Choisir une patiente</option>
+                            @foreach ($patientes as $patiente)
+                                <option value="{{ $patiente->id }}">{{ $patiente->prenom }} {{ $patiente->nom }}</option>
+                            @endforeach
+                            <option value="new">Nouvelle patiente</option>
+                        </select>
+                    </div>
+
+                    <!-- Formulaire caché pour nouvelle patiente -->
+                    <div id="nouvellePatienteForm" class="mt-3" style="display: none;">
+                        <label class="form-label">Prénom</label>
+                        <input type="text" class="form-control" name="prenom_patiente">
+
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-control" name="nom_patiente">
+
+                        <label class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" name="telephone_patiente">
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" name="date_facture" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Type de facture</label>
+                        <select class="form-select" name="type_facture" required>
+                            <option value="Consultation">Consultation</option>
+                            <option value="Échographie">Échographie</option>
+                            <option value="Perfusion">Perfusion</option>
+                            <option value="Analyse">Analyse</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Montant</label>
+                        <input type="number" class="form-control" name="montant" placeholder="Montant en FCFA" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Statut</label>
+                        <select class="form-select" name="statut" required>
+                            <option value="Payée">Payée</option>
+                            <option value="En attente">En attente</option>
+                        </select>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-pink rounded-pill ms-2">Créer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
             </main>
         </div>
     </div>
@@ -787,6 +833,113 @@
 </div>
 @endforeach
 
+@foreach ($factures as $facture)
+<!-- Modal Voir Facture -->
+<div class="modal fade" id="modalVoirFacture{{ $facture->id }}" tabindex="-1" aria-labelledby="modalVoirFactureLabel{{ $facture->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalVoirFactureLabel{{ $facture->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-receipt me-2"></i> Facture #{{ $facture->id }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Patiente :</strong> {{ $facture->patiente->prenom }} {{ $facture->patiente->nom }}</p>
+                <p><strong>Date :</strong> {{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</p>
+                <p><strong>Type :</strong> {{ $facture->type_facture }}</p>
+                <p><strong>Montant :</strong> {{ number_format($facture->montant, 2, ',', ' ') }} FCFA</p>
+                <p><strong>Statut :</strong>
+                    @if ($facture->statut == 'Payée')
+                        <span class="badge bg-success">Payée</span>
+                    @else
+                        <span class="badge bg-warning text-dark">En attente</span>
+                    @endif
+                </p>
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Fermer</button>
+                    <a href="{{ route('facture.download', $facture->id) }}" class="btn btn-pink rounded-pill">
+                        <i class="bi bi-file-earmark-pdf"></i> Télécharger PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+@foreach ($factures as $facture)
+<!-- Modal Modifier Facture -->
+<div class="modal fade" id="modalModifierFacture{{ $facture->id }}" tabindex="-1" aria-labelledby="modalModifierFactureLabel{{ $facture->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalModifierFactureLabel{{ $facture->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-pencil"></i> Modifier Facture #{{ $facture->id }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('facture.update', $facture->id) }}">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-3">
+                        <label class="form-label">Statut</label>
+                        <select class="form-select" name="statut" required>
+                            <option value="Payée" {{ $facture->statut == 'Payée' ? 'selected' : '' }}>Payée</option>
+                            <option value="En attente" {{ $facture->statut == 'En attente' ? 'selected' : '' }}>En attente</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Méthode de paiement</label>
+                        <select class="form-select" name="methode_paiement">
+                            <option value="" {{ $facture->methode_paiement == null ? 'selected' : '' }}>Non renseigné</option>
+                            <option value="Espèces" {{ $facture->methode_paiement == 'Espèces' ? 'selected' : '' }}>Espèces</option>
+                            <option value="Carte bancaire" {{ $facture->methode_paiement == 'Carte bancaire' ? 'selected' : '' }}>Carte bancaire</option>
+                            <option value="Mobile Money" {{ $facture->methode_paiement == 'Mobile Money' ? 'selected' : '' }}>Mobile Money</option>
+                        </select>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-pink rounded-pill ms-2">Mettre à jour</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+@foreach ($factures as $facture)
+<!-- Modal Supprimer Facture -->
+<div class="modal fade" id="modalSupprimerFacture{{ $facture->id }}" tabindex="-1" aria-labelledby="modalSupprimerFactureLabel{{ $facture->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="modalSupprimerFactureLabel{{ $facture->id }}" style="color:#fd0d99;">
+                    <i class="bi bi-trash me-2"></i> Supprimer Facture #{{ $facture->id }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger fw-bold">Voulez-vous vraiment supprimer cette facture ? Cette action est irréversible.</p>
+                <p><strong>Patiente :</strong> {{ $facture->prenom_patiente }} {{ $facture->nom_patiente }}</p>
+                <p><strong>Montant :</strong> {{ number_format($facture->montant, 2, ',', ' ') }} FCFA</p>
+                <form method="POST" action="{{ route('facture.destroy', $facture->id) }}">
+                    @csrf
+                    @method('DELETE')
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger rounded-pill ms-2">Supprimer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 <style>
 .hover-shadow:hover {
     box-shadow: 0 0 0 4px #fd0d9922, 0 4px 24px #fd0d9933 !important;
@@ -831,6 +984,17 @@ new Chart(ctx2, {
 
         });
     });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const patienteSelect = document.getElementById("patienteSelect");
+    const nouvellePatienteForm = document.getElementById("nouvellePatienteForm");
+
+    patienteSelect.addEventListener("change", function() {
+        nouvellePatienteForm.style.display = (patienteSelect.value === "new") ? "block" : "none";
+    });
+});
 </script>
 
 @vite('resources/js/app.js')

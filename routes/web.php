@@ -20,6 +20,8 @@ use App\Http\Controllers\RendezVousController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\DossierMedicalController;
 use App\Http\Controllers\OrdonnanceController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\FactureController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -230,3 +232,16 @@ Route::post('/ordonnances/store', [OrdonnanceController::class, 'store'])->name(
 Route::put('/ordonnances/update/{id}', [OrdonnanceController::class, 'update'])->name('ordonnance.update');
 Route::get('/ordonnances/download/{id}', [OrdonnanceController::class, 'download'])->name('ordonnance.download');
 
+// 📌 Routes pour la gestion des consultations
+Route::post('/consultations/store', [ConsultationController::class, 'store'])->name('consultation.store');
+Route::put('/consultations/update/{id}', [ConsultationController::class, 'update'])->name('consultation.update');
+Route::delete('/consultations/delete/{id}', [ConsultationController::class, 'destroy'])->name('consultation.destroy');
+Route::get('/consultations/download/{id}', [ConsultationController::class, 'download'])->name('consultation.download');
+
+
+// 📌 Routes pour la gestion des factures
+Route::get('/factures', [FactureController::class, 'index'])->name('facture.index');
+Route::post('/factures/store', [FactureController::class, 'store'])->name('facture.store');
+Route::put('/factures/update/{id}', [FactureController::class, 'update'])->name('facture.update');
+Route::get('/factures/download/{id}', [FactureController::class, 'download'])->name('facture.download');
+Route::delete('/factures/destroy/{id}', [FactureController::class, 'destroy'])->name('facture.destroy');

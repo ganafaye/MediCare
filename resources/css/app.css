@@ -400,3 +400,18 @@
         margin: 0 auto;
     }
 
+/* 🎨 Personnalisation de la barre de scroll */
+.table-responsive::-webkit-scrollbar {
+    width: 8px; /* Épaisseur */
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Couleur de fond */
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: transparent; /* Couleur de la barre */
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: transparent; /* Couleur au survol */
+}
