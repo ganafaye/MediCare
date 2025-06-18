@@ -51,6 +51,18 @@ $repartitionMotifs = DB::table('rendez_vous')
     $ordonnances = Ordonnance::where('medecin_id', auth()->user()->id)->latest()->get();
         // 🔥 Récupérer les consultations du médecin connecté
     $consultations = Consultation::where('medecin_id', $medecin->id)->latest()->get();
-        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances' ,'consultations'));
+    // Collecter les notifications pour ce médecin
+    $notifications = collect();
+
+    foreach ($rendezvous as $rdv) {
+        if (in_array($rdv->statut, ["Confirmé", "Annulé", "En attente"])) {
+            $notifications->push([
+                'type' => 'Rendez-vous',
+                'message' => "Nouveau rendez-vous avec {$rdv->patiente->nom}, prévu le {$rdv->date} à {$rdv->heure}.",
+                'date' => $rdv->created_at->format('d/m/Y à H:i'),
+            ]);
+        }
+    }
+        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances' ,'consultations' , 'notifications'));
     }
 }

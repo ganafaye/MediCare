@@ -55,12 +55,17 @@
         Mes consultations
     </a>
 </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-chat-dots me-2"></i>
-                            Messagerie
-                        </a>
-                    </li>
+                  <li class="nav-item mb-2">
+    <a class="nav-link position-relative" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+        <i class="bi bi-bell me-2 position-relative">
+<span id="notif-badge-medecin" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
+                0
+            </span>
+        </i>
+        Notifications
+    </a>
+</li>
+
                      <li class="nav-item mt-4">
     <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
@@ -1121,5 +1126,191 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
 </div>
 @endforeach
 
+<!-- Modal Notifications -->
+<!-- Modal Notifications -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationsModalLabel">📢 Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group" id="notificationList">
+                    <!-- Notifications injectées dynamiquement par JS -->
+                    <div class="list-group-item text-center text-muted py-3 no-notif">
+                        <i class="bi bi-info-circle me-2"></i> Aucune notification pour aujourd’hui.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.medecinRendezVousData = @json($rendezvous ?? []);
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const notifContainer = document.getElementById('notificationList');
+    const modal = document.getElementById('notificationsModal');
+
+    modal.addEventListener('show.bs.modal', function () {
+        notifContainer.innerHTML = '';
+
+        const today = new Date().toISOString().split('T')[0];
+
+        if (window.medecinRendezVousData) {
+            window.medecinRendezVousData.forEach(rdv => {
+                const rdvDate = new Date(rdv.date_heure).toISOString().split('T')[0];
+
+                if (rdvDate === today && rdv.statut === 'en_attente') {
+                    const notif = document.createElement('div');
+                    notif.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                    notif.innerHTML = `
+                        <div>
+                            <span class="fw-bold">Nouveau Rendez-vous</span> - Patiente : ${rdv.patiente.nom}<br>
+                            Motif : ${rdv.motif}
+                        </div>
+                        <small class="text-muted">${new Date(rdv.created_at).toLocaleString()}</small>
+                    `;
+
+                    notifContainer.appendChild(notif);
+                }
+            });
+        }
+
+        // S'il n'y a pas de notifications
+        if (notifContainer.children.length === 0) {
+            notifContainer.innerHTML = `
+                <div class="list-group-item text-center text-muted py-3">
+                    <i class="bi bi-info-circle me-2"></i> Aucune notification pour aujourd’hui.
+                </div>
+            `;
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById('notif-badge-medecin');
+    const today = new Date().toISOString().split('T')[0];
+    let totalNotif = 0;
+
+    if (window.medecinRendezVousData) {
+        window.medecinRendezVousData.forEach(rdv => {
+            const rdvDate = new Date(rdv.date_heure).toISOString().split('T')[0];
+
+            if (rdv.statut === 'en_attente' && rdvDate === today) {
+                totalNotif++;
+            }
+        });
+    }
+
+    if (totalNotif > 0) {
+        badge.textContent = totalNotif;
+        badge.classList.remove('d-none');
+        badge.classList.remove('bg-secondary');
+        badge.classList.add('bg-danger');
+    } else {
+        badge.textContent = 0;
+        badge.classList.remove('bg-danger');
+        badge.classList.add('bg-secondary');
+        badge.classList.remove('d-none'); // ou laisse hidden si tu veux l’effacer totalement
+    }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const notifContainer = document.getElementById('notificationList');
+    const modal = document.getElementById('notificationsModal');
+
+    modal.addEventListener('show.bs.modal', function () {
+        notifContainer.innerHTML = '';
+
+        const today = new Date().toISOString().split('T')[0];
+        let hasNotif = false;
+
+        if (window.medecinRendezVousData) {
+            window.medecinRendezVousData.forEach(rdv => {
+                const rdvDate = new Date(rdv.date_heure).toISOString().split('T')[0];
+
+                if (rdv.statut === 'en_attente' && rdvDate === today) {
+                    const notif = document.createElement('div');
+                    notif.className = 'list-group-item d-flex justify-content-between align-items-center notification-item';
+
+                    notif.innerHTML = `
+                        <div>
+                            <span class="fw-bold">Nouveau Rendez-vous</span> - Patiente : ${rdv.patiente.nom}<br>
+                            Motif : ${rdv.motif}
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                            <small class="text-muted">${new Date(rdv.created_at).toLocaleString()}</small>
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-1 delete-notif" title="Supprimer">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    notifContainer.appendChild(notif);
+                    hasNotif = true;
+                }
+            });
+        }
+
+        if (!hasNotif) {
+            notifContainer.innerHTML = `
+                <div class="list-group-item text-center text-muted py-3 no-notif">
+                    <i class="bi bi-info-circle me-2"></i> Aucune notification pour aujourd’hui.
+                </div>`;
+        }
+    });
+
+    // ✂️ Suppression dynamique au clic
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.delete-notif');
+        if (btn) {
+            const notifItem = btn.closest('.notification-item');
+            notifItem.remove();
+
+            // Vérifie s’il reste des notifications
+            const remaining = document.querySelectorAll('.notification-item').length;
+            if (remaining === 0) {
+                notifContainer.innerHTML = `
+                    <div class="list-group-item text-center text-muted py-3 no-notif">
+                        <i class="bi bi-info-circle me-2"></i> Aucune notification pour aujourd’hui.
+                    </div>`;
+            }
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById('notif-badge-medecin');
+    const modal = document.getElementById('notificationsModal');
+
+    // Affiche le badge uniquement si valeur > 0
+    if (badge && badge.textContent.trim() !== "0") {
+        badge.classList.remove('d-none');
+    }
+
+    // Quand on ouvre le modal, reset le badge
+    if (modal && badge) {
+        modal.addEventListener('show.bs.modal', function () {
+            badge.textContent = '0';
+            badge.classList.add('d-none');
+        });
+    }
+});
+</script>
+
+
 </body>
+
 </html>

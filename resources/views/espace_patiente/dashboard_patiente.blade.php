@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
 
 </head>
-<body style="background: #f8fafc; min-height:100vh;">
+<body style="background:linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%); min-height:100vh;">
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
@@ -55,12 +55,17 @@
                             Mes informations
                         </a>
                     </li>
-                    <li class="nav-item mb-2">
+                   <li class="nav-item mb-2">
     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
-        <i class="bi bi-bell me-2"></i>
+        <i class="bi bi-bell me-2 position-relative">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notif-count-badge">
+                0
+            </span>
+        </i>
         Notifications
     </a>
 </li>
+
                     <li class="nav-item mb-2">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
                             <i class="bi bi-folder2-open me-2"></i>
@@ -188,15 +193,15 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 hover-shadow" style="transition:box-shadow .2s;">
-                            <div class="card-body text-center">
-                                <i class="bi bi-bell mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
-                                <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Notifications</h5>
-                                <p class="text-muted mb-0">Aucun nouveau message</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="card border-0 shadow-sm h-100 hover-shadow" style="transition:box-shadow .2s;">
+        <div class="card-body text-center">
+            <i class="bi bi-bell mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
+            <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Notifications</h5>
+            <p id="notif-count-text" class="text-muted mb-0">Chargement...</p>
+        </div>
+    </div>
+</div>
+
 
                 <!-- Table stylisée -->
                 <div class="row mt-5">
@@ -655,14 +660,34 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
+                <div class="list-group">
 
+    {{-- 📅 Notifications des rendez-vous JS (injectées dynamiquement) --}}
+    <div id="js-notifications-container"></div>
+
+    {{-- 📦 Notifications serveur (factures, ordonnances, etc.) --}}
+    <div id="server-notifications-container">
+        @if($notifications->count() > 0)
+            @foreach ($notifications as $notification)
+            <div class="list-group-item d-flex justify-content-between align-items-center notification-item">
+                <div>
+                    <span class="fw-bold">{{ $notification['type'] }}</span> - {{ $notification['message'] }}
+                </div>
+                <small class="text-muted">{{ $notification['date'] }}</small>
+                <button type="button" class="btn btn-sm btn-outline-danger delete-notif" title="Supprimer">
+                    <i class="bi bi-trash"></i>
+                </button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            @endforeach
+        @else
+            <div class="list-group-item text-center text-muted py-3">
+                <i class="bi bi-info-circle me-2"></i> Aucune notification enregistrée.
             </div>
-        </div>
+        @endif
     </div>
+
 </div>
+
 
 <!-- À placer juste avant </body> -->
 <script>
@@ -704,9 +729,157 @@ document.getElementById("exportDossier").addEventListener("click", function() {
     });
 });
 </script>
-
-
 <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.delete-notif').forEach(button => {
+        button.addEventListener('click', function () {
+            const notifItem = this.closest('.notification-item');
+            if (notifItem) {
+                notifItem.remove();
+            }
+        });
+    });
+});
+</script>
+<script>
+    window.rendezVousData = @json($rendezvous);
+    window.facturesData = @json($factures ?? []);
+    window.ordonnancesData = @json($ordonnances ?? []);
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById('notificationsModal');
+    const jsNotifContainer = document.getElementById('js-notifications-container');
+
+    modal.addEventListener('show.bs.modal', function () {
+        jsNotifContainer.innerHTML = ''; // Réinitialiser les anciennes notifs JS
+
+        const today = new Date().toISOString().split('T')[0]; // Format 'YYYY-MM-DD'
+
+        window.rendezVousData.forEach(rdv => {
+            const rdvDate = new Date(rdv.date_heure).toISOString().split('T')[0];
+
+            if ((rdv.statut === 'confirmé' || rdv.statut === 'annulé') && rdvDate === today) {
+                const notif = document.createElement('div');
+                notif.className = 'list-group-item d-flex justify-content-between align-items-center notification-item';
+
+                notif.innerHTML = `
+                    <div>
+                        <span class="fw-bold">Rendez-vous</span> - Votre rendez-vous avec Dr. ${rdv.medecin.nom} est <strong>${rdv.statut}</strong>.
+                    </div>
+                    <small class="text-muted">${new Date(rdv.updated_at).toLocaleString()}</small>
+                    <button type="button" class="btn btn-sm btn-outline-danger delete-notif" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                `;
+
+                jsNotifContainer.appendChild(notif);
+            }
+        });
+    });
+
+    // Suppression JS
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('.delete-notif')) {
+            e.target.closest('.notification-item').remove();
+        }
+    });
+});
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById('notif-count-badge');
+    let totalNotif = 0;
+    const today = new Date().toISOString().split('T')[0];
+
+    // 🩺 1. Notifications de rendez-vous du jour
+    if (window.rendezVousData) {
+        window.rendezVousData.forEach(rdv => {
+            const rdvDate = new Date(rdv.date_heure).toISOString().split('T')[0];
+            if ((rdv.statut === 'confirmé' || rdv.statut === 'annulé') && rdvDate === today) {
+                totalNotif++;
+            }
+        });
+    }
+
+    // 💵 2. Notifications de factures
+    if (window.facturesData) {
+        totalNotif += window.facturesData.length;
+    }
+
+    // 💊 3. Notifications d’ordonnances
+    if (window.ordonnancesData) {
+        totalNotif += window.ordonnancesData.length;
+    }
+
+    // ✅ Mise à jour du badge
+    if (totalNotif > 0) {
+        badge.textContent = totalNotif;
+        badge.classList.remove('d-none');
+        badge.classList.remove('bg-secondary');
+        badge.classList.add('bg-danger');
+    } else {
+        badge.textContent = 0;
+        badge.classList.add('bg-secondary');
+        badge.classList.remove('bg-danger');
+    }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const notifText = document.getElementById('notif-count-text');
+    let totalNotif = 0;
+    const today = new Date().toISOString().split('T')[0];
+
+    // Rendez-vous du jour confirmés ou annulés
+    if (window.rendezVousData) {
+        window.rendezVousData.forEach(rdv => {
+            const date = new Date(rdv.date_heure).toISOString().split('T')[0];
+            if (rdv.statut === "confirmé" || rdv.statut === "annulé") {
+                if (date === today) totalNotif++;
+            }
+        });
+    }
+
+    // Factures
+    if (window.facturesData) {
+        totalNotif += window.facturesData.length;
+    }
+
+    // Ordonnances
+    if (window.ordonnancesData) {
+        totalNotif += window.ordonnancesData.length;
+    }
+
+    // Mise à jour du texte
+    if (totalNotif > 0) {
+        notifText.textContent = `${totalNotif} nouvelle(s) notification(s) reçue(s)`;
+    } else {
+        notifText.textContent = `Aucune nouvelle notification`;
+    }
+});
+</script>
+<!-- script--->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const badge = document.getElementById('notif-count-badge');
+    const modal = document.getElementById('notificationsModal');
+
+    if (modal && badge) {
+        modal.addEventListener('show.bs.modal', function () {
+            // Réinitialiser le badge à zéro
+            badge.textContent = 0;
+            badge.classList.add('d-none');
+            // Changer la couleur du badge
+            badge.classList.remove('bg-danger');
+            badge.classList.add('bg-secondary');
+        });
+    }
+});
+</script>
 
 </body>
 </html>

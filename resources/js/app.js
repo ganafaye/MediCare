@@ -67,3 +67,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     typeWriter();
 });
+
+window.Echo.channel('notifications')
+    .listen('NotificationEvent', (data) => {
+        let notificationList = document.getElementById('notificationList');
+        let newNotification = `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="fw-bold">${data.type}</span> - ${data.message}
+                </div>
+                <small class="text-muted">${data.date}</small>
+            </div>
+        `;
+        notificationList.innerHTML = newNotification + notificationList.innerHTML;
+    });
+

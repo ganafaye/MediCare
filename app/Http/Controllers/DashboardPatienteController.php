@@ -13,6 +13,7 @@ use App\Models\Patiente;
 use App\Models\Ordonnance;
 use App\Models\Consultation;
 use App\Models\Facture;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardPatienteController extends Controller
 {
@@ -26,6 +27,34 @@ class DashboardPatienteController extends Controller
          // 🏥 Récupérer les consultations de cette patiente
         $consultations = Consultation::where('patiente_id', $patiente->id)->latest()->get();
         $factures = Facture::where('patiente_id', $patiente->id)->latest()->get();
-        return view('espace_patiente.dashboard_patiente' , compact('rendezvous' , 'medecins' , 'dossier' , 'ordonnances' , 'consultations' , 'factures'));
+        // Récupérer les nouvelles notifications
+    $notifications = collect();
+
+    foreach ($rendezvous as $rdv) {
+        if ($rdv->statut == "Confirmé" || $rdv->statut == "Annulé") {
+            $notifications->push([
+                'type' => 'Rendez-vous',
+                'message' => "Votre rendez-vous avec Dr. {$rdv->medecin->nom} est désormais {$rdv->statut}.",
+                'date' => $rdv->updated_at->format('d/m/Y à H:i'),
+            ]);
+        }
+    }
+
+    foreach ($factures as $facture) {
+        $notifications->push([
+            'type' => 'Facture',
+            'message' => "Une nouvelle facture est disponible pour votre consultation du {$facture->created_at->format('d/m/Y')}.",
+            'date' => $facture->created_at->format('d/m/Y à H:i'),
+        ]);
+    }
+
+    foreach ($ordonnances as $ordonnance) {
+        $notifications->push([
+            'type' => 'Ordonnance',
+            'message' => "Une nouvelle ordonnance vous a été prescrite par Dr. {$ordonnance->medecin->nom}.",
+            'date' => $ordonnance->created_at->format('d/m/Y à H:i'),
+        ]);
+    }
+        return view('espace_patiente.dashboard_patiente' , compact('rendezvous' , 'medecins' , 'dossier' , 'ordonnances' , 'consultations' , 'factures' , 'notifications'));
     }
 }
