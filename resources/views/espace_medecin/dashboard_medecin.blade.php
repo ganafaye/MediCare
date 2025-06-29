@@ -49,6 +49,15 @@
                             Ordonnances
                         </a>
                     </li>
+
+                  <li class="nav-item mb-2">
+    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalSuiviGrossesse">
+        <i class="bi bi-heart-pulse me-2"></i>
+        Suivi grossesse
+    </a>
+</li>
+
+
                     <li class="nav-item mb-2">
     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
         <i class="bi bi-file-medical me-2"></i>
@@ -1125,8 +1134,8 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
   </div>
 </div>
 @endforeach
-
 <!-- Modal Notifications -->
+
 <!-- Modal Notifications -->
 <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -1150,6 +1159,221 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
     </div>
 </div>
 
+
+<!-- modal suivi grossesse medecin -->
+<div class="modal fade" id="modalSuiviGrossesse" tabindex="-1" aria-labelledby="modalSuiviGrossesseLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content rounded-4">
+      <div class="modal-header d-flex justify-content-between align-items-center">
+        <h5 class="modal-title" id="modalSuiviGrossesseLabel">
+          <i class="bi bi-heart-pulse me-2"></i>Suivi des grossesses
+        </h5>
+       <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterGrossesse">
+  <i class="bi bi-plus-circle me-1"></i> Ajouter
+</a>
+      </div>
+      <div class="modal-body">
+
+        <!-- Tableau des grossesses -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Patiente</th>
+                <th>Date début</th>
+                <th>DPA</th>
+                <th>Semaine</th>
+                <th>Dernier suivi</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @php
+              $grossesses = [
+                ['patiente' => 'Fatou Ndiaye', 'date_debut' => '2025-04-12', 'dpa' => '2026-01-16', 'semaine' => 28, 'dernier_suivi' => '2025-06-27'],
+                ['patiente' => 'Aïssatou Fall', 'date_debut' => null, 'dpa' => null, 'semaine' => null, 'dernier_suivi' => null],
+              ];
+              @endphp
+
+              @foreach($grossesses as $g)
+              <tr>
+                <td>{{ $g['patiente'] }}</td>
+                <td>{{ $g['date_debut'] ? \Carbon\Carbon::parse($g['date_debut'])->format('d/m/Y') : '—' }}</td>
+                <td>{{ $g['dpa'] ? \Carbon\Carbon::parse($g['dpa'])->format('d/m/Y') : '—' }}</td>
+                <td>{{ $g['semaine'] ? $g['semaine'].'/40' : '—' }}</td>
+                <td>{{ $g['dernier_suivi'] ? \Carbon\Carbon::parse($g['dernier_suivi'])->format('d/m/Y') : '—' }}</td>
+                <td>
+                  @if($g['semaine'])
+                   <a href="#" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalVoirGrossesse">
+  <i class="bi bi-eye"></i>
+</a>
+
+<a href="#" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditerGrossesse">
+  <i class="bi bi-pencil"></i>
+</a>
+
+<a href="#" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalUploadEcho">
+  <i class="bi bi-upload"></i>
+</a>
+                  @else
+                    <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterGrossesse">
+  <i class="bi bi-plus-circle me-1"></i> Ajouter
+</a>
+                  @endif
+                </td>
+              </tr>
+              @endforeach
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalAjouterGrossesse" tabindex="-1" aria-labelledby="modalAjouterGrossesseLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAjouterGrossesseLabel">
+          <i class="bi bi-plus-circle me-2"></i>Ajouter une grossesse
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <form method="POST" action="">
+        @csrf
+        <div class="modal-body">
+          <!-- Patiente -->
+          <div class="mb-3">
+            <label for="patiente_id" class="form-label">Patiente</label>
+            <select name="patiente_id" id="patiente_id" class="form-select" required>
+              <option value="">-- Sélectionner une patiente --</option>
+
+                <option value=""></option>
+
+            </select>
+          </div>
+
+          <!-- Date début -->
+          <div class="mb-3">
+            <label for="date_debut" class="form-label">Date de début de grossesse</label>
+            <input type="date" name="date_debut" id="date_debut" class="form-control" required>
+          </div>
+
+          <!-- DPA -->
+          <div class="mb-3">
+            <label for="date_terme" class="form-label">Date prévue d'accouchement (facultatif)</label>
+            <input type="date" name="date_terme" id="date_terme" class="form-control">
+            <div class="form-text">Laisser vide pour un calcul automatique (280 jours après début)</div>
+          </div>
+
+          <!-- Notes -->
+          <div class="mb-3">
+            <label for="notes_initiales" class="form-label">Observations (facultatif)</label>
+            <textarea name="notes_initiales" id="notes_initiales" rows="3" class="form-control"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary rounded-pill">
+            <i class="bi bi-check-circle me-1"></i> Enregistrer
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalVoirGrossesse" tabindex="-1" aria-labelledby="modalVoirLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVoirLabel">
+          <i class="bi bi-eye me-2"></i>Détails de la grossesse
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Patiente :</strong> Fatou Ndiaye</li>
+          <li class="list-group-item"><strong>Date début :</strong> 12/04/2025</li>
+          <li class="list-group-item"><strong>DPA :</strong> 16/01/2026</li>
+          <li class="list-group-item"><strong>Semaine :</strong> 28</li>
+          <li class="list-group-item"><strong>Dernier suivi :</strong> 27/06/2025</li>
+          <li class="list-group-item"><strong>Notes :</strong> Aucune anomalie observée</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditerGrossesse" tabindex="-1" aria-labelledby="modalEditerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditerLabel">
+          <i class="bi bi-pencil me-2"></i>Modifier la grossesse
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Date début</label>
+            <input type="date" class="form-control" value="2025-04-12">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date prévue d'accouchement</label>
+            <input type="date" class="form-control" value="2026-01-16">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Notes médicales</label>
+            <textarea rows="3" class="form-control">Aucune anomalie observée</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary">Enregistrer</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalUploadEcho" tabindex="-1" aria-labelledby="modalUploadEchoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalUploadEchoLabel">
+          <i class="bi bi-upload me-2"></i>Joindre une échographie
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" enctype="multipart/form-data">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Titre du document</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Fichier (.pdf ou image)</label>
+            <input type="file" class="form-control" accept=".pdf,image/*" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success">Téléverser</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal suivi grossesse medecin -->
 <script>
     window.medecinRendezVousData = @json($rendezvous ?? []);
 </script>
