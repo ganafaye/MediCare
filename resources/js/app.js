@@ -82,3 +82,27 @@ window.Echo.channel('notifications')
         notificationList.innerHTML = newNotification + notificationList.innerHTML;
     });
 
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendarGrossesse');
+
+    if (calendarEl) {
+        const calendar = new Calendar(calendarEl, {
+            plugins: [dayGridPlugin, interactionPlugin],
+            initialView: 'dayGridMonth',
+            locale: 'fr',
+            firstDay: 1,
+            height: 'auto',
+            events: [
+                { title: 'Écho 1', start: '2025-05-15' },
+                { title: 'Écho 2', start: '2025-06-25' },
+                { title: 'Écho 3', start: '2025-08-10' }
+            ]
+        });
+
+        calendar.render();
+    }
+});

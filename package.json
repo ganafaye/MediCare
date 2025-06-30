@@ -13,6 +13,11 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.17",
+        "@fullcalendar/daygrid": "^6.1.17",
+        "@fullcalendar/interaction": "^6.1.17",
+        "@fullcalendar/list": "^6.1.17",
+        "@fullcalendar/timegrid": "^6.1.17",
         "bootstrap": "^5.3.6",
         "bootstrap-icons": "^1.13.1",
         "chart.js": "^4.5.0",
