@@ -148,7 +148,7 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow card-main">
         <div>
             <h2 class="fw-bold mb-2" style="color:#fd0d99;">
-                <i class="bi bi-heart-pulse me-2"></i>Suivi de grossesse
+                <i class="bi bi-heart-pulse me-2"></i>Suivre ma grossesse
             </h2>
             <div class="d-flex gap-2 flex-wrap">
                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
@@ -180,8 +180,8 @@
 
     <!-- Illustration bébé -->
     <div class="mb-4 mb-md-0 text-center">
-        <img src="{{ asset('image/bebe_grossesse.png') }}" alt="Bébé semaine grossesse"
-             class="img-fluid rounded-circle border border-3 border-white shadow" style="width: 180px;">
+        <img src="{{ asset('image/mois_grossesse/9_mois.png') }}" alt="Bébé semaine grossesse"
+             class="img-fluid   " style="width: 280px;">
     </div>
 
     <!-- Infos semaine -->
@@ -299,7 +299,7 @@
         <ul class="small mb-0 ps-2">
           <li class="mb-2"><i class="bi bi-cup-straw me-2 text-secondary"></i>Restez bien hydratée et mangez équilibré.</li>
           <li class="mb-2"><i class="bi bi-calendar-check me-2 text-secondary"></i>Respectez vos rendez-vous prénataux.</li>
-          <li class="mb-2"><i class="bi bi-telephone me-2 text-secondary"></i>Contactez votre médecin en cas de symptômes inhabituels.</li>
+          <li class="mb-2"><i class="bi bi-telephone me-2 text-secondary"></i>Prenez rendez-vous immediatement en cas de symptômes inhabituels.</li>
         </ul>
       </div>
     </div>
@@ -364,7 +364,7 @@
       <div class="col-md-4 col-sm-6">
         <div class="card border-0 shadow-sm rounded-4 h-100">
           <div class="card-body text-center">
-            <img src="{{ asset('image/echo1.jpg') }}" alt="Échographie" class="img-fluid rounded mb-3" style="max-height:180px;">
+            <img src="{{ asset('image/mois_grossesse/3_mois.png') }}" alt="Échographie" class="img-fluid rounded mb-3" style="max-height:180px;">
             <p class="fw-bold mb-1">Écho 1er trimestre</p>
             <small class="text-muted mb-2 d-block">15/05/2025</small>
             <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
@@ -434,24 +434,7 @@
 
 
 @vite('resources/js/app.js')
-<script>
-    // Animation ventre selon la semaine
-    let semaine = {{ $semaine }};
-let tailles = [
-    0.1, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0, 5.5, 7.0, 8.7, 10.1, 11.6, 13.0, 14.2, 16.4,
-    18.0, 20.0, 22.0, 25.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0, 50.0, 51.0, 52.0, 53.0, 54.0
-];
-let taille = tailles[semaine-1] ?? 0.1;
-document.getElementById('semaine-grossesse-anim').textContent = semaine;
-document.getElementById('bebe-taille').textContent = taille;
 
-// Animation SVG ventre (rx et ry varient selon la semaine)
-let rx = 18 + (semaine/40)*20; // de 18 à 38
-let ry = 12 + (semaine/40)*16; // de 12 à 28
-let ventre = document.getElementById('ventre-svg');
-ventre.setAttribute('rx', rx);
-ventre.setAttribute('ry', ry);
-</script>
     </div>
   </div>
 </div>

@@ -247,7 +247,3 @@ Route::get('/factures/download/{id}', [FactureController::class, 'download'])->n
 Route::delete('/factures/destroy/{id}', [FactureController::class, 'destroy'])->name('facture.destroy');
 
 
-// Route pour la suivi grossesse du medecin
-Route::get('/suivi_grossesse_medecin', function () {
-    return view('espace_medecin.dashboard_suivi_grossesse');
-})->name('suivi_grossesse.medecin');
