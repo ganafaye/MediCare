@@ -3,89 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Patiente - MediCare</title>
+    <title>Dashboard - {{ auth('patiente')->user()->prenom ?? 'Patiente' }} {{ auth('patiente')->user()->nom ?? '' }} - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+<style>
+    /* 🧱 Sidebar container */
+.sidebar {
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  z-index: 1040;
+  transition: all 0.3s ease-in-out;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
 
+/* 📌 Liens de navigation */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+/* 💡 État actif ou survol */
+.nav-link:hover,
+.nav-link.active {
+  background-color: #fdeaf3;
+  color: #fd0d99;
+  font-weight: 500;
+}
+
+/* 🎯 Icônes dans les liens */
+.nav-link i {
+  font-size: 1.2rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* 🔲 Chaque bloc nav-item */
+.nav-item {
+  margin-bottom: 0.5rem;
+}
+
+/* 🧤 Bouton de déconnexion spécifique */
+.nav-link.text-danger:hover {
+  background-color: rgba(253, 13, 153, 0.1);
+  color: #fd0d99;
+}
+
+/* 📱 Responsive (mobile) */
+@media (max-width: 767.98px) {
+  .sidebar {
+    width: 250px;
+  }
+}
+
+</style>
 </head>
 <body style="background:linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%); min-height:100vh;">
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-        <nav class="col-12 col-md-3 col-lg-2 bg-white sidebar shadow-sm py-3 px-0 offcanvas-md offcanvas-start vh-100" tabindex="-1" id="sidebarPatiente">
-            <div class="sidebar-sticky pt-4">
-                <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-                    <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height:40px;">
-                    <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-house-door me-2"></i>
-                            Tableau de bord
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRdv">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            Mes rendez-vous
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
-                            <i class="bi bi-file-medical me-2"></i>
-                            Mes consultations
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="{{ route('suivi_grossesse') }}">
-                            <i class="bi bi-heart-pulse me-2"></i>
-                            Suivre ma grossesse
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDocuments">
-                            <i class="bi bi-file-earmark-medical me-2"></i>
-                            Mes documents
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-person-circle me-2"></i>
-                            Mes informations
-                        </a>
-                    </li>
-                   <li class="nav-item mb-2">
-    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
-        <i class="bi bi-bell me-2 position-relative">
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notif-count-badge">
-                0
-            </span>
-        </i>
-        Notifications
-    </a>
-</li>
+      <nav id="sidebarPatiente"
+     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
+     tabindex="-1">
+  <div class="d-flex flex-column justify-content-between h-100">
 
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
-                            <i class="bi bi-folder2-open me-2"></i>
-                                 Dossier médical
-                        </a>
-                    </li>
-                     <li class="nav-item mt-4">
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+    {{-- Logo & en-tête --}}
+    <div>
+      <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+        <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 42px; height: 42px;">
+        <h4 class="fw-bold mb-0" style="color:#fd0d99;">MediCare</h4>
+      </div>
+
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+            <i class="bi bi-house-door fs-5"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRdv">
+            <i class="bi bi-calendar-check fs-5"></i>
+            <span>Mes rendez-vous</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
+            <i class="bi bi-file-medical fs-5"></i>
+            <span>Mes consultations</span>
+          </a>
+        </li>
+
+        @php
+          $age = $age ?? \Carbon\Carbon::parse(auth()->user()->date_naissance)->age;
+        @endphp
+        @if($age >= 12 && $age <= 49)
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="{{ route('suivi.patiente') }}">
+            <i class="bi bi-heart-pulse fs-5"></i>
+            <span>Suivre ma grossesse</span>
+          </a>
+        </li>
+        @endif
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDocuments">
+            <i class="bi bi-file-earmark-medical fs-5"></i>
+            <span>Mes documents</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <i class="bi bi-person-circle fs-5"></i>
+            <span>Mes informations</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+            <i class="bi bi-bell fs-5 position-relative">
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notif-count-badge">
+                0
+              </span>
+            </i>
+            <span>Notifications</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
+            <i class="bi bi-folder2-open fs-5"></i>
+            <span>Dossier médical</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    {{-- Déconnexion en bas --}}
+    <div class="mt-auto pt-3 border-top">
+      <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="nav-link text-danger"
+       <button type="submit" class="nav-link text-danger"
                 style="border: none; background: none; cursor: pointer;"
                 onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
             <i class="bi bi-box-arrow-right me-2"></i>
-            Déconnexion
+          <span>Déconnexion</span>
         </button>
-    </form>
-</li>
-                </ul>
-            </div>
-        </nav>
+      </form>
+    </div>
+  </div>
+</nav>
+
         <!-- Contenu principal -->
         <div class="col px-0">
             <!-- Bouton menu mobile -->
@@ -159,15 +237,39 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card border-0 shadow-sm h-100 hover-shadow" style="transition:box-shadow .2s;">
-                            <div class="card-body text-center">
-                                <i class="bi bi-heart-pulse mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
-                                <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Suivi de grossesse</h5>
-                                <a href="{{ route('suivi_grossesse') }}" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">Voir mon suivi</a>
-                            </div>
-                        </div>
-                    </div>
+                    @php
+  $age = $age ?? \Carbon\Carbon::parse(auth()->user()->date_naissance)->age;
+@endphp
+
+@if($age >= 12 && $age <= 49)
+  {{-- Carte visible si en âge de grossesse --}}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 hover-shadow" style="transition:box-shadow .2s;">
+      <div class="card-body text-center">
+        <i class="bi bi-heart-pulse mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
+        <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Suivre ma grossesse</h5>
+        <a href="{{ route('suivi.patiente') }}"
+           class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2">
+          Voir mon suivi
+        </a>
+      </div>
+    </div>
+  </div>
+@else
+  {{-- Bloc alternatif pour patientes hors grossesse --}}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm h-100 bg-light-subtle text-center rounded-4">
+      <div class="card-body d-flex flex-column justify-content-center">
+        <i class="bi bi-info-circle mb-2 text-muted" style="font-size:2rem;"></i>
+        <h6 class="fw-bold mb-1 text-muted">Suivi grossesse</h6>
+        <p class="text-muted small mb-0">
+          Le suivi de grossesse est désactivé pour les patientes en post-ménopause.
+        </p>
+      </div>
+    </div>
+  </div>
+@endif
+
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card border-0 shadow-sm h-100 hover-shadow" style="transition:box-shadow .2s;">
                             <div class="card-body text-center">

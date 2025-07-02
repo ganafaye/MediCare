@@ -88,9 +88,7 @@ Route::get('/mes_consultation', function () {
     return view('espace_patiente.mes_consultation');
 })->name('patiente.consultations');
 //route pour le suivi de la grossesse
-Route::get('/suivi_grossesse', function () {
-    return view('espace_patiente.suivi_grossesse');
-})->name('suivi_grossesse');
+
 
 // route pour la page mes doc
 Route::get('/mes_document', function () {

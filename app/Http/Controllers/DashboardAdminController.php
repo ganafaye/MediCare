@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\RendezVous;
 use App\Models\Patiente;
 use App\Models\Medecin;
+use App\Models\Facture;
 use Illuminate\Support\Facades\DB;
 class DashboardAdminController extends Controller
 {
@@ -49,6 +50,21 @@ class DashboardAdminController extends Controller
         "confirmés" => RendezVous::where("statut", "confirmé")->count(),
         "annulés" => RendezVous::where("statut", "annulé")->count(),
     ];
-        return view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous'));
+
+    // Revenus par mois (année en cours)
+$revenusParMois = Facture::selectRaw('MONTH(created_at) as mois, SUM(montant) as total')
+    ->whereYear('created_at', date('Y'))
+    ->groupBy('mois')
+    ->orderBy('mois')
+    ->pluck('total', 'mois')
+    ->toArray();
+
+// Revenu total cumulé
+$revenuTotal = Facture::sum('montant');
+
+// Nombre total de factures émises
+$nombreFactures = Facture::count();
+
+        return view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous' , 'revenusParMois', 'revenuTotal', 'nombreFactures'));
     }
 }

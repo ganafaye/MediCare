@@ -2,67 +2,90 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>Dashboard Admin - MediCare</title>
+   <title>Dashboard - {{ auth('admin')->user()->prenom ?? 'Admin' }} {{ auth('admin')->user()->nom ?? '' }} - MediCare</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+    <style>
+        .sidebar .nav-link {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: #fdeaf3;
+  color: #fd0d99;
+  font-weight: 500;
+}
+
+    </style>
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
+
 <div class="container-fluid">
+    <button class="btn btn-outline-pink d-md-none ms-2 mb-3" id="toggleSidebar">
+  <i class="bi bi-list fs-4"></i>
+</button>
+
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-        <nav class="col-12 col-md-3 col-lg-2 bg-white sidebar shadow-sm py-3 px-0">
-            <div class="sidebar-sticky pt-4">
-                <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-                    <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height:40px;">
-                    <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-speedometer2 me-2"></i>
-                            Tableau de bord
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionPatientes">
-                            <i class="bi bi-people-fill me-2"></i>
-                            Gestion patientes
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionMedecins">
-                            <i class="bi bi-person-badge-fill me-2"></i>
-                            Gestion médecins
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionSecretaires">
-                            <i class="bi bi-person-lines-fill me-2"></i>
-                            Gestion secrétaires
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRendezVous">
-                            <i class="bi bi-calendar-check-fill me-2"></i>
-                            Rendez-vous
-                        </a>
-                    </li>
-                    <li class="nav-item mt-4">
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+       <nav class="col-12 col-md-3 col-lg-2 sidebar shadow-sm py-4 px-3 bg-white border-end position-relative" style="min-height:100vh;">
+  <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+  <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height: 40px;">
+  <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
+</div>
+
+
+  <ul class="nav flex-column">
+    <li class="nav-item mb-2">
+      <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+        <i class="bi bi-speedometer2 fs-5"></i>
+        <span>Tableau de bord</span>
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionPatientes">
+        <i class="bi bi-people-fill fs-5"></i>
+        <span>Gestion patientes</span>
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionMedecins">
+        <i class="bi bi-person-badge-fill fs-5"></i>
+        <span>Gestion médecins</span>
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionSecretaires">
+        <i class="bi bi-person-lines-fill fs-5"></i>
+        <span>Gestion secrétaires</span>
+      </a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRendezVous">
+        <i class="bi bi-calendar-check-fill fs-5"></i>
+        <span>Rendez-vous</span>
+      </a>
+    </li>
+   {{-- Déconnexion en bas --}}
+    <div class="mt-auto pt-3 border-top">
+      <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="nav-link text-danger"
+       <button type="submit" class="nav-link text-danger"
                 style="border: none; background: none; cursor: pointer;"
                 onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
             <i class="bi bi-box-arrow-right me-2"></i>
-            Déconnexion
+          <span>Déconnexion</span>
         </button>
-    </form>
-</li>
+      </form>
+    </div>
+  </ul>
+</nav>
 
-                </ul>
-            </div>
-        </nav>
         <!-- Contenu principal -->
         <main class="col px-3 px-md-5 py-4 ms-md-0">
             @if(session('success'))
@@ -76,7 +99,7 @@
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold mb-3 mb-md-0" style="color:#fd0d99;">Clinique MediCare : </h2>
+                <h2 class="fw-bold mb-3 mb-md-0" style="color:#fd0d99;">MediCare — Tableau de bord administratif </h2>
                 <p class="mb-0 px-3 py-2 rounded-pill shadow-sm d-flex align-items-center"
                    style="background:#fde6f2; color:#fd0d99; font-weight:500; font-size:1.05rem;">
                     <i class="bi bi-calendar-event me-2" style="font-size:1.3rem; color:#fd0d99;"></i>
@@ -113,6 +136,168 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-12">
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+  <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+    <h6 class="fw-bold mb-0 text-rose">
+      <i class="bi bi-cash-coin me-2"></i>Revenus de la clinique
+    </h6>
+    <button id="toggleMontants" class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-eye-slash me-1"></i> Cacher montants
+    </button>
+  </div>
+
+
+    <div class="card-body">
+    <div class="row g-4">
+
+      {{-- 💰 Revenus cumulés --}}
+      <div class="col-md-4">
+        <div class="p-4 rounded-4 bg-light-subtle h-100 text-center shadow-sm">
+          <i class="bi bi-wallet2 fs-2 text-success mb-2"></i>
+          <h5 class="fw-bold montant text-success mb-1">
+            {{ number_format($revenuTotal, 0, ',', ' ') }} FCFA
+          </h5>
+          <small class="text-muted">Revenus cumulés</small>
+        </div>
+      </div>
+
+
+        {{-- 📄 Factures émises (ne pas masquer) --}}
+      <div class="col-md-4">
+        <div class="p-4 rounded-4 bg-light-subtle h-100 text-center shadow-sm">
+          <i class="bi bi-receipt-cutoff fs-2 text-secondary mb-2"></i>
+          <h5 class="fw-bold text-dark mb-1">
+            {{ $nombreFactures }} facture{{ $nombreFactures > 1 ? 's' : '' }}
+          </h5>
+          <small class="text-muted">Factures émises</small>
+        </div>
+      </div>
+
+
+         {{-- 📊 Revenu moyen --}}
+      <div class="col-md-4">
+        <div class="p-4 rounded-4 bg-light-subtle h-100 text-center shadow-sm">
+          <i class="bi bi-graph-up fs-2 text-primary mb-2"></i>
+          <h5 class="fw-bold montant text-primary mb-1">
+            {{ number_format($revenuTotal / max(1, count($revenusParMois)), 0, ',', ' ') }} FCFA
+          </h5>
+          <small class="text-muted">Revenu moyen / mois</small>
+        </div>
+      </div>
+
+<div class="col-12">
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-white border-0">
+      <h6 class="fw-bold text-rose mb-0">
+        <i class="bi bi-graph-up-arrow me-2"></i>Évolution des revenus mensuels
+      </h6>
+    </div>
+    <div class="card-body">
+      <canvas id="revenusMensuelsChart" height="120"></canvas>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("toggleMontants");
+    const montants = document.querySelectorAll(".montant");
+    let visible = true;
+
+    montants.forEach(el => {
+      el.dataset.value = el.textContent.trim();
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      visible = !visible;
+
+      montants.forEach(el => {
+        el.textContent = visible ? el.dataset.value : "•••••• FCFA";
+      });
+
+      toggleBtn.innerHTML = visible
+        ? `<i class="bi bi-eye-slash me-1"></i> Cacher montants`
+        : `<i class="bi bi-eye me-1"></i> Afficher montants`;
+    });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("toggleMontants");
+    const montants = document.querySelectorAll(".montant");
+    let visible = true;
+
+    // Stocke les valeurs originales dans un attribut data
+    montants.forEach(el => {
+      el.dataset.value = el.textContent.trim();
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      visible = !visible;
+
+      montants.forEach(el => {
+        el.textContent = visible ? el.dataset.value : "•••••• FCFA";
+      });
+
+      toggleBtn.innerHTML = visible
+        ? `<i class="bi bi-eye-slash me-1"></i> Cacher montants`
+        : `<i class="bi bi-eye me-1"></i> Afficher montants`;
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctxRevenus = document.getElementById('revenusMensuelsChart').getContext('2d');
+
+  const revenusMensuelsChart = new Chart(ctxRevenus, {
+    type: 'line',
+    data: {
+      labels: {!! json_encode(array_map(
+        fn($m) => ucfirst(\Carbon\Carbon::create()->month($m)->locale('fr')->isoFormat('MMMM')),
+        array_keys($revenusParMois))) !!},
+      datasets: [{
+        label: 'Revenus (F CFA)',
+        data: {!! json_encode(array_values($revenusParMois)) !!},
+        borderColor: '#fd0d99',
+        backgroundColor: 'rgba(253, 13, 153, 0.1)',
+        tension: 0.4,
+        pointBackgroundColor: '#fd0d99',
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ctx.parsed.y.toLocaleString('fr-FR') + ' F CFA'
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => value.toLocaleString('fr-FR') + ' F'
+          },
+          grid: { color: '#f3f3f3' }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+</script>
+
+      </div>
+    </div>
+  </div>
+</div>
+
             <!-- Graphiques statistiques -->
            <div class="container mt-4">
 
@@ -165,9 +350,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
         </div>
         </div>
@@ -539,9 +722,9 @@
                 <i class="bi bi-plus-circle me-2"></i>Créer un rendez-vous
             </button>
         </div>
-        <div class="table-responsive">
-          <table class="table align-middle mb-0 table-hover">
-    <thead class="table-light">
+       <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+  <table class="table align-middle mb-0 table-hover">
+    <thead class="table-light position-sticky top-0 z-1">
         <tr>
             <th>Date</th>
             <th>Heure</th>

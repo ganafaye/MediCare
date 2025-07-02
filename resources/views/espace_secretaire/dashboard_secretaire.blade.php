@@ -4,71 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Secrétaire - MediCare</title>
+   <title>Dashboard - {{ auth('secretaire')->user()->prenom ?? 'Secrétaire' }} {{ auth('secretaire')->user()->nom ?? '' }} - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+    <style>
+        .nav-link {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  color: #333;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: #fdeaf3;
+  color: #fd0d99;
+  font-weight: 500;
+}
+
+    </style>
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-        <nav class="col-12 col-md-3 col-lg-2 bg-white sidebar shadow-sm py-3 px-0 offcanvas-md offcanvas-start vh-100 min-vh-100 d-flex flex-column" tabindex="-1" id="sidebarSecretaire">
-            <div class="sidebar-sticky pt-4 flex-grow-1 d-flex flex-column">
-                <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-                    <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height:40px;">
-                    <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-house-door me-2"></i>
-                            Tableau de bord
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            Gérer les rendez-vous
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">
-                            <i class="bi bi-people-fill me-2"></i>
-                            Patientes
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalMedecins">
-                            <i class="bi bi-person-badge me-2"></i>
-                            Médecins
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-bell me-2"></i>
-                            Notifications
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                      <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalFactures">
-                       <i class="bi bi-receipt me-2"></i>
-                              Factures
-                     </a>
-                   </li>
-                    <li class="nav-item mt-4">
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+       <nav id="sidebarSecretaire"
+     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
+     tabindex="-1">
+  <div class="d-flex flex-column justify-content-between h-100 w-100">
+
+    {{-- En-tête --}}
+    <div>
+      <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+        <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 42px; height: 42px;">
+        <h4 class="fw-bold mb-0" style="color:#fd0d99;">MediCare</h4>
+      </div>
+
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+            <i class="bi bi-house-door fs-5"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
+            <i class="bi bi-calendar-check fs-5"></i>
+            <span>Gérer les rendez-vous</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">
+            <i class="bi bi-people-fill fs-5"></i>
+            <span>Patientes</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalMedecins">
+            <i class="bi bi-person-badge fs-5"></i>
+            <span>Médecins</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#">
+            <i class="bi bi-bell fs-5"></i>
+            <span>Notifications</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalFactures">
+            <i class="bi bi-receipt fs-5"></i>
+            <span>Factures</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    {{-- Déconnexion en bas --}}
+    <div class="mt-auto pt-3 border-top">
+      <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="nav-link text-danger"
+       <button type="submit" class="nav-link text-danger"
                 style="border: none; background: none; cursor: pointer;"
                 onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
             <i class="bi bi-box-arrow-right me-2"></i>
-            Déconnexion
+          <span>Déconnexion</span>
         </button>
-    </form>
-</li>
-                </ul>
-            </div>
-        </nav>
+      </form>
+    </div>
+
+  </div>
+</nav>
+
         <!-- Contenu principal -->
         <div class="col px-0">
             <!-- Bouton menu mobile -->

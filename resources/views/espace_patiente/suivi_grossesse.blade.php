@@ -131,6 +131,34 @@
   border: 3px solid #fd0d99;
   border-radius: 50%;
 }
+<style>
+  #calendarGrossesse {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 0;
+  }
+
+  /* Amélioration tactile sur petit écran */
+  .fc {
+    font-size: 14px;
+  }
+
+  @media (max-width: 576px) {
+    .fc-toolbar-title {
+      font-size: 1rem;
+    }
+
+    .fc .fc-button {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+    }
+
+    .fc .fc-daygrid-day-number {
+      font-size: 0.75rem;
+    }
+  }
+</style>
 
     </style>
 </head>
@@ -230,15 +258,41 @@
 
         <!-- Boutons d’action -->
         <div class="d-flex flex-wrap gap-2 mt-3">
-            <button class="btn btn-outline-danger rounded-pill">
+            <button type="button" class="btn btn-outline-danger rounded-pill" onclick="toggleFavori(this)">
                 <i class="bi bi-heart"></i>
             </button>
-            <button class="btn btn-outline-danger rounded-pill">
-                <i class="bi bi-share-fill"></i>
-            </button>
-            <button class="btn btn-danger rounded-pill px-4">
-                <i class="bi bi-headphones me-1"></i> Écouter
-            </button>
+            <script>
+          function toggleFavori(btn) {
+         btn.classList.toggle('btn-danger');
+         btn.classList.toggle('btn-outline-danger');
+        const icon = btn.querySelector('i');
+        icon.classList.toggle('bi-heart');
+         icon.classList.toggle('bi-heart-fill');
+     // Tu peux aussi appeler un endpoint ici via AJAX
+        console.log("Favori changé !");
+  }
+</script>
+           <button type="button" class="btn btn-outline-danger rounded-pill" onclick="partagerEchographie()">
+  <i class="bi bi-share-fill"></i>
+</button>
+            <script>
+  function partagerEchographie() {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: 'Mon échographie',
+        text: 'Regarde cette échographie',
+        url: url
+      }).then(() => {
+        console.log('Échographie partagée');
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert("📎 Lien copié dans le presse-papiers !");
+      });
+    }
+  }
+</script>
         </div>
     </div>
 </div>
@@ -363,41 +417,6 @@
     </div>
   </div>
 </div>
-
-
-<!-- 🗓️ Consultations prénatales -->
-<div class="card shadow-sm border-0 rounded-4 mb-4">
-  <div class="card-header bg-white border-0 rounded-top-4">
-    <h6 class="fw-bold mb-0 text-rose"><i class="bi bi-calendar-check me-1"></i>Consultations prénatales</h6>
-  </div>
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table align-middle table-hover mb-0">
-        <thead class="table-light text-center">
-          <tr>
-            <th>Date</th>
-            <th>Médecin</th>
-            <th>Compte rendu</th>
-            <th>Ordonnance</th>
-          </tr>
-        </thead>
-        <tbody class="text-center">
-          <tr>
-            <td>10/06/2025</td>
-            <td>Dr. Faye</td>
-            <td>Suivi normal, aucun souci détecté.</td>
-            <td>
-              <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i>Télécharger
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
 <!-- 📅 Calendrier Grossesse -->
 <div class="card border-0 shadow-sm rounded-4 mb-4">
   <div class="card-header bg-white border-0 rounded-top-4">
@@ -405,10 +424,86 @@
       <i class="bi bi-calendar3-event me-1"></i>Calendrier des échographies
     </h6>
   </div>
-  <div class="card-body">
-    <div id="calendarGrossesse"></div>
-  </div>
+    <div style="overflow-x: auto;">
+  <div id="calendarGrossesse" class="rounded-4 border p-3 w-100"></div>
 </div>
+</div>
+
+{{-- ⚡️ FULLCALENDAR --}}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendarGrossesse');
+    if (!calendarEl) return;
+
+    // ✅ Injecter la date depuis Laravel
+    const dateDebutString = "{{ \Carbon\Carbon::parse($grossesse->date_debut)->format('Y-m-d') }}";
+    if (!dateDebutString) {
+      console.warn("❌ Pas de date de début reçue de Laravel");
+      return;
+    }
+
+    const dateDebut = new Date(dateDebutString);
+    if (isNaN(dateDebut.getTime())) {
+      console.error("📛 Date de début invalide :", dateDebutString);
+      return;
+    }
+
+    // 🔧 Calcul des échéances
+    const ajouterSemaines = (date, semaines) => {
+      const copie = new Date(date);
+      copie.setDate(copie.getDate() + semaines * 7);
+      return copie.toISOString().split('T')[0];
+    };
+
+    const events = [
+      {
+        title: '🩺 Échographie 1er trimestre',
+        start: ajouterSemaines(dateDebut, 12),
+        color: '#0d6efd',
+      },
+      {
+        title: '🧠 Écho morphologique',
+        start: ajouterSemaines(dateDebut, 22),
+        color: '#6610f2',
+      },
+      {
+        title: '🧸 Échographie 3ᵉ trimestre',
+        start: ajouterSemaines(dateDebut, 32),
+        color: '#d63384',
+      }
+    ];
+
+    console.log("📅 Événements calculés :", events);
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'fr',
+      height: 'auto',
+      firstDay: 1,
+      events: events,
+     headerToolbar: {
+  left: 'prev,next today',
+  center: 'title',
+  right: 'dayGridMonth,listMonth'
+},
+buttonText: {
+  today: 'Aujourd’hui',
+  month: 'Mois',
+  week:  'Semaine',
+  day:   'Jour',
+  list:  'Liste',
+  prev:  '←',
+  next:  '→'
+}
+
+    });
+
+    calendar.render();
+  });
+</script>
+
 
 <!-- 🖼️ Échographies -->
 <div class="card shadow-sm border-0 rounded-4 mb-4">
@@ -417,62 +512,71 @@
       <i class="bi bi-images me-1"></i>Échographies
     </h6>
   </div>
+
   <div class="card-body">
-  <div class="row g-4">
-    @forelse($echographies as $echo)
-      <div class="col-md-4 col-sm-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-          <div class="card-body text-center">
+    <div class="row g-4">
+      @forelse($echographies as $echo)
+        @php
+          $cheminFichier = ltrim($echo->fichier ?? '', '/');
+          $imageExiste = $cheminFichier && Storage::disk('public')->exists($cheminFichier);
+          $urlImage = $imageExiste ? asset('storage/' . $cheminFichier) : null;
+        @endphp
 
-            {{-- Image (affichage dynamique) --}}
-            @php
-              $hasImage = $echo->image && file_exists(public_path('storage/' . $echo->image));
-              $imgPath = $hasImage
-                ? asset('storage/' . $echo->image)
-                : asset('image/mois_grossesse/' . ceil($semaine / 4) . '_mois.png');
-            @endphp
+        <div class="col-md-4 col-sm-6">
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body text-center">
 
-            <a href="{{ $hasImage ? $imgPath : '#' }}" target="{{ $hasImage ? '_blank' : '_self' }}">
-              <img src="{{ $imgPath }}"
-                   alt="Échographie"
-                   class="img-fluid rounded mb-3"
-                   style="max-height:180px;">
-            </a>
-
-            {{-- Type + date --}}
-            <p class="fw-bold mb-1">{{ $echo->type ?? 'Échographie' }}</p>
-            <small class="text-muted mb-2 d-block">
-              {{ $echo->date_examen
-                  ? \Carbon\Carbon::parse($echo->date_examen)->format('d/m/Y')
-                  : 'Date inconnue' }}
-            </small>
-
-            {{-- Observation --}}
-            @if($echo->observation)
-              <p class="text-muted small">{{ $echo->observation }}</p>
-            @endif
-
-            {{-- Boutons action --}}
-
-              <div class="d-flex justify-content-center gap-2 mt-2">
-                <a href="{{ $imgPath }}" target="_blank"
-                   class="btn btn-sm btn-outline-primary rounded-pill">
-                  <i class="bi bi-eye me-1"></i>Consulter
+              {{-- 🩻 Image (seulement si elle existe) --}}
+              @if($imageExiste)
+                <a href="{{ $urlImage }}" target="_blank">
+                  <img src="{{ $urlImage }}"
+                       alt="Échographie"
+                       class="img-fluid rounded mb-3"
+                       style="max-height:180px; object-fit:cover;">
                 </a>
-                <a href="{{ $imgPath }}" download
-                   class="btn btn-sm btn-outline-success rounded-pill">
-                  <i class="bi bi-download me-1"></i>Télécharger
-                </a>
-              </div>
+              @endif
+
+              {{-- 📅 Type & Date --}}
+              <p class="fw-bold mb-1">{{ $echo->type ?? 'Échographie' }}</p>
+              <small class="text-muted d-block mb-2">
+                {{ $echo->date_examen
+                    ? \Carbon\Carbon::parse($echo->date_examen)->format('d/m/Y')
+                    : 'Date inconnue' }}
+              </small>
+
+              {{-- ✍️ Observation --}}
+              @if($echo->observation)
+                <p class="text-muted small fst-italic">{{ $echo->observation }}</p>
+              @endif
+
+              {{-- 📥 Boutons d'action --}}
+              @if($imageExiste)
+                <div class="d-flex justify-content-center gap-2 mt-2">
+                  <a href="{{ $urlImage }}" target="_blank"
+                     class="btn btn-sm btn-outline-primary rounded-pill">
+                    <i class="bi bi-eye me-1"></i>Consulter
+                  </a>
+                  <a href="{{ $urlImage }}" download
+                     class="btn btn-sm btn-outline-success rounded-pill">
+                    <i class="bi bi-download me-1"></i>Télécharger
+                  </a>
+                </div>
+              @else
+                <span class="badge bg-secondary">Image non disponible</span>
+              @endif
+
+            </div>
           </div>
         </div>
-      </div>
-    @empty
-      <div class="text-muted fst-italic px-3">Aucune échographie enregistrée.</div>
-    @endforelse
+      @empty
+        <div class="text-center text-muted py-3 fst-italic">
+          Aucune échographie enregistrée.
+        </div>
+      @endforelse
+    </div>
   </div>
 </div>
-</div>
+
 
 <!-- 📋 Étapes de grossesse -->
 <div class="card border-0 shadow-sm rounded-4 mb-4">
@@ -527,70 +631,12 @@
   </div>
 </div>
 
-
-
 @vite('resources/js/app.js')
 
     </div>
   </div>
 </div>
 </div>
-<script>
-  const dateDebutGrossesse = new Date("{{ \Carbon\Carbon::parse($grossesse->date_debut)->format('Y-m-d') }}");
-</script>
-
-<!-- JS FullCalendar -->
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const calendarEl = document.getElementById('calendarGrossesse');
-
-    if (calendarEl && typeof dateDebutGrossesse !== 'undefined') {
-
-      function ajouterSemaines(date, semaines) {
-        const copie = new Date(date);
-        copie.setDate(copie.getDate() + semaines * 7);
-        return copie.toISOString().slice(0, 10);
-      }
-
-      const events = [
-        {
-          title: '🩺 Échographie 1er trimestre',
-          start: ajouterSemaines(dateDebutGrossesse, 12),
-          url: '#'
-        },
-        {
-          title: '🧠 Écho morphologique',
-          start: ajouterSemaines(dateDebutGrossesse, 22),
-          url: '#'
-        },
-        {
-          title: '🧸 Écho 3ᵉ trimestre',
-          start: ajouterSemaines(dateDebutGrossesse, 32),
-          url: '#'
-        }
-      ];
-
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        height: 'auto',
-        locale: 'fr',
-        firstDay: 1,
-        events: events,
-        eventClick: function(info) {
-          if (info.event.url && info.event.url !== '#') {
-            window.open(info.event.url, '_blank');
-            info.jsEvent.preventDefault();
-          }
-        }
-      });
-
-      calendar.render();
-    }
-  });
-</script>
-
 </div>
 @vite('resources/js/app.js')
 </body>

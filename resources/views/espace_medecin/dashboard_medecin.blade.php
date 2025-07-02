@@ -4,91 +4,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Médecin - MediCare</title>
+    <title>Dashboard -Dr. {{ auth('medecin')->user()->prenom ?? 'Médecin' }} {{ auth('medecin')->user()->nom ?? '' }} - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+    <style>
+        /* 🎯 Conteneur général de la sidebar */
+.sidebar {
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  z-index: 1040;
+  transition: all 0.3s ease-in-out;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* 📌 Liens de navigation */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+/* 💡 État actif ou survolé */
+.nav-link:hover,
+.nav-link.active {
+  background-color: #fdeaf3;
+  color: #fd0d99;
+  font-weight: 500;
+}
+
+/* 🧠 Icônes dans les liens */
+.nav-link i {
+  font-size: 1.2rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* 🔲 Espacement entre les éléments */
+.nav-item {
+  margin-bottom: 0.5rem;
+}
+
+/* 🧤 Déconnexion hover */
+.nav-link.text-danger:hover {
+  background-color: rgba(253, 13, 153, 0.1);
+  color: #fd0d99;
+}
+
+/* 📱 Sidebar mobile */
+@media (max-width: 767.98px) {
+  .sidebar {
+    width: 250px;
+  }
+}
+
+    </style>
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-        <nav class="col-12 col-md-3 col-lg-2 bg-white sidebar shadow-sm py-3 px-0 offcanvas-md offcanvas-start vh-100" tabindex="-1" id="sidebarMedecin">
-            <div class="sidebar-sticky pt-4">
-                <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-                    <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height:40px;">
-                    <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item mb-2">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-house-door me-2"></i>
-                            Tableau de bord
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
-                            <i class="bi bi-calendar-check me-2"></i>
-                            Mes rendez-vous
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                       <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">
-                            <i class="bi bi-person-lines-fill me-2"></i>
-                            Mes patientes
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                       <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalDossiers">
-                            <i class="bi bi-folder2-open me-2"></i>
-                            Dossiers médicaux
-                        </a>
-                    </li>
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#modalOrdonnances">
-                            <i class="bi bi-file-earmark-plus me-2"></i>
-                            Ordonnances
-                        </a>
-                    </li>
+       <nav id="sidebarMedecin"
+     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
+     tabindex="-1">
+  <div class="d-flex flex-column justify-content-between h-100 w-100">
 
-                  <li class="nav-item mb-2">
-    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalSuiviGrossesse">
-        <i class="bi bi-heart-pulse me-2"></i>
-        Suivi grossesse
-    </a>
-</li>
+    {{-- Logo & Titre --}}
+    <div>
+      <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
+        <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 42px; height: 42px;">
+        <h4 class="fw-bold mb-0" style="color:#fd0d99;">MediCare</h4>
+      </div>
 
+      {{-- Liens de navigation --}}
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+            <i class="bi bi-house-door fs-5"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
 
-                    <li class="nav-item mb-2">
-    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
-        <i class="bi bi-file-medical me-2"></i>
-        Mes consultations
-    </a>
-</li>
-                  <li class="nav-item mb-2">
-    <a class="nav-link position-relative" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
-        <i class="bi bi-bell me-2 position-relative">
-<span id="notif-badge-medecin" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">
-                0
-            </span>
-        </i>
-        Notifications
-    </a>
-</li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
+            <i class="bi bi-calendar-check fs-5"></i>
+            <span>Mes rendez-vous</span>
+          </a>
+        </li>
 
-                     <li class="nav-item mt-4">
-    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">
+            <i class="bi bi-person-lines-fill fs-5"></i>
+            <span>Mes patientes</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDossiers">
+            <i class="bi bi-folder2-open fs-5"></i>
+            <span>Dossiers médicaux</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalOrdonnances">
+            <i class="bi bi-file-earmark-plus fs-5"></i>
+            <span>Ordonnances</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalSuiviGrossesse">
+            <i class="bi bi-heart-pulse fs-5"></i>
+            <span>Suivi grossesse</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
+            <i class="bi bi-file-medical fs-5"></i>
+            <span>Mes consultations</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 position-relative" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+            <i class="bi bi-bell fs-5 position-relative">
+              <span id="notif-badge-medecin" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+            </i>
+            <span>Notifications</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    {{-- Déconnexion en bas --}}
+    <div class="mt-auto pt-3 border-top">
+      <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="nav-link text-danger"
+       <button type="submit" class="nav-link text-danger"
                 style="border: none; background: none; cursor: pointer;"
                 onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
             <i class="bi bi-box-arrow-right me-2"></i>
-            Déconnexion
+          <span>Déconnexion</span>
         </button>
-    </form>
-</li>
-                </ul>
-            </div>
-        </nav>
+      </form>
+    </div>
+
+  </div>
+</nav>
+
         <!-- Contenu principal -->
         <div class="col px-0">
             <!-- Bouton menu mobile -->
