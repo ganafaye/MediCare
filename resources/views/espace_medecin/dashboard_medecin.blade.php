@@ -1160,78 +1160,87 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
 </div>
 
 
+
 <!-- modal suivi grossesse medecin -->
 <div class="modal fade" id="modalSuiviGrossesse" tabindex="-1" aria-labelledby="modalSuiviGrossesseLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content rounded-4">
-      <div class="modal-header d-flex justify-content-between align-items-center">
-        <h5 class="modal-title" id="modalSuiviGrossesseLabel">
+        <div class="modal-header d-flex justify-content-between align-items-center">
+          <h5 class="modal-title" id="modalSuiviGrossesseLabel">
           <i class="bi bi-heart-pulse me-2"></i>Suivi des grossesses
-        </h5>
-       <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterGrossesse">
-  <i class="bi bi-plus-circle me-1"></i> Ajouter
-</a>
-      </div>
+          </h5>
+          <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterGrossesse">
+          <i class="bi bi-plus-circle me-1"></i> Ajouter</a>
+        </div>
       <div class="modal-body">
 
         <!-- Tableau des grossesses -->
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Patiente</th>
-                <th>Date début</th>
-                <th>DPA</th>
-                <th>Semaine</th>
-                <th>Dernier suivi</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              @php
-              $grossesses = [
-                ['patiente' => 'Fatou Ndiaye', 'date_debut' => '2025-04-12', 'dpa' => '2026-01-16', 'semaine' => 28, 'dernier_suivi' => '2025-06-27'],
-                ['patiente' => 'Aïssatou Fall', 'date_debut' => null, 'dpa' => null, 'semaine' => null, 'dernier_suivi' => null],
-              ];
-              @endphp
+           <thead class="table-light">
+  <tr>
+    <th>Patiente</th>
+    <th>Date début</th>
+    <th>DPA</th>
+    <th>Semaine</th>
+    <th>Dernier suivi</th>
+    <th>Actions</th>
+  </tr>
+</thead>
+<tbody>
+  @foreach($grossesses as $g)
+  <tr>
+    <td>{{ $g->patiente->prenom }} {{ $g->patiente->nom }}</td>
+    <td>{{ optional($g->date_debut)->format('d/m/Y') ?? '—' }}</td>
+    <td>{{ optional($g->dpa)->format('d/m/Y') ?? '—' }}</td>
+    <td>
+      @php
+  $progress = $g->semaine ? min($g->semaine * 2.5, 100) : 0;
+@endphp
+<div class="progress" style="height: 20px;">
+  <div class="progress-bar" role="progressbar"
+       style="width: {{ $progress }}%;"
+       aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+    {{ $g->semaine ?? '0' }} / 40 sem.
+  </div>
+</div>
+</td>
+<td>{{ optional($g->created_at)->format('d/m/Y') ?? '—' }}</td>
+<td>
+  <a href="#" class="btn btn-sm btn-outline-secondary me-1"
+     data-bs-toggle="modal" data-bs-target="#modalVoirGrossesse{{ $g->id }}">
+    <i class="bi bi-eye"></i>
+  </a>
 
-              @foreach($grossesses as $g)
-              <tr>
-                <td>{{ $g['patiente'] }}</td>
-                <td>{{ $g['date_debut'] ? \Carbon\Carbon::parse($g['date_debut'])->format('d/m/Y') : '—' }}</td>
-                <td>{{ $g['dpa'] ? \Carbon\Carbon::parse($g['dpa'])->format('d/m/Y') : '—' }}</td>
-                <td>{{ $g['semaine'] ? $g['semaine'].'/40' : '—' }}</td>
-                <td>{{ $g['dernier_suivi'] ? \Carbon\Carbon::parse($g['dernier_suivi'])->format('d/m/Y') : '—' }}</td>
-                <td>
-                  @if($g['semaine'])
-                   <a href="#" class="btn btn-sm btn-outline-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalVoirGrossesse">
-  <i class="bi bi-eye"></i>
-</a>
+  <a href="#" class="btn btn-sm btn-outline-primary me-1"
+     data-bs-toggle="modal" data-bs-target="#modalEditerGrossesse{{ $g->id }}">
+    <i class="bi bi-pencil"></i>
+  </a>
 
-<a href="#" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditerGrossesse">
-  <i class="bi bi-pencil"></i>
-</a>
+  <a href="#" class="btn btn-sm btn-outline-success me-1"
+     data-bs-toggle="modal" data-bs-target="#modalUploadEcho{{ $g->id }}">
+    <i class="bi bi-upload"></i>
+  </a>
 
-<a href="#" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalUploadEcho">
-  <i class="bi bi-upload"></i>
-</a>
-                  @else
-                    <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAjouterGrossesse">
-  <i class="bi bi-plus-circle me-1"></i> Ajouter
-</a>
-                  @endif
-                </td>
-              </tr>
-              @endforeach
+  <!-- 🗑️ Bouton suppression -->
+  <a href="#" class="btn btn-sm btn-outline-danger"
+     data-bs-toggle="modal" data-bs-target="#modalSupprimerGrossesse{{ $g->id }}">
+    <i class="bi bi-trash"></i>
+  </a>
+</td>
+</tr>
+  @endforeach
+</tbody>
 
-            </tbody>
           </table>
         </div>
-
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+
+
 <div class="modal fade" id="modalAjouterGrossesse" tabindex="-1" aria-labelledby="modalAjouterGrossesseLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content rounded-4">
@@ -1242,18 +1251,21 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
 
-      <form method="POST" action="">
+     <form method="POST" action="{{ route('grossesses.store') }}">
         @csrf
         <div class="modal-body">
           <!-- Patiente -->
           <div class="mb-3">
             <label for="patiente_id" class="form-label">Patiente</label>
-            <select name="patiente_id" id="patiente_id" class="form-select" required>
-              <option value="">-- Sélectionner une patiente --</option>
+<select name="patiente_id" id="patiente_id" class="form-select" required>
+  <option value="">-- Sélectionner une patiente --</option>
+  @foreach($patientes as $patiente)
+    <option value="{{ $patiente->id }}">
+      {{ $patiente->nom }} {{ $patiente->prenom }}
+    </option>
+  @endforeach
+</select>
 
-                <option value=""></option>
-
-            </select>
           </div>
 
           <!-- Date début -->
@@ -1287,90 +1299,233 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
   </div>
 </div>
 
-<div class="modal fade" id="modalVoirGrossesse" tabindex="-1" aria-labelledby="modalVoirLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content rounded-4">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalVoirLabel">
-          <i class="bi bi-eye me-2"></i>Détails de la grossesse
-        </h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Patiente :</strong> Fatou Ndiaye</li>
-          <li class="list-group-item"><strong>Date début :</strong> 12/04/2025</li>
-          <li class="list-group-item"><strong>DPA :</strong> 16/01/2026</li>
-          <li class="list-group-item"><strong>Semaine :</strong> 28</li>
-          <li class="list-group-item"><strong>Dernier suivi :</strong> 27/06/2025</li>
-          <li class="list-group-item"><strong>Notes :</strong> Aucune anomalie observée</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+@foreach($grossesses as $grossesse)
+  <!-- Bouton déclencheur -->
+  <a href="#" data-bs-toggle="modal" data-bs-target="#modalVoirGrossesse{{ $grossesse->id }}">
+    <i class="bi bi-eye"></i>
+  </a>
 
-<div class="modal fade" id="modalEditerGrossesse" tabindex="-1" aria-labelledby="modalEditerLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content rounded-4">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalEditerLabel">
-          <i class="bi bi-pencil me-2"></i>Modifier la grossesse
-        </h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form>
+  <!-- Modal dynamique -->
+  <div class="modal fade" id="modalVoirGrossesse{{ $grossesse->id }}" tabindex="-1" aria-labelledby="modalVoirLabel{{ $grossesse->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalVoirLabel{{ $grossesse->id }}">
+            <i class="bi bi-eye me-2"></i>Détails de la grossesse
+          </h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
         <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Date début</label>
-            <input type="date" class="form-control" value="2025-04-12">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Date prévue d'accouchement</label>
-            <input type="date" class="form-control" value="2026-01-16">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Notes médicales</label>
-            <textarea rows="3" class="form-control">Aucune anomalie observée</textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-primary">Enregistrer</button>
-          <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        </div>
-      </form>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Patiente :</strong> {{ $grossesse->patiente->nom }} {{ $grossesse->patiente->prenom }}</li>
+            <li class="list-group-item"><strong>Date début :</strong> {{ optional($grossesse->date_debut)->format('d/m/Y') ?? '—' }}</li>
+            <li class="list-group-item"><strong>DPA :</strong> {{ optional($grossesse->date_terme)->format('d/m/Y') ?? '—' }}</li>
+            <li class="list-group-item"><strong>Semaine :</strong> {{ $grossesse->date_debut ? \Carbon\Carbon::parse($grossesse->date_debut)->diffInWeeks(now()) : '—' }}</li>
+            <li class="list-group-item"><strong>Dernier suivi :</strong> {{ optional($grossesse->created_at)->format('d/m/Y') ?? '—' }}</li>
+            @php
+  $etat = $grossesse->etat_grossesse;
+  $couleur = match($etat) {
+      'En cours'   => 'primary',
+      'À terme'    => 'success',
+      'Dépassée'   => 'danger',
+      'Inconnue'   => 'secondary',
+      default      => 'secondary',
+  };
+@endphp
+
+        <li class="list-group-item">
+           <strong>État :</strong>
+             <span class="badge bg-{{ $couleur }} ms-2">{{ $etat }}</span>
+        </li>
+            <li class="list-group-item"><strong>Notes :</strong> {{ $grossesse->notes_initiales ?? '—' }}</li>
+            <h5 class="mt-4"><i class="bi bi-image me-2"></i>Échographies</h5>
+
+@forelse($grossesse->echographies as $echo)
+  <div class="border rounded p-2 mb-2 d-flex align-items-start">
+    @php
+      $isImage = Str::endsWith($echo->fichier, ['jpg', 'jpeg', 'png']);
+    @endphp
+
+    @if($isImage)
+      <img src="{{ asset('storage/' . $echo->fichier) }}" alt="Échographie" width="100" class="me-3 rounded">
+    @else
+      <i class="bi bi-file-earmark-pdf fs-1 text-danger me-3"></i>
+    @endif
+
+    <div class="flex-grow-1">
+      <p class="mb-1"><strong>{{ $echo->titre }}</strong></p>
+      <p class="mb-1 text-muted">📅 Examen : {{ \Carbon\Carbon::parse($echo->date_examen)->format('d/m/Y') }}</p>
+      <p class="mb-1">📝 {{ $echo->observation ?? '—' }}</p>
+      <a href="{{ asset('storage/' . $echo->fichier) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-download me-1"></i> Voir / Télécharger
+      </a>
     </div>
   </div>
-</div>
+@empty
+  <div class="text-muted">Aucune échographie enregistrée pour cette grossesse.</div>
+@endforelse
 
-<div class="modal fade" id="modalUploadEcho" tabindex="-1" aria-labelledby="modalUploadEchoLabel" aria-hidden="true">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
+
+
+
+@foreach($grossesses as $g)
+  <!-- Ligne tableau -->
+
+  <!-- Boutons -->
+  <td>
+    <a href="#" data-bs-toggle="modal" data-bs-target="#modalEditerGrossesse{{ $g->id }}">
+      <i class="bi bi-pencil"></i>
+    </a>
+  </td>
+
+  <!-- Modale Modifier Grossesse -->
+  <div class="modal fade" id="modalEditerGrossesse{{ $g->id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-4">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Modifier la grossesse</h5>
+          <button class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form method="POST" action="{{ route('grossesses.update', $g->id) }}">
+          @csrf
+          @method('PUT')
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Date début</label>
+<input type="date" class="form-control" name="date_debut" id="date_debut_edit" value="{{ optional(\Carbon\Carbon::parse($grossesse->dpa))->format('Y-m-d') }}" required>
+
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date prévue d'accouchement</label>
+            <input type="date" name="date_terme" value="{{ $g->date_terme ? \Carbon\Carbon::parse($g->date_terme)->format('Y-m-d') : '' }}" class="form-control">
+
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Notes médicales</label>
+              <textarea name="notes" class="form-control" rows="3">{{ $g->notes_initiales }}</textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Enregistrer</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+@endforeach
+
+
+@foreach($grossesses as $g)
+<tr>
+  <!-- Infos grossesse -->
+
+  <!-- Bouton upload échographie -->
+  <td>
+    <a href="#" class="btn btn-sm btn-outline-success me-1"
+       data-bs-toggle="modal" data-bs-target="#modalUploadEcho{{ $g->id }}">
+      <i class="bi bi-upload"></i>
+    </a>
+  </td>
+</tr>
+
+<!-- 🔽 Modale d'envoi échographie -->
+<div class="modal fade" id="modalUploadEcho{{ $g->id }}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content rounded-4">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalUploadEchoLabel">
-          <i class="bi bi-upload me-2"></i>Joindre une échographie
+        <h5 class="modal-title">
+          <i class="bi bi-upload me-2 text-success"></i>Envoyer une échographie
         </h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <form method="POST" enctype="multipart/form-data">
+
+      <form method="POST" action="{{ route('echographies.store') }}" enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="grossesse_id" value="{{ $g->id }}">
+
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Titre du document</label>
-            <input type="text" class="form-control" required>
+            <label class="form-label">Type / titre</label>
+            <input type="text" name="titre" class="form-control" required>
           </div>
+
           <div class="mb-3">
-            <label class="form-label">Fichier (.pdf ou image)</label>
-            <input type="file" class="form-control" accept=".pdf,image/*" required>
+            <label class="form-label">Date d'examen</label>
+            <input type="date" name="date_examen" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fichier (JPG, PNG, PDF)</label>
+            <input type="file" name="fichier" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Observation</label>
+            <textarea name="observation" class="form-control" rows="2"></textarea>
           </div>
         </div>
+
         <div class="modal-footer">
-          <button class="btn btn-success">Téléverser</button>
-          <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-cloud-upload me-1"></i> Envoyer
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+@endforeach
+
+
+
+@foreach($grossesses as $g)
+<tr>
+  <!-- Colonnes + boutons -->
+  <td>
+    <!-- Bouton Supprimer -->
+    <a href="#" class="btn btn-sm btn-outline-danger"
+       data-bs-toggle="modal" data-bs-target="#modalSupprimerGrossesse{{ $g->id }}">
+      <i class="bi bi-trash"></i>
+    </a>
+  </td>
+</tr>
+
+
+<!-- Modale de suppression -->
+<div class="modal fade" id="modalSupprimerGrossesse{{ $g->id }}" tabindex="-1" aria-labelledby="modalLabel{{ $g->id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel{{ $g->id }}">
+          <i class="bi bi-trash3 text-danger me-2"></i>Confirmer la suppression
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <p>Supprimer la grossesse de <strong>{{ $g->patiente->nom }} {{ $g->patiente->prenom }}</strong> ?</p>
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{{ route('grossesses.destroy', $g->id) }}">
+          @csrf
+          @method('DELETE')
+          <button class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i> Supprimer
+          </button>
+        </form>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
 
 
 <!-- modal suivi grossesse medecin -->

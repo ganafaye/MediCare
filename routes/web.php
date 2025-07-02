@@ -247,3 +247,45 @@ Route::get('/factures/download/{id}', [FactureController::class, 'download'])->n
 Route::delete('/factures/destroy/{id}', [FactureController::class, 'destroy'])->name('facture.destroy');
 
 
+
+// Route pour la creation d'une grossesse de la part du medecin
+use App\Http\Controllers\GrossesseController;
+
+Route::middleware(['auth:medecin'])->prefix('medecin')->group(function () {
+
+    // 🗂 Affichage du tableau principal des grossesses
+    Route::get('/grossesses', [GrossesseController::class, 'index'])->name('grossesses.index');
+
+    // 📝 Création d’une nouvelle grossesse
+    Route::post('/grossesses', [GrossesseController::class, 'store'])->name('grossesses.store');
+
+    // ✏️ Mise à jour d’une grossesse existante
+    Route::put('/grossesses/{grossesse}', [GrossesseController::class, 'update'])->name('grossesses.update');
+
+    // ❌ Suppression d’une grossesse
+    Route::delete('/grossesses/{grossesse}', [GrossesseController::class, 'destroy'])->name('grossesses.destroy');
+
+});
+
+//route  pour les echographies du medecin
+use App\Http\Controllers\EchographieController;
+
+Route::prefix('echographies')->group(function () {
+    // Créer une échographie liée à une grossesse
+    Route::post('/', [EchographieController::class, 'store'])->name('echographies.store');
+
+    // Supprimer une échographie (si tu as un bouton "Supprimer")
+    Route::delete('/{echographie}', [EchographieController::class, 'destroy'])->name('echographies.destroy');
+
+    // (Optionnel) Voir le détail d'une échographie
+    Route::get('/{echographie}', [EchographieController::class, 'show'])->name('echographies.show');
+});
+
+//Route suivi grossesse patiente
+use App\Http\Controllers\SuiviGrossesseController;
+
+Route::middleware(['auth:patiente'])->group(function () {
+    Route::get('/suivi_grossesse', [SuiviGrossesseController::class, 'index'])
+         ->name('suivi.patiente');
+});
+

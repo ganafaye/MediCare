@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Grossesse;
+
 
 class Patiente extends Authenticatable
 {
@@ -22,4 +24,14 @@ class Patiente extends Authenticatable
     {
         return $this->hasMany(RendezVous::class, 'patiente_id');
     }
+
+    // app/Models/Patiente.php
+     public function grossesses()
+{
+    return $this->hasMany(Grossesse::class);
+}
+
+
+
+
 }

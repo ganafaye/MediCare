@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\DossierMedical;
 use App\Models\Ordonnance;
 use App\Models\Consultation;
+use App\Models\Grossesse;
 
 
 class DashboardMedecinController extends Controller
@@ -63,6 +64,16 @@ $repartitionMotifs = DB::table('rendez_vous')
             ]);
         }
     }
-        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances' ,'consultations' , 'notifications'));
+
+    // Grossesses des patientes suivies
+    $grossesses = Grossesse::with('patiente')
+        ->whereIn('patiente_id', $patientes->pluck('id'))
+        ->latest()
+        ->get();
+
+        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances' ,'consultations' , 'notifications' , 'grossesses'))
+            ->with('medecin', $medecin)
+            ->with('grossesses', $grossesses)
+            ->with('dossiers', $dossiers);
     }
 }

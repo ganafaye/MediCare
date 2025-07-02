@@ -135,58 +135,69 @@
     </style>
 </head>
 <body>
-@php
-    // Simulation de la semaine courante
-    $semaine = 22;
-    if ($semaine <= 12) $trimestreActuel = 1;
-    elseif ($semaine <= 26) $trimestreActuel = 2;
-    elseif ($semaine <= 40) $trimestreActuel = 3;
-    else $trimestreActuel = 4;
-@endphp
 <div class="container py-4">
     <!-- En-tête -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow card-main">
-        <div>
-            <h2 class="fw-bold mb-2" style="color:#fd0d99;">
-                <i class="bi bi-heart-pulse me-2"></i>Suivre ma grossesse
-            </h2>
-            <div class="d-flex gap-2 flex-wrap">
-                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                    Date de début : <strong>01/01/2025</strong>
-                </span>
-                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                    Semaine : <strong id="semaine-grossesse">{{ $semaine }}</strong>/40
-                </span>
-                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                    DPA : <strong>15/09/2025</strong>
-                </span>
-                <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                    Groupe sanguin : <strong>A+</strong>
-                </span>
-            </div>
-        </div>
-        <div class="mt-3 mt-md-0">
-            <i class="bi bi-calendar-event" style="color:#fd0d99; font-size:1.4rem;"></i>
-            <span class="fw-semibold" style="color:#fd0d99;">
-                {{ \Carbon\Carbon::now()->locale('fr_FR')->isoFormat('dddd D MMMM YYYY') }}
+   <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow card-main">
+    <div>
+        <h2 class="fw-bold mb-2" style="color:#fd0d99;">
+            <i class="bi bi-heart-pulse me-2"></i>Suivre ma grossesse
+        </h2>
+        <div class="d-flex gap-2 flex-wrap">
+
+            <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                Date de début :
+                <strong>{{ optional($grossesse->date_debut)->format('d/m/Y') ?? '—' }}</strong>
             </span>
+
+            <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                Semaine :
+                <strong id="semaine-grossesse">{{ $semaine ?? '0' }}</strong>/40
+            </span>
+
+            <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                DPA :
+                <strong>{{ optional($grossesse->date_terme)->format('d/m/Y') ?? '—' }}</strong>
+            </span>
+
+            <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
+                Groupe sanguin :
+                <strong>{{ $patiente->groupe_sanguin ?? 'Non renseigné' }}</strong>
+            </span>
+
         </div>
     </div>
+    <div class="mt-3 mt-md-0">
+        <i class="bi bi-calendar-event" style="color:#fd0d99; font-size:1.4rem;"></i>
+        <span class="fw-semibold" style="color:#fd0d99;">
+            {{ now()->locale('fr_FR')->isoFormat('dddd D MMMM YYYY') }}
+        </span>
+    </div>
+</div>
+
 
     <!-- Animation silhouette alignée avec les autres cards -->
    <!-- Évolution de la grossesse -->
+@php
+    $mois = $semaine ? ceil($semaine / 4) : 1;
+    $sa = $sa ?? ($semaine ? $semaine + 2 : 2);
+@endphp
+
 <div class="rounded-4 p-4 d-flex flex-column flex-md-row align-items-center justify-content-between"
      style="background-color: #fdeaf1;">
 
     <!-- Illustration bébé -->
     <div class="mb-4 mb-md-0 text-center">
-        <img src="{{ asset('image/mois_grossesse/9_mois.png') }}" alt="Bébé semaine grossesse"
-             class="img-fluid   " style="width: 280px;">
+        <img src="{{ asset('image/mois_grossesse/' . $mois . '_mois.png') }}"
+             alt="Illustration mois {{ $mois }}"
+             class="img-fluid" style="width: 280px;">
     </div>
 
     <!-- Infos semaine -->
     <div class="flex-grow-1 ms-md-4">
-        <h3 class="fw-bold text-danger mb-3">Ma {{ $semaine ?? 15 }}ème semaine de grossesse ({{ $sa ?? 17 }} sa)</h3>
+        <h3 class="fw-bold text-danger mb-3">
+            Ma {{ $semaine ?? '—' }}<sup>ᵉ</sup> semaine de grossesse
+            ({{ $sa }} sa)
+        </h3>
 
         <!-- Tags -->
         <div class="mb-3 d-flex flex-wrap gap-2">
@@ -202,14 +213,19 @@
         </div>
 
         <!-- Description -->
-        <p class="mb-1 fw-semibold">Vous êtes à {{ $semaine ?? 15 }} semaines de grossesse.</p>
+        <p class="mb-1 fw-semibold">
+            Vous êtes à {{ $semaine ?? '—' }} semaines de grossesse.
+        </p>
+
         <ul class="text-muted ps-3 mb-3">
             <li>Il est oxygéné grâce à vous, via votre sang.</li>
             <li>Grand changement pour vous : vous sentez votre bébé bouger !</li>
         </ul>
 
         <p class="text-muted small">
-            Découvrez ce qui vous attend de palpitant maintenant que vous êtes à {{ $semaine ?? 15 }} semaines de grossesse, soit {{ $sa ?? 17 }} semaines d’aménorrhée.
+            Découvrez ce qui vous attend de palpitant maintenant que vous êtes à
+            {{ $semaine ?? '—' }} semaines de grossesse,
+            soit {{ $sa }} semaines d’aménorrhée.
         </p>
 
         <!-- Boutons d’action -->
@@ -227,30 +243,44 @@
     </div>
 </div>
 
+
+
 <br>
+@php
+    $totalSemaines = 38;
+    $semaine = $semaine ?? 0;
+    $pourcentage = round(($semaine / $totalSemaines) * 100);
+    $joursRestants = 266 - ($semaine * 7); // basé sur date début estimée
+@endphp
+
 <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white mb-4">
   <h5 class="fw-bold mb-4">Voici où vous en êtes de votre grossesse :</h5>
 
   <div class="d-flex justify-content-between align-items-center mb-2">
-    <span class="fw-bold text-dark">SEMAINE {{ $semaine ?? 10 }}</span>
-    <span class="fw-bold text-muted">38 SEMAINES</span>
+    <span class="fw-bold text-dark">SEMAINE {{ $semaine }}</span>
+    <span class="fw-bold text-muted">{{ $totalSemaines }} SEMAINES</span>
   </div>
 
-  <div class="progress pregnancy-progress mb-2" role="progressbar" aria-valuenow="{{ round(($semaine ?? 10) / 38 * 100) }}" aria-valuemin="0" aria-valuemax="100">
-    <div class="progress-bar" style="width: {{ round(($semaine ?? 10) / 38 * 100) }}%">
+  <div class="progress pregnancy-progress mb-2"
+       role="progressbar"
+       aria-valuenow="{{ $pourcentage }}"
+       aria-valuemin="0"
+       aria-valuemax="100">
+    <div class="progress-bar" style="width: {{ $pourcentage }}%">
       <span class="dot"></span>
     </div>
   </div>
 
-  <div class="fw-bold text-dark mb-4">{{ round(($semaine ?? 10) / 38 * 100) }}%</div>
+  <div class="fw-bold text-dark mb-4">{{ $pourcentage }}%</div>
 
   <div class="calendar-icon mb-3">
     <i class="bi bi-calendar3 display-6 text-rose"></i>
-    <div class="fs-4 fw-bold mt-1">J-{{ 266 - (($semaine ?? 10) * 7) }}</div>
+    <div class="fs-4 fw-bold mt-1">J-{{ $joursRestants }}</div>
   </div>
 
   <p class="text-muted small">
-    Vous ne vous en apercevez pas, mais tout s’agite dans votre ventre ! Et, vous commencez à vous sentir mieux…
+    Vous ne vous en apercevez pas, mais tout s’agite dans votre ventre !
+    Et, vous commencez à vous sentir mieux…
   </p>
 </div>
 
@@ -259,52 +289,81 @@
 <!-- Examens + Conseils -->
 <div class="row mb-4">
   <!-- Bloc Examens -->
-  <div class="col-md-6 mb-3">
-    <div class="card border-0 rounded-4 shadow-sm h-100" style="background: linear-gradient(to bottom right, #fdeaf4, #ffffff);">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="bg-white rounded-circle p-2 shadow-sm me-2">
-            <i class="bi bi-clipboard2-check text-rose fs-5"></i>
-          </div>
-          <h6 class="fw-bold text-rose mb-0">Derniers examens</h6>
+<div class="col-md-6 mb-3">
+  <div class="card border-0 rounded-4 shadow-sm h-100"
+       style="background: linear-gradient(to bottom right, #fdeaf4, #ffffff);">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <div class="bg-white rounded-circle p-2 shadow-sm me-2">
+          <i class="bi bi-clipboard2-check text-rose fs-5"></i>
         </div>
-        <ul class="list-group list-group-flush small">
-          <li class="list-group-item bg-transparent border-0 d-flex justify-content-between">
-            <span><i class="bi bi-hospital me-2"></i>Échographie (10/05/2025)</span>
-            <span class="badge bg-success-subtle text-success">Normale</span>
-          </li>
-          <li class="list-group-item bg-transparent border-0 d-flex justify-content-between">
-            <span><i class="bi bi-droplet me-2"></i>Analyse sanguine (02/05/2025)</span>
-            <span class="badge bg-success-subtle text-success">OK</span>
-          </li>
-          <li class="list-group-item bg-transparent border-0 d-flex justify-content-between">
-            <span><i class="bi bi-heart-pulse me-2"></i>Tension artérielle</span>
-            <span class="badge bg-success-subtle text-success">12/8</span>
-          </li>
-        </ul>
+        <h6 class="fw-bold text-rose mb-0">Observations échographiques</h6>
       </div>
-    </div>
-  </div>
 
-  <!-- Bloc Conseils -->
-  <div class="col-md-6 mb-3">
-    <div class="card border-0 rounded-4 shadow-sm h-100" style="background: linear-gradient(to bottom right, #e6f5f9, #ffffff);">
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-3">
-          <div class="bg-white rounded-circle p-2 shadow-sm me-2">
-            <i class="bi bi-chat-left-heart text-rose fs-5"></i>
-          </div>
-          <h6 class="fw-bold text-rose mb-0">Conseils personnalisés</h6>
-        </div>
-        <ul class="small mb-0 ps-2">
-          <li class="mb-2"><i class="bi bi-cup-straw me-2 text-secondary"></i>Restez bien hydratée et mangez équilibré.</li>
-          <li class="mb-2"><i class="bi bi-calendar-check me-2 text-secondary"></i>Respectez vos rendez-vous prénataux.</li>
-          <li class="mb-2"><i class="bi bi-telephone me-2 text-secondary"></i>Prenez rendez-vous immediatement en cas de symptômes inhabituels.</li>
-        </ul>
-      </div>
+      <ul class="list-group list-group-flush small">
+        @forelse($grossesse->echographies->sortByDesc('date_examen')->take(3) as $echo)
+          <li class="list-group-item bg-transparent border-0">
+            <div class="fw-semibold text-dark mb-1">
+              📅 {{ \Carbon\Carbon::parse($echo->date_examen)->format('d/m/Y') }}
+
+            </div>
+            <div class="text-muted">
+              {{ $echo->observations ?? 'Aucune observation enregistrée.' }}
+            </div>
+          </li>
+        @empty
+          <li class="list-group-item bg-transparent border-0 text-muted fst-italic">
+            Aucune échographie enregistrée.
+          </li>
+        @endforelse
+      </ul>
     </div>
   </div>
 </div>
+
+
+
+  @php
+    $conseils = match(true) {
+        $semaine < 12 => [
+            'Prenez de l’acide folique si ce n’est pas encore fait.',
+            'Évitez toute substance toxique (alcool, tabac).',
+            'Allez doucement si vous avez des nausées fréquentes.',
+        ],
+        $semaine < 27 => [
+            'Continuez une alimentation équilibrée et riche en fer.',
+            'Commencez à préparer vos rendez-vous du 2ᵉ trimestre.',
+            'Surveillez vos mouvements fœtaux.',
+        ],
+        default => [
+            'Préparez votre valise pour la maternité.',
+            'Dormez sur le côté gauche pour une meilleure circulation.',
+            'Discutez de votre plan d’accouchement avec le médecin.',
+        ],
+    };
+@endphp
+
+<!-- Bloc Conseils -->
+<div class="col-md-6 mb-3">
+  <div class="card border-0 rounded-4 shadow-sm h-100" style="background: linear-gradient(to bottom right, #e6f5f9, #ffffff);">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <div class="bg-white rounded-circle p-2 shadow-sm me-2">
+          <i class="bi bi-chat-left-heart text-rose fs-5"></i>
+        </div>
+        <h6 class="fw-bold text-rose mb-0">Conseils personnalisés</h6>
+      </div>
+      <ul class="small mb-0 ps-2">
+        @foreach($conseils as $conseil)
+          <li class="mb-2">
+            <i class="bi bi-check2-circle me-2 text-secondary"></i>{{ $conseil }}
+          </li>
+        @endforeach
+      </ul>
+    </div>
+  </div>
+</div>
+
 
 <!-- 🗓️ Consultations prénatales -->
 <div class="card shadow-sm border-0 rounded-4 mb-4">
@@ -354,28 +413,65 @@
 <!-- 🖼️ Échographies -->
 <div class="card shadow-sm border-0 rounded-4 mb-4">
   <div class="card-header bg-white border-0 rounded-top-4 d-flex justify-content-between align-items-center">
-    <h6 class="fw-bold mb-0 text-rose"><i class="bi bi-images me-1"></i>Échographies</h6>
-    <a href="#" class="btn btn-sm btn-outline-primary">
-      <i class="bi bi-cloud-arrow-down me-1"></i>Tout télécharger
-    </a>
+    <h6 class="fw-bold mb-0 text-rose">
+      <i class="bi bi-images me-1"></i>Échographies
+    </h6>
   </div>
   <div class="card-body">
-    <div class="row g-4">
+  <div class="row g-4">
+    @forelse($echographies as $echo)
       <div class="col-md-4 col-sm-6">
         <div class="card border-0 shadow-sm rounded-4 h-100">
           <div class="card-body text-center">
-            <img src="{{ asset('image/mois_grossesse/3_mois.png') }}" alt="Échographie" class="img-fluid rounded mb-3" style="max-height:180px;">
-            <p class="fw-bold mb-1">Écho 1er trimestre</p>
-            <small class="text-muted mb-2 d-block">15/05/2025</small>
-            <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
-              <i class="bi bi-eye me-1"></i>Consulter
+
+            {{-- Image (affichage dynamique) --}}
+            @php
+              $hasImage = $echo->image && file_exists(public_path('storage/' . $echo->image));
+              $imgPath = $hasImage
+                ? asset('storage/' . $echo->image)
+                : asset('image/mois_grossesse/' . ceil($semaine / 4) . '_mois.png');
+            @endphp
+
+            <a href="{{ $hasImage ? $imgPath : '#' }}" target="{{ $hasImage ? '_blank' : '_self' }}">
+              <img src="{{ $imgPath }}"
+                   alt="Échographie"
+                   class="img-fluid rounded mb-3"
+                   style="max-height:180px;">
             </a>
+
+            {{-- Type + date --}}
+            <p class="fw-bold mb-1">{{ $echo->type ?? 'Échographie' }}</p>
+            <small class="text-muted mb-2 d-block">
+              {{ $echo->date_examen
+                  ? \Carbon\Carbon::parse($echo->date_examen)->format('d/m/Y')
+                  : 'Date inconnue' }}
+            </small>
+
+            {{-- Observation --}}
+            @if($echo->observation)
+              <p class="text-muted small">{{ $echo->observation }}</p>
+            @endif
+
+            {{-- Boutons action --}}
+
+              <div class="d-flex justify-content-center gap-2 mt-2">
+                <a href="{{ $imgPath }}" target="_blank"
+                   class="btn btn-sm btn-outline-primary rounded-pill">
+                  <i class="bi bi-eye me-1"></i>Consulter
+                </a>
+                <a href="{{ $imgPath }}" download
+                   class="btn btn-sm btn-outline-success rounded-pill">
+                  <i class="bi bi-download me-1"></i>Télécharger
+                </a>
+              </div>
           </div>
         </div>
       </div>
-      <!-- Ajouter d'autres images ici -->
-    </div>
+    @empty
+      <div class="text-muted fst-italic px-3">Aucune échographie enregistrée.</div>
+    @endforelse
   </div>
+</div>
 </div>
 
 <!-- 📋 Étapes de grossesse -->
@@ -439,6 +535,10 @@
   </div>
 </div>
 </div>
+<script>
+  const dateDebutGrossesse = new Date("{{ \Carbon\Carbon::parse($grossesse->date_debut)->format('Y-m-d') }}");
+</script>
+
 <!-- JS FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
@@ -446,35 +546,51 @@
   document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendarGrossesse');
 
-    if (calendarEl) {
+    if (calendarEl && typeof dateDebutGrossesse !== 'undefined') {
+
+      function ajouterSemaines(date, semaines) {
+        const copie = new Date(date);
+        copie.setDate(copie.getDate() + semaines * 7);
+        return copie.toISOString().slice(0, 10);
+      }
+
+      const events = [
+        {
+          title: '🩺 Échographie 1er trimestre',
+          start: ajouterSemaines(dateDebutGrossesse, 12),
+          url: '#'
+        },
+        {
+          title: '🧠 Écho morphologique',
+          start: ajouterSemaines(dateDebutGrossesse, 22),
+          url: '#'
+        },
+        {
+          title: '🧸 Écho 3ᵉ trimestre',
+          start: ajouterSemaines(dateDebutGrossesse, 32),
+          url: '#'
+        }
+      ];
+
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         height: 'auto',
         locale: 'fr',
         firstDay: 1,
-        events: [
-          {
-            title: 'Échographie du 1er trimestre',
-            start: '2025-05-15',
-            url: '#'
-          },
-          {
-            title: 'Écho morphologique',
-            start: '2025-06-25',
-            url: '#'
-          },
-          {
-            title: 'Écho 3ᵉ trimestre',
-            start: '2025-08-10',
-            url: '#'
+        events: events,
+        eventClick: function(info) {
+          if (info.event.url && info.event.url !== '#') {
+            window.open(info.event.url, '_blank');
+            info.jsEvent.preventDefault();
           }
-        ]
+        }
       });
 
       calendar.render();
     }
   });
 </script>
+
 </div>
 @vite('resources/js/app.js')
 </body>
