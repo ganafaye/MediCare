@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\RendezVous;
-
+use App\Notifications\RendezVousCreePatiente;
+use App\Notifications\RendezVousValidePatiente;
 class RendezVousController extends Controller
 {
     // Afficher les rendez-vous pour chaque rôle
@@ -39,6 +40,8 @@ class RendezVousController extends Controller
         'motif' => $request->motif,
     ]);
 
+// Envoi de la notification à la patiente
+   $rendezvous->patiente->notify(new RendezVousCreePatiente($rendezvous));
     return back()->with('success', 'Rendez-vous programmé avec succès !');
 }
 
@@ -47,6 +50,10 @@ class RendezVousController extends Controller
     {
         $rendezvous = RendezVous::where('id', $id)->where('medecin_id', Auth::id())->firstOrFail();
         $rendezvous->update(['statut' => 'confirmé']);
+
+        if ($rendezvous->patiente) {
+        $rendezvous->patiente->notify(new RendezVousValidePatiente($rendezvous));
+    }
 
         return back()->with('success', 'Rendez-vous confirmé avec succès !');
     }

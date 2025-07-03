@@ -22,7 +22,7 @@ class PatienteAdminController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        Patiente::create([
+        $patiente = Patiente::create([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'date_naissance' => $request->date_naissance,
@@ -33,13 +33,17 @@ class PatienteAdminController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $patiente->notify(new \App\Notifications\BienvenueCreeeParAdmin());
+
         return back()->with('success', 'Patiente créée avec succès !');
+
     }
     public function destroy($id)
     {
         $patiente = \App\Models\Patiente::findOrFail($id);
         $patiente->delete();
-
+      // 🔔 Notification de suppression
+      $patiente->notify(new \App\Notifications\CompteSupprimePatiente());
         return back()->with('success', 'Patiente supprimée avec succès !');
     }
     public function update(Request $request, $id)

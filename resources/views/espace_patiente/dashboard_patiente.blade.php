@@ -177,6 +177,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
+@if (session('error'))
+  <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ session('error') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+  </div>
+@endif
+
                 <h2 class="fw-bold mb-4" style="color:#fd0d99;"></h2>
 
                 <!-- En-tête stylisé -->

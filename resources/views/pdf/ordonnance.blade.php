@@ -43,9 +43,9 @@
         <div class="separator"></div>
 
         <div class="footer">
-            <p>📍 Adresse : Rue 10 Rufisque, Dakar, Sénégal</p>
-            <p>📞 Téléphone : +221 77 596 01 69 | ✉️ Email : cliniqueMedicare@gmail.com</p>
-            <p>🌐 Site Web : www.cliniquemedicare.sn</p>
+            <p><a> Adresse : Rue 10 Rufisque, Dakar, Sénégal</a></p>
+            <p><a> Téléphone : +221 77 596 01 69 |  Email : cliniqueMedicare@gmail.com</a></p>
+            <p><a> Site Web : www.cliniquemedicare.sn</a></p>
         </div>
 
         <div class="signature">

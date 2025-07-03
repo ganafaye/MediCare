@@ -17,6 +17,11 @@ class SuiviGrossesseController extends Controller
         ->latest('date_debut')
         ->first();
 
+        if (!$grossesse) {
+        return redirect()->route('dashboard.patiente') // ou route précédente
+            ->with('error', 'Aucun suivi de grossesse n’a encore été enregistré pour vous.');
+    }
+
     $semaine = $grossesse
         ? \Carbon\Carbon::parse($grossesse->date_debut)->diffInWeeks(now())
         : null;

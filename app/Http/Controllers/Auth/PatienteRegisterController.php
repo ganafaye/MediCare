@@ -39,6 +39,9 @@ class PatienteRegisterController extends Controller
         // Authentification manuelle (exemple simple)
         session(['patiente_id' => $patiente->id]);
 
+        $patiente->notify(new \App\Notifications\BienvenuePatiente());
+
+
        return redirect('/')
     ->with('inscription_success', 'Votre inscription a été validée ! Connectez-vous pour accéder à votre espace.');
     }

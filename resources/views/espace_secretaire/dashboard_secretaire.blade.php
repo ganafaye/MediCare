@@ -578,7 +578,7 @@
                                 @foreach ($factures as $facture)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</td>
-                                    <td>{{ $facture->patiente->prenom }} {{ $facture->patiente->nom }}</td>
+                                    <td>{{ optional($facture->patiente)->prenom }} {{ optional($facture->patiente)->nom }}</td>
                                     <td>{{ number_format($facture->montant, 2, ',', ' ') }} FCFA</td>
                                     <td>{{ $facture->type_facture }}</td>
                                     <td>
@@ -872,7 +872,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Patiente :</strong> {{ $facture->patiente->prenom }} {{ $facture->patiente->nom }}</p>
+                <td>{{ optional($facture->patiente)->prenom }} {{ optional($facture->patiente)->nom }}</td>
                 <p><strong>Date :</strong> {{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y') }}</p>
                 <p><strong>Type :</strong> {{ $facture->type_facture }}</p>
                 <p><strong>Montant :</strong> {{ number_format($facture->montant, 2, ',', ' ') }} FCFA</p>

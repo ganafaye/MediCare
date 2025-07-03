@@ -46,7 +46,7 @@
         <div class="separator"></div>
         <div class="footer">
             <p>Merci d'avoir choisi MediCare. <br> Votre santé, notre priorité.</p>
-            <p>Pour toute question, contactez-nous à <a href="#">
+            <p>Pour toute question, contactez-nous à <a href="#"> Téléphone : +221 77 596 01 69 |  Email : cliniqueMedicare@gmail.com </a>
         </div>
     </div>
 </body>
