@@ -143,7 +143,7 @@
         <li class="nav-item mb-2">
           <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDossierMedical">
             <i class="bi bi-folder2-open fs-5"></i>
-            <span>Dossier médical</span>
+            <span>Mon Dossier médical</span>
           </a>
         </li>
       </ul>

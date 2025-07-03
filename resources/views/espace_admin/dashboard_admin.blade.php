@@ -752,23 +752,43 @@
                     <span class="badge bg-danger">Annulé</span>
                 @endif
             </td>
-            <td>
-                <button class="btn btn-sm btn-outline-primary rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
-                    <i class="bi bi-eye"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-success rounded-pill"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
-                    <i class="bi bi-pencil"></i>
-                </button>
-                <form method="POST" action="{{ route('rendezvous.admin.delete', $rdv->id) }}" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-trash"></i></button>
-                </form>
-            </td>
+           <td>
+  {{-- 👁 Bouton Voir toujours disponible --}}
+  <button class="btn btn-sm btn-outline-primary rounded-pill"
+          data-bs-toggle="modal"
+          data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
+    <i class="bi bi-eye"></i>
+  </button>
+
+  {{-- 🖊️ Bouton Modifier : désactivé si confirmé ou annulé --}}
+  @if(!in_array($rdv->statut, ['confirmé', 'annulé']))
+    <button class="btn btn-sm btn-outline-success rounded-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+      <i class="bi bi-pencil"></i>
+    </button>
+  @else
+    <button class="btn btn-sm btn-outline-secondary rounded-pill" disabled
+            title="Modification désactivée">
+      <i class="bi bi-lock-fill"></i>
+    </button>
+  @endif
+
+  {{-- 🗑️ Bouton Supprimer : aussi bloqué si confirmé ou annulé --}}
+  @if(!in_array($rdv->statut, ['confirmé', 'annulé']))
+    <form method="POST" action="{{ route('rendezvous.admin.delete', $rdv->id) }}" style="display:inline;">
+      @csrf
+      @method('DELETE')
+      <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+        <i class="bi bi-trash"></i>
+      </button>
+    </form>
+  @else
+    <button class="btn btn-sm btn-outline-secondary rounded-pill" disabled title="Suppression désactivée">
+      <i class="bi bi-trash"></i>
+    </button>
+  @endif
+</td>
         </tr>
         @endforeach
     </tbody>

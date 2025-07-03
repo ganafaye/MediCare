@@ -777,28 +777,39 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
     });
 </script>
 <!-- Modal Voir Dossier Médical -->
-<div class="modal fade" id="modalVoirDossier" tabindex="-1" aria-labelledby="modalVoirDossierLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content rounded-4">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold" id="modalVoirDossierLabel" style="color:#fd0d99;">
-          <i class="bi bi-folder2-open me-2"></i> Dossier Médical de {{ $dossier->patiente->prenom }} {{ $dossier->patiente->nom }}
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body">
-        <p><strong>Diagnostic :</strong> {{ $dossier->diagnostic }}</p>
-        <p><strong>Traitement :</strong> {{ $dossier->traitement ?? 'Non renseigné' }}</p>
-        <p><strong>Observations :</strong> {{ $dossier->observations ?? 'Non renseigné' }}</p>
-        <p><strong>Grossesse :</strong>
-          <span class="badge bg-{{ $dossier->grossesse ? 'success' : 'danger' }}">
-            {{ $dossier->grossesse ? 'Oui' : 'Non' }}
-          </span>
-        </p>
+@if(isset($dossier) && $dossier)
+  <!-- Modal Voir Dossier Médical -->
+  <div class="modal fade" id="modalVoirDossier" tabindex="-1" aria-labelledby="modalVoirDossierLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-4">
+
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold" id="modalVoirDossierLabel" style="color:#fd0d99;">
+            <i class="bi bi-folder2-open me-2"></i>
+            Dossier Médical de {{ $dossier->patiente->prenom }} {{ $dossier->patiente->nom }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body">
+          <p><strong>Diagnostic :</strong> {{ $dossier->diagnostic }}</p>
+          <p><strong>Traitement :</strong> {{ $dossier->traitement ?? 'Non renseigné' }}</p>
+          <p><strong>Observations :</strong> {{ $dossier->observations ?? 'Non renseigné' }}</p>
+          <p><strong>Grossesse :</strong>
+            <span class="badge bg-{{ $dossier->grossesse ? 'success' : 'danger' }}">
+              {{ $dossier->grossesse ? 'Oui' : 'Non' }}
+            </span>
+          </p>
+        </div>
+
       </div>
     </div>
   </div>
-</div>
+@else
+  {{-- En option, message d'information --}}
+ 
+@endif
+
 
 @foreach ($dossiers as $dossier)
 <!-- Modal Modifier Dossier Médical -->
