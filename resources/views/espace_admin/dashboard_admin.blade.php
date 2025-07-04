@@ -71,6 +71,12 @@
         <span>Rendez-vous</span>
       </a>
     </li>
+   <li class="nav-item">
+  <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalEditProfilAdmin">
+    <i class="bi bi-person-circle me-2"></i>
+    Modifier mon profil
+  </a>
+</li>
    {{-- Déconnexion en bas --}}
     <div class="mt-auto pt-3 border-top">
       <form id="logout-form" action="{{ route('logout') }}" method="POST">
@@ -88,12 +94,26 @@
 
         <!-- Contenu principal -->
         <main class="col px-3 px-md-5 py-4 ms-md-0">
-            @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
-    </div>
- @endif
+         @if (session('success'))
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+  </div>
+@endif
+
+@if ($errors->any())
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <ul class="mb-0">
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+  </div>
+@endif
+
             <!-- Bouton menu mobile -->
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
@@ -373,9 +393,9 @@
                 <i class="bi bi-plus-circle me-2"></i>Créer un compte patiente
             </button>
         </div>
-        <div class="table-responsive">
-            <table class="table align-middle mb-0 table-hover">
-                <thead class="table-light">
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+           <table class="table table-sm   table-hover align-middle mb-0">
+                <thead class="table-light text-center">
                     <tr>
                         <th>Nom</th>
                         <th>Prénom</th>
@@ -389,7 +409,7 @@
                 </thead>
               <tbody>
     @forelse($patientes as $patiente)
-        <tr>
+        <tr class="text-center">
             <td>{{ $patiente->nom }}</td>
             <td>{{ $patiente->prenom }}</td>
             <td>{{ $patiente->date_naissance }}</td>
@@ -1208,6 +1228,72 @@ new Chart(ctx3, {
 
 </script>
 @vite('resources/js/app.js')
+<!-- Modal Modifier Profil Admin -->
+<div class="modal fade" id="modalEditProfilAdmin" tabindex="-1" aria-labelledby="modalEditProfilAdminLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-sm rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title fw-bold" id="modalEditProfilAdminLabel">
+          <i class="bi bi-person-circle me-2"></i> Modifier mon profil
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <form method="POST" action="{{ route('admin.profil.update') }}">
+        @csrf
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="nom" class="form-label">Nom</label>
+              <input type="text" name="nom" id="nom" class="form-control" value="{{ auth('admin')->user()->nom }}" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="email" class="form-label">Adresse email</label>
+              <input type="email" name="email" id="email" class="form-control" value="{{ auth('admin')->user()->email }}" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="telephone" class="form-label">Téléphone</label>
+              <input type="text" name="telephone" id="telephone" class="form-control" value="{{ auth('admin')->user()->telephone }}">
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <h6 class="text-muted fw-bold mb-3">
+            <i class="bi bi-shield-lock me-2"></i>Changer mon mot de passe
+          </h6>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="current_password" class="form-label">Mot de passe actuel</label>
+              <input type="password" name="current_password" id="current_password" class="form-control" placeholder="••••••••">
+            </div>
+
+            <div class="col-md-6">
+              <label for="new_password" class="form-label">Nouveau mot de passe</label>
+              <input type="password" name="new_password" id="new_password" class="form-control" placeholder="••••••••">
+            </div>
+
+            <div class="col-md-6">
+              <label for="new_password_confirmation" class="form-label">Confirmer le nouveau mot de passe</label>
+              <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" placeholder="••••••••">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light rounded-bottom-4">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>

@@ -597,43 +597,51 @@
         </div>
 
         <!-- Tableau des ordonnances dynamiques -->
-        <div class="table-responsive">
-            <table class="table align-middle mb-0 table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>Patiente</th>
-                        <th>Date</th>
-                        <th>Médicaments</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($ordonnances as $ordonnance)
-                    <tr>
-                        <td>{{ $ordonnance->patiente->prenom }} {{ $ordonnance->patiente->nom }}</td>
-                        <td>{{ $ordonnance->date_prescription->format('d/m/Y') }}</td>
-                        <td>{{ $ordonnance->contenu }}</td>
-                        <td><span class="badge bg-{{ $ordonnance->statut == 'Envoyée' ? 'success' : 'secondary' }}">{{ $ordonnance->statut }}</span></td>
-                        <td>
-                            <!-- Voir ordonnance -->
-                            <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirOrdonnance{{ $ordonnance->id }}" title="Voir">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <!-- Modifier ordonnance -->
-                            <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalModifierOrdonnance{{ $ordonnance->id }}" title="Modifier">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <!-- Télécharger ordonnance -->
-                            <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger">
-                                <i class="bi bi-download"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+       <div class="table-responsive">
+    <table class="table align-middle table-hover ">
+        <thead class="table-light text-center">
+            <tr>
+                <th>Patiente</th>
+                <th>Date</th>
+                <th>Médicaments</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($ordonnances as $ordonnance)
+            <tr>
+                <td>{{ $ordonnance->patiente->prenom }} {{ $ordonnance->patiente->nom }}</td>
+                <td class="text-nowrap">{{ $ordonnance->date_prescription->format('d/m/Y') }}</td>
+                <td style="max-width: 250px;">
+                    <div class="text-truncate" title="{{ $ordonnance->contenu }}">
+                        {{ $ordonnance->contenu }}
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-{{ $ordonnance->statut == 'Envoyée' ? 'success' : 'secondary' }}">
+                        {{ $ordonnance->statut }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    <!-- Voir ordonnance -->
+                    <button class="btn btn-sm btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalVoirOrdonnance{{ $ordonnance->id }}" title="Voir">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <!-- Modifier ordonnance -->
+                    <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalModifierOrdonnance{{ $ordonnance->id }}" title="Modifier">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <!-- Télécharger ordonnance -->
+                    <a href="{{ route('ordonnance.download', $ordonnance->id) }}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Télécharger">
+                        <i class="bi bi-download"></i>
+                    </a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
       </div>
     </div>
   </div>
@@ -748,7 +756,7 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
         new Chart(ctx1, {
             type: "bar",
             data: {
-                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                labels: ["Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar", "Avr", "Mai"],
                 datasets: [{
                     label: "Consultations",
                     data: window.consultationsParMois,
@@ -807,7 +815,7 @@ document.querySelectorAll('[data-bs-target="#modalOrdonnances"]').forEach(functi
   </div>
 @else
   {{-- En option, message d'information --}}
- 
+
 @endif
 
 

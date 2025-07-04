@@ -287,3 +287,7 @@ Route::middleware(['auth:patiente'])->group(function () {
          ->name('suivi.patiente');
 });
 
+// route pour admin modifier son compte
+Route::post('/modifier_profil_admin', [AdminAuthController::class, 'update'])
+    ->name('admin.profil.update')
+    ->middleware('auth:admin');

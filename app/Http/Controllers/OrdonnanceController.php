@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Ordonnance;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade as PDF;
-
+use App\Notifications\NouvelleOrdonnanceNotification;
 class OrdonnanceController extends Controller
 {
     public function store(Request $request)
@@ -17,12 +17,13 @@ class OrdonnanceController extends Controller
         'date_prescription' => 'required|date',
     ]);
 
-    Ordonnance::create([
+   $ordonnance = Ordonnance::create([
          'medecin_id' => auth()->guard('medecin')->user()->id,
         'patiente_id' => $request->patiente_id,
         'contenu' => $request->contenu,
         'date_prescription' => $request->date_prescription,
     ]);
+    $ordonnance->patiente->notify(new NouvelleOrdonnanceNotification($ordonnance));
 
     return redirect()->back()->with('success', 'Ordonnance créée avec succès.');
 }
