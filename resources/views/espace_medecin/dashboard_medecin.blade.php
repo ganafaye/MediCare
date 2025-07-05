@@ -63,6 +63,17 @@
     width: 250px;
   }
 }
+.btn-outline-pink {
+    border: 2px solid #fd0d99;
+    color: #fd0d99;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-pink:hover {
+    background-color: #fd0d99;
+    color: white;
+}
 
     </style>
 </head>
@@ -70,11 +81,9 @@
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-       <nav id="sidebarMedecin"
-     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
-     tabindex="-1">
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar shadow-sm px-3 position-fixed top-0 start-0 h-100 border-end sidebar-collapsible">
   <div class="d-flex flex-column justify-content-between h-100 w-100">
-
+<br>
     {{-- Logo & Titre --}}
     <div>
       <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
@@ -166,7 +175,7 @@
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMedecin" aria-controls="sidebarMedecin">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
-            <main class="px-3 px-md-5 py-4 ms-md-0">
+           <main class="col-md-9 offset-md-3 col-lg-10 offset-lg-2 px-3 px-md-5 py-4">
                     @if(session()->has('success'))
     <div class="alert alert-success alert-dismissible fade show">
         {{ session('success') }}
@@ -252,13 +261,18 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <div class="row g-2 mb-3">
-  <div class="row align-items-end g-2 mb-4">
-  <div class="col-md-5">
-    <input type="text" id="rechercheRendezVousMedecin" class="form-control" placeholder="🔍 Rechercher un rendez-vous (patiente, motif...)">
+  <div class="row g-3 align-items-end mb-4 p-3 rounded-4 shadow-sm border bg-white">
+  <!-- Champ de recherche -->
+  <div class="col-12 col-md-5">
+    <label for="rechercheRendezVousMedecin" class="form-label fw-semibold text-muted">🔍 Rechercher</label>
+    <input type="text" id="rechercheRendezVousMedecin" class="form-control rounded-pill px-4 py-2 shadow-sm"
+           placeholder="Patiente, motif, etc.">
   </div>
 
-  <div class="col-md-4">
-    <select id="filtreStatutMedecin" class="form-select">
+  <!-- Filtre par statut -->
+  <div class="col-12 col-md-4">
+    <label for="filtreStatutMedecin" class="form-label fw-semibold text-muted">🎯 Statut</label>
+    <select id="filtreStatutMedecin" class="form-select rounded-pill px-4 py-2 shadow-sm">
       <option value="">Tous les statuts</option>
       <option value="confirmé">Confirmés</option>
       <option value="en attente">En attente</option>
@@ -266,12 +280,15 @@
     </select>
   </div>
 
-  <div class="col-md-3 d-grid">
-    <button id="filtrerAujourdhuiMedecin" class="btn btn-outline-primary">
-      📅 Rendez-vous d’aujourd’hui
+  <!-- Bouton "Aujourd’hui" -->
+  <div class="col-12 col-md-3 d-grid">
+    <label class="form-label invisible">.</label>
+    <button id="filtrerAujourdhuiMedecin" class="btn btn-outline-pink rounded-pill fw-semibold shadow-sm">
+      📅 Aujourd’hui
     </button>
   </div>
 </div>
+
 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                    <table id="tableRendezVousMedecin" class="table align-middle mb-0 table-hover">
                         <thead class="table-light">
@@ -378,7 +395,6 @@
       📅 Rendez-vous d’aujourd’hui
     </button>
   </div>
-</div>
 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
            <table id="tableModalRendezVous" class="table align-middle mb-0 table-hover">
                 <thead class="table-light">
@@ -441,7 +457,7 @@
     </div>
   </div>
 </div>
-
+</div>
 <!-- Modal Mes Patientes -->
 <div class="modal fade" id="modalPatientes" tabindex="-1" aria-labelledby="modalPatientesLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -454,6 +470,11 @@
       </div>
       <div class="modal-body">
         <div class="table-responsive">
+            <div class="mb-3">
+  <input type="text" id="filtrePatientes" class="form-control rounded-pill px-4 py-2 shadow-sm"
+         placeholder="🔍 Rechercher une patiente (nom, prénom, email...)">
+</div>
+
             <table class="table align-middle mb-0 table-hover">
     <thead class="table-light">
         <tr>
@@ -1903,6 +1924,22 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<!-- script de filtrage patiente-->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('filtrePatientes');
+    const rows = document.querySelectorAll('#modalPatientes tbody tr');
+
+    input.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    });
+});
+</script>
 
 </body>
 

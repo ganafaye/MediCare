@@ -6,8 +6,12 @@
   <title>MediCare - Clinique Gynéco Obstétrique </title>
   @vite('resources/css/app.css')
   @vite('resources/js/app.js')
-
   <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
+  <style>
+    html {
+        scroll-behavior: smooth;
+    }
+  </style>
 </head>
 <body>
 <!--  header . -->
@@ -29,14 +33,16 @@
                     <a class="nav-link fw-semibold px-4 py-2 rounded-pill nav-anim active" href="#">Accueil</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link fw-semibold px-4 py-2 rounded-pill nav-anim" href="#">À propos</a>
+                    <a class="nav-link fw-semibold px-4 py-2 rounded-pill nav-anim" href="#services">À propos</a>
                 </li>
                 <li class="nav-item me-3">
-                    <a class="nav-link fw-semibold px-4 py-2 rounded-pill nav-anim" href="#">Contact</a>
+                    <a class="nav-link fw-semibold px-4 py-2 rounded-pill nav-anim" href="#contact">Contact</a>
                 </li>
             </ul>
             <!-- Bouton d'action à droite (optionnel) -->
-            <a href="#" class="btn btn-pink ms-lg-3 px-4 py-2 fw-semibold shadow-sm">Prendre rendez-vous</a>
+           <a href="#" class="btn btn-pink ms-lg-3 px-4 py-2 fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">
+             Prendre rendez-vous
+           </a>
         </div>
     </div>
 </nav>
@@ -62,7 +68,7 @@
                     <p class="fw-semibold mb-4" style="font-size: 1.1rem; color: #fd0d99;">
                     🩺 MediCare, l’innovation au service de votre bien-être !
                     </p>
-                    <a href="#" class="btn btn-pink btn-lg shadow px-4 py-2">
+                    <a href="#" class="btn btn-pink btn-lg shadow px-4 py-2" data-bs-toggle="modal" data-bs-target="#modalLoginPatiente">
                         Prendre rendez-vous
                     </a>
                 </div>
@@ -78,7 +84,7 @@
         </section>
 
    <!-- Section pour presenter les services de medicare  -->
-   <section class="services-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
+   <section id="services" class="services-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <h2 class="text-center mb-5 fw-bold" style="color: #fd0d99;">
             <span class="me-2">✨</span>Découvrez nos services<span class="ms-2">✨</span>
@@ -291,7 +297,7 @@
 
 <!-- contact section -->
 
-<section class="contact-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
+<section id="contact" class="contact-section py-5 section-fade" style="background: linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%);">
     <div class="container">
         <div class="row justify-content-center align-items-stretch">
 
@@ -313,10 +319,10 @@
             <!-- Colonne droite : Formulaire de contact -->
 
             <div class="col-lg-6 d-flex flex-column align-items-stretch">
-                <h4 class="contact-title text-center mb-4">
-                    <i class="bi bi-envelope-fill me-2" style="color:#0d6efd;"></i>
-                    Contactez-nous
-                </h4>
+                <h5 class="contact-title text-center mb-4 fw-normal" style="font-size:1.1rem; color:#333;">
+    <i class="bi bi-envelope-fill me-2" style="color:#0d6efd; font-size:1.3rem;"></i>
+    <span class="fst-italic">Une question&nbsp;? Un témoignage&nbsp;? <strong>Nous sommes à votre écoute</strong></span>
+</h5>
                 <div class="contact-card bg-white bg-opacity-90 rounded-4 shadow-lg p-4 p-md-5 mx-auto w-100 flex-grow-1">
                     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show text-center" role="alert">

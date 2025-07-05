@@ -21,6 +21,13 @@
   color: #fd0d99;
   font-weight: 500;
 }
+/* Décale le contenu principal à droite du sidebar sur desktop */
+@media (min-width: 768px) {
+  .ms-md-250 {
+    margin-left: 250px !important;
+  }
+}
+
 
     </style>
 </head>
@@ -28,11 +35,10 @@
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-       <nav id="sidebarSecretaire"
-     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
-     tabindex="-1">
-  <div class="d-flex flex-column justify-content-between h-100 w-100">
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar shadow-sm px-3 position-fixed top-0 start-0 h-100 border-end sidebar-collapsible">
 
+  <div class="d-flex flex-column justify-content-between h-100 w-100">
+<br>
     {{-- En-tête --}}
     <div>
       <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
@@ -97,12 +103,12 @@
 </nav>
 
         <!-- Contenu principal -->
-        <div class="col px-0">
+<div id="main-content">
             <!-- Bouton menu mobile -->
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarSecretaire" aria-controls="sidebarSecretaire">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
-            <main class="px-3 px-md-5 py-4 ms-md-0">
+            <main class="col-md-9 offset-md-3 col-lg-10 offset-lg-2 px-3 px-md-5 py-4">
                  @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
         {{ session('success') }}
@@ -1010,7 +1016,6 @@
     </div>
 </div>
 @endforeach
-
 <style>
 .hover-shadow:hover {
     box-shadow: 0 0 0 4px #fd0d9922, 0 4px 24px #fd0d9933 !important;
@@ -1158,7 +1163,6 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
-
 @vite('resources/js/app.js')
 </body>
 </html>

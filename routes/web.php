@@ -313,3 +313,15 @@ Route::get('/admin/messages', [AdminAuthController::class, 'afficherMessages'])
 Route::delete('/admin/messages/{id}', [AdminAuthController::class, 'supprimerMessage'])
     ->name('admin.messages.supprimer')
     ->middleware('auth:admin');
+
+
+// Route pour publier message par l'admin
+use App\Models\Message;
+
+Route::post('/admin/messages/{id}/temoignage', function ($id) {
+    $message = Message::findOrFail($id);
+    $message->temoignage = true;
+    $message->save();
+
+    return response()->json(['success' => true, 'message' => $message]);
+})->name('admin.messages.temoignage');

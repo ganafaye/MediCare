@@ -25,84 +25,92 @@
     </style>
 </head>
 <body style="background: #f8fafc; min-height:100vh;">
-
 <div class="container-fluid">
     <button class="btn btn-outline-pink d-md-none ms-2 mb-3" id="toggleSidebar">
   <i class="bi bi-list fs-4"></i>
 </button>
-
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-       <nav class="col-12 col-md-3 col-lg-2 sidebar shadow-sm py-4 px-3 bg-white border-end position-relative" style="min-height:100vh;">
-  <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-  <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height: 40px;">
-  <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
-</div>
+<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-white sidebar shadow-sm px-3 position-fixed top-0 start-0 h-100 border-end sidebar-collapsible">
+  <div class="d-flex flex-column h-100 justify-content-between">
+    <!-- Haut du menu -->
+    <div>
+      <div class="d-flex align-items-center justify-content-center gap-2 mb-4 mt-3">
+        <img src="{{ asset('image/logo medecin.png') }}" alt="Logo" style="width: 40px; height: 40px;">
+        <h4 class="mb-0 fw-bold" style="color:#fd0d99;">MediCare</h4>
+      </div>
 
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+            <i class="bi bi-speedometer2 fs-5"></i>
+            <span>Tableau de bord</span>
+          </a>
+        </li>
 
-  <ul class="nav flex-column">
-    <li class="nav-item mb-2">
-      <a class="nav-link d-flex align-items-center gap-2 active" href="#">
-        <i class="bi bi-speedometer2 fs-5"></i>
-        <span>Tableau de bord</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionPatientes">
-        <i class="bi bi-people-fill fs-5"></i>
-        <span>Gestion patientes</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionMedecins">
-        <i class="bi bi-person-badge-fill fs-5"></i>
-        <span>Gestion médecins</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionSecretaires">
-        <i class="bi bi-person-lines-fill fs-5"></i>
-        <span>Gestion secrétaires</span>
-      </a>
-    </li>
-    <li class="nav-item mb-2">
-      <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRendezVous">
-        <i class="bi bi-calendar-check-fill fs-5"></i>
-        <span>Rendez-vous</span>
-      </a>
-    </li>
-    <li class="nav-item">
-    <a href="#" class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#messagesModal">
-        <span><i class="bi bi-envelope-fill me-2"></i> Voir messages</span>
-        @if($messages->count() > 0)
-           <span id="messageBadge" class="badge bg-danger rounded-pill">{{ $messages->count() }}</span>
-        @endif
-    </a>
-</li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionPatientes">
+            <i class="bi bi-people-fill fs-5"></i>
+            <span>Gestion patientes</span>
+          </a>
+        </li>
 
-   <li class="nav-item">
-  <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalEditProfilAdmin">
-    <i class="bi bi-person-circle me-2"></i>
-    Modifier mon profil
-  </a>
-</li>
-   {{-- Déconnexion en bas --}}
-    <div class="mt-auto pt-3 border-top">
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionMedecins">
+            <i class="bi bi-person-badge-fill fs-5"></i>
+            <span>Gestion médecins</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionSecretaires">
+            <i class="bi bi-person-lines-fill fs-5"></i>
+            <span>Gestion secrétaires</span>
+          </a>
+        </li>
+
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalGestionRendezVous">
+            <i class="bi bi-calendar-check-fill fs-5"></i>
+            <span>Rendez-vous</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="#" class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#messagesModal">
+            <span><i class="bi bi-envelope-fill me-2"></i> Voir messages</span>
+            @if($messages->count() > 0)
+              <span id="messageBadge" class="badge bg-danger rounded-pill">{{ $messages->count() }}</span>
+            @endif
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalEditProfilAdmin">
+            <i class="bi bi-person-circle me-2"></i>
+            Modifier mon profil
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bas du menu (Déconnexion) -->
+    <div class="border-top pt-3">
       <form id="logout-form" action="{{ route('logout') }}" method="POST">
         @csrf
-       <button type="submit" class="nav-link text-danger"
+        <button type="submit" class="nav-link text-danger w-100 text-start"
                 style="border: none; background: none; cursor: pointer;"
                 onclick="return confirm('Êtes-vous sûr de vouloir vous déconnecter ?');">
-            <i class="bi bi-box-arrow-right me-2"></i>
-          <span>Déconnexion</span>
+          <i class="bi bi-box-arrow-right me-2"></i>
+          Déconnexion
         </button>
       </form>
     </div>
-  </ul>
-</nav>
 
+  </div>
+</nav>
         <!-- Contenu principal -->
-        <main class="col px-3 px-md-5 py-4 ms-md-0">
+       <main class="col-md-9 offset-md-3 col-lg-10 offset-lg-2 px-3 px-md-5 py-4">
          @if (session('success'))
   <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
     <i class="bi bi-check-circle-fill me-2"></i>

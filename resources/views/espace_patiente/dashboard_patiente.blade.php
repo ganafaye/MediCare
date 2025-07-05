@@ -62,18 +62,36 @@
     width: 250px;
   }
 }
+.btn-outline-pink {
+    border: 2px solid #fd0d99;
+    color: #fd0d99;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-pink:hover {
+    background-color: #fd0d99;
+    color: white;
+}
 
 </style>
 </head>
 <body style="background:linear-gradient(120deg, #f8fafc 60%, #fde6f2 100%); min-height:100vh;">
+    <!-- Bouton hamburger (mobile uniquement) -->
+<button class="btn btn-outline-pink d-md-none position-fixed top-0 start-0 m-3 z-4" id="toggleSidebar">
+  <i class="bi bi-list" style="font-size: 1.5rem;"></i>
+</button>
+
+<!-- Overlay pour mobile -->
+<div id="sidebarOverlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-none z-2"></div>
+
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <!-- Sidebar -->
-      <nav id="sidebarPatiente"
-     class="col-12 col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-white shadow-sm px-3 py-4 border-end d-flex flex-column vh-100 position-md-fixed z-3"
-     tabindex="-1">
-  <div class="d-flex flex-column justify-content-between h-100">
+     <nav id="sidebar" class="sidebar bg-white shadow-sm border-end position-fixed top-0 start-0 h-100 px-3 col-12 col-md-3 col-lg-2 d-none d-md-block z-3">
 
+  <div class="d-flex flex-column justify-content-between h-100">
+<br>
     {{-- Logo & en-tête --}}
     <div>
       <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
@@ -163,6 +181,28 @@
     </div>
   </div>
 </nav>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (toggleBtn && sidebar && overlay) {
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('d-none');
+            sidebar.classList.toggle('d-block');
+            overlay.classList.toggle('d-none');
+        });
+
+        overlay.addEventListener('click', function () {
+            sidebar.classList.add('d-none');
+            sidebar.classList.remove('d-block');
+            overlay.classList.add('d-none');
+        });
+    }
+});
+</script>
+
 
         <!-- Contenu principal -->
         <div class="col px-0">
@@ -170,7 +210,7 @@
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarPatiente" aria-controls="sidebarPatiente">
                 <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
-            <main class="px-3 px-md-5 py-4 ms-md-0">
+            <main class="col-md-9 offset-md-3 col-lg-10 offset-lg-2 px-3 px-md-5 py-4">
                 @if(session()->has('success'))
     <div class="alert alert-success alert-dismissible fade show">
         {{ session('success') }}
@@ -322,13 +362,18 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <div class="row align-items-end g-2 mb-4">
-  <div class="col-md-5">
-    <input type="text" id="rechercheRendezVousPatiente" class="form-control" placeholder="🔍 Rechercher un rendez-vous (médecin, date...)">
+                                    <div class="row g-3 align-items-end mb-4 p-3 rounded-4 shadow-sm border bg-white">
+  <!-- Champ de recherche -->
+  <div class="col-12 col-md-5">
+    <label for="rechercheRendezVousPatiente" class="form-label fw-semibold text-muted">🔍 Rechercher</label>
+    <input type="text" id="rechercheRendezVousPatiente" class="form-control rounded-pill px-4 py-2 shadow-sm"
+           placeholder="Médecin, date, etc.">
   </div>
 
-  <div class="col-md-4">
-    <select id="filtreStatutPatiente" class="form-select">
+  <!-- Filtre par statut -->
+  <div class="col-12 col-md-4">
+    <label for="filtreStatutPatiente" class="form-label fw-semibold text-muted">🎯 Statut</label>
+    <select id="filtreStatutPatiente" class="form-select rounded-pill px-4 py-2 shadow-sm">
       <option value="">Tous les statuts</option>
       <option value="confirmé">Confirmés</option>
       <option value="en attente">En attente</option>
@@ -336,12 +381,13 @@
     </select>
   </div>
 
-  <div class="col-md-3 d-grid">
-    <button id="filtrerAujourdhuiPatiente" class="btn btn-outline-primary">
-      📅 Rendez-vous d’aujourd’hui
+  <!-- Bouton "Aujourd'hui" -->
+  <div class="col-12 col-md-3 d-grid">
+    <label class="form-label invisible">.</label>
+    <button id="filtrerAujourdhuiPatiente" class="btn btn-outline-pink rounded-pill fw-semibold shadow-sm">
+      📅 Aujourd’hui
     </button>
   </div>
-</div>
 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
     <table id="tableRendezVousPatiente" class="table align-middle mb-0 table-hover">
 
@@ -423,13 +469,18 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                        <div class="row align-items-end g-2 mb-3">
-  <div class="col-md-5">
-    <input type="text" id="rechercheModalRendezVousPatiente" class="form-control" placeholder="🔍 Rechercher un rendez-vous (médecin, motif...)">
+                       <div class="row g-3 align-items-end mb-3 p-3 rounded-4 shadow-sm border bg-white">
+  <!-- Champ de recherche -->
+  <div class="col-12 col-md-5">
+    <label for="rechercheModalRendezVousPatiente" class="form-label fw-semibold text-muted">🔍 Rechercher</label>
+    <input type="text" id="rechercheModalRendezVousPatiente" class="form-control rounded-pill px-4 py-2 shadow-sm"
+           placeholder="Médecin, motif, etc.">
   </div>
 
-  <div class="col-md-4">
-    <select id="filtreStatutModalPatiente" class="form-select">
+  <!-- Filtre par statut -->
+  <div class="col-12 col-md-4">
+    <label for="filtreStatutModalPatiente" class="form-label fw-semibold text-muted">🎯 Statut</label>
+    <select id="filtreStatutModalPatiente" class="form-select rounded-pill px-4 py-2 shadow-sm">
       <option value="">Tous les statuts</option>
       <option value="confirmé">Confirmés</option>
       <option value="en attente">En attente</option>
@@ -437,12 +488,15 @@
     </select>
   </div>
 
-  <div class="col-md-3 d-grid">
-    <button id="filtrerAujourdhuiModalPatiente" class="btn btn-outline-primary">
+  <!-- Bouton "Aujourd’hui" -->
+  <div class="col-12 col-md-3 d-grid">
+    <label class="form-label invisible">.</label>
+    <button id="filtrerAujourdhuiModalPatiente" class="btn btn-outline-pink rounded-pill fw-semibold shadow-sm">
       📅 Aujourd’hui
     </button>
   </div>
 </div>
+
 
                     <table id="tableModalRendezVousPatiente" class="table align-middle mb-0 table-hover">
                         <thead class="table-light">
@@ -679,8 +733,11 @@
   <li class="list-group-item"><strong>Groupe sanguin :</strong> {{ $patiente->groupe_sanguin ?? '--' }}</li>
 </ul>
         <div class="text-end">
-          <a href="#" class="btn btn-pink rounded-pill">Modifier mes infos</a>
-        </div>
+  <a href="#" class="btn btn-pink rounded-pill disabled" tabindex="-1" aria-disabled="true">
+    Modifier mes infos
+  </a>
+</div>
+
       </div>
     </div>
   </div>
