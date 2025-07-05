@@ -232,7 +232,11 @@
                                 <i class="bi bi-file-earmark-medical mb-2" style="font-size:2.5rem; color:#fd0d99;"></i>
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Consultations</h5>
                                 <p class="fw-bold fs-4 mb-2">--</p>
-                                <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow">Voir mes consultations</a>
+                               <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow"
+   data-bs-toggle="modal" data-bs-target="#modalConsultations">
+   Voir mes consultations
+</a>
+
                             </div>
                         </div>
                     </div>
@@ -247,7 +251,29 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0 table-hover">
+                    <div class="row g-2 mb-3">
+  <div class="row align-items-end g-2 mb-4">
+  <div class="col-md-5">
+    <input type="text" id="rechercheRendezVousMedecin" class="form-control" placeholder="🔍 Rechercher un rendez-vous (patiente, motif...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutMedecin" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiMedecin" class="btn btn-outline-primary">
+      📅 Rendez-vous d’aujourd’hui
+    </button>
+  </div>
+</div>
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                   <table id="tableRendezVousMedecin" class="table align-middle mb-0 table-hover">
                         <thead class="table-light">
                             <tr>
                                 <th>Date</th>
@@ -277,6 +303,7 @@
                             @endforeach
                         </tbody>
                     </table>
+</div>
                 </div>
             </div>
         </div>
@@ -332,7 +359,28 @@
       </div>
       <div class="modal-body">
         <div class="table-responsive">
-            <table class="table align-middle mb-0 table-hover">
+            <div class="row align-items-end g-2 mb-4">
+  <div class="col-md-5">
+    <input type="text" id="rechercheModalRendezVous" class="form-control" placeholder="🔍 Rechercher un rendez-vous (patiente, motif...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutModal" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiModal" class="btn btn-outline-primary">
+      📅 Rendez-vous d’aujourd’hui
+    </button>
+  </div>
+</div>
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+           <table id="tableModalRendezVous" class="table align-middle mb-0 table-hover">
                 <thead class="table-light">
                     <tr>
                         <th>Date</th>
@@ -387,6 +435,7 @@
 </tbody>
 
             </table>
+        </div>
         </div>
       </div>
     </div>
@@ -1776,6 +1825,81 @@ document.addEventListener("DOMContentLoaded", function () {
             badge.classList.add('d-none');
         });
     }
+});
+</script>
+
+<!-- script de filtrage rendez vous-->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheRendezVousMedecin');
+    const filtreStatut = document.getElementById('filtreStatutMedecin');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiMedecin');
+    const lignes = document.querySelectorAll('#tableRendezVousMedecin tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)').textContent.trim();
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheModalRendezVous');
+    const filtreStatut = document.getElementById('filtreStatutModal');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiModal');
+    const lignes = document.querySelectorAll('#tableModalRendezVous tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)').textContent.trim();
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
 });
 </script>
 

@@ -9,6 +9,9 @@ use App\Models\Patiente;
 use App\Models\Medecin;
 use App\Models\Facture;
 use Illuminate\Support\Facades\DB;
+use App\Models\Message;
+
+
 class DashboardAdminController extends Controller
 {
     public function index()
@@ -38,7 +41,7 @@ class DashboardAdminController extends Controller
     // Consultations par médecin
   $consultationsParMedecin = DB::table('rendez_vous')
     ->join('medecins', 'rendez_vous.medecin_id', '=', 'medecins.id')
-    ->selectRaw("medecins.nom AS medecin, COUNT(*) AS total")
+     ->selectRaw("CONCAT('Dr.',medecins.prenom, ' ', medecins.nom) AS medecin, COUNT(*) AS total")
     ->groupBy('medecin')
     ->pluck('total', 'medecin')
     ->toArray();
@@ -65,6 +68,11 @@ $revenuTotal = Facture::sum('montant');
 // Nombre total de factures émises
 $nombreFactures = Facture::count();
 
-        return view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous' , 'revenusParMois', 'revenuTotal', 'nombreFactures'));
+$messages = Message::latest()->take(10)->get(); // ou paginate si tu veux
+        return view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous' , 'revenusParMois', 'revenuTotal', 'nombreFactures' ,'messages'));
     }
+
+
+
+
 }

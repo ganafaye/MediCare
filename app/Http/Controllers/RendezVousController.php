@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\RendezVous;
 use App\Notifications\RendezVousCreePatiente;
 use App\Notifications\RendezVousValidePatiente;
+use App\Notifications\NouveauRendezVousNotification;
+use App\Notifications\ConfirmationAnnulationPatiente;
+use App\Notifications\RendezVousAnnuleParMedecin;
+use App\Notifications\RendezVousAnnuleParAdminOuSecretaire;
+
 class RendezVousController extends Controller
 {
     // Afficher les rendez-vous pour chaque rôle
@@ -63,7 +68,7 @@ class RendezVousController extends Controller
     {
         $rendezvous = RendezVous::where('id', $id)->where('secretaire_id', Auth::id())->firstOrFail();
         $rendezvous->update(['statut' => 'annulé']);
-
+        $rendezvous->patiente->notify(new RendezVousAnnuleParAdminOuSecretaire($rendezvous, 'la secrétaire')); // ou 'l’administrateur'
         return back()->with('success', 'Rendez-vous annulé avec succès.');
     }
 
@@ -74,6 +79,7 @@ class RendezVousController extends Controller
                             ->firstOrFail();
 
     $rendezvous->update(['statut' => 'annulé']);
+    $rendezvous->patiente->notify(new ConfirmationAnnulationPatiente($rendezvous));
 
     return back()->with('success', 'Votre rendez-vous a été annulé avec succès !');
 }
@@ -86,13 +92,17 @@ public function cancelByMedecin($id)
 
     $rendezvous->update(['statut' => 'annulé']);
 
+    $rendezvous->patiente->notify(new RendezVousAnnuleParMedecin($rendezvous));
+
     return back()->with('success', 'Rendez-vous annulé avec succès !');
 }
 public function deleteByAdmin($id)
 {
     $rendezvous = RendezVous::findOrFail($id);
     $rendezvous->delete();
+$rendezvous->update(['statut' => 'annulé']);
 
+$rendezvous->patiente->notify(new RendezVousAnnuleParAdminOuSecretaire($rendezvous, 'l’administrateur')); // ou 'l’administrateur'
     return back()->with('success', 'Rendez-vous supprimé avec succès.');
 }
 

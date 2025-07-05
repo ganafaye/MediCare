@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Administrateur;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
 
 class AdminAuthController extends Controller
 {
@@ -60,5 +61,16 @@ class AdminAuthController extends Controller
     return redirect()->route('dashboard.admin')->with('success', 'Profil mis à jour avec succès.');
 }
 
+public function afficherMessages()
+{
+    $messages = Message::latest()->get();
+    return view('admin.messages.index', compact('messages'));
+}
+
+public function supprimerMessage($id)
+{
+    Message::findOrFail($id)->delete();
+    return back()->with('success', '🗑️ Message supprimé avec succès.');
+}
 
 }

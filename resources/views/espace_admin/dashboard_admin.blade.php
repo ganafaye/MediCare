@@ -71,6 +71,15 @@
         <span>Rendez-vous</span>
       </a>
     </li>
+    <li class="nav-item">
+    <a href="#" class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="modal" data-bs-target="#messagesModal">
+        <span><i class="bi bi-envelope-fill me-2"></i> Voir messages</span>
+        @if($messages->count() > 0)
+           <span id="messageBadge" class="badge bg-danger rounded-pill">{{ $messages->count() }}</span>
+        @endif
+    </a>
+</li>
+
    <li class="nav-item">
   <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalEditProfilAdmin">
     <i class="bi bi-person-circle me-2"></i>
@@ -129,31 +138,40 @@
             <div class="row">
                 <!-- Widgets statistiques -->
                 <div class="col-12 col-md-4 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-people-fill" style="font-size:2rem; color:#fd0d99;"></i>
-                            <h5 class="mt-2">Nombre de patientes</h5>
-                            <p class="fw-bold fs-4">{{ $nombrePatientes }}</p>
-                        </div>
-                    </div>
+                    <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+                     style="width: 60px; height: 60px; background-color: #ffe6f0;">
+                    <i class="bi bi-people-fill" style="font-size: 1.8rem; color: #fd0d99;"></i>
+                </div>
+                <h6 class="text-muted">Nombre de patientes</h6>
+                <p class="fw-bold fs-3 text-dark mb-0">{{ $nombrePatientes }}</p>
+            </div>
+        </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-person-badge-fill" style="font-size:2rem; color:#fd0d99;"></i>
-                            <h5 class="mt-2">Nombre de médecins</h5>
-                             <p class="fw-bold fs-4">{{ $nombreMedecins }}</p>
-                        </div>
-                    </div>
+                    <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+                     style="width: 60px; height: 60px; background-color: #e6f4ff;">
+                    <i class="bi bi-person-badge-fill" style="font-size: 1.8rem; color: #0d6efd;"></i>
+                </div>
+                <h6 class="text-muted">Nombre de médecins</h6>
+                <p class="fw-bold fs-3 text-dark mb-0">{{ $nombreMedecins }}</p>
+            </div>
+        </div>
                 </div>
                 <div class="col-12 col-md-4 mb-4">
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body text-center">
-                            <i class="bi bi-calendar-check-fill" style="font-size:2rem; color:#fd0d99;"></i>
-                            <h5 class="mt-2">Rendez-vous aujourd'hui</h5>
-                            <p class="fw-bold fs-4">{{ $rendezVousDuJour }}</p>
-                        </div>
-                    </div>
+                     <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+                     style="width: 60px; height: 60px; background-color: #e6ffe6;">
+                    <i class="bi bi-calendar-check-fill" style="font-size: 1.8rem; color: #28a745;"></i>
+                </div>
+                <h6 class="text-muted">Rendez-vous aujourd'hui</h6>
+                <p class="fw-bold fs-3 text-dark mb-0">{{ $rendezVousDuJour }}</p>
+            </div>
+        </div>
                 </div>
             </div>
 
@@ -394,6 +412,9 @@
             </button>
         </div>
         <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <div class="mb-3">
+  <input type="text" id="filtrePatientes" class="form-control" placeholder="🔍 Rechercher une patiente (nom, email, téléphone...)">
+</div>
            <table class="table table-sm   table-hover align-middle mb-0">
                 <thead class="table-light text-center">
                     <tr>
@@ -743,7 +764,27 @@
             </button>
         </div>
        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-  <table class="table align-middle mb-0 table-hover">
+<table id="tableRendezVous" class="table align-middle mb-0 table-hover">
+    <div class="row g-2 mb-3">
+  <div class="col-md-6">
+    <input type="text" id="rechercheRendezVous" class="form-control" placeholder="🔍 Rechercher un rendez-vous (nom, date, motif...)">
+  </div>
+  <div class="col-md-4">
+    <select id="filtreStatut" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+  <button id="filtrerAujourdhui" class="btn btn-outline-primary w-100">
+    📅 Aujourd’hui
+  </button>
+</div>
+
+</div>
+
     <thead class="table-light position-sticky top-0 z-1">
         <tr>
             <th>Date</th>
@@ -1162,69 +1203,260 @@
 </div>
 @endforeach
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Rendez-vous par mois (Bar chart)
-       var ctx1 = document.getElementById("rendezvousChart").getContext("2d");
-new Chart(ctx1, {
-    type: "bar",
-    data: {
-        labels: [ "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"], // ✅ Ne prend que les mois jusqu'à juin
-        datasets: [{
-            label: "Rendez-vous",
-            data: @json(array_values($rendezvousParMois)),
-            backgroundColor: "rgba(54, 162, 235, 0.5)",
-            borderColor: "rgba(54, 162, 235, 1)",
-            borderWidth: 1
-        }]
-    }
+   document.addEventListener("DOMContentLoaded", function () {
+    const ctx1 = document.getElementById("rendezvousChart").getContext("2d");
 
+    new Chart(ctx1, {
+        type: "bar",
+        data: {
+            labels: ["Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+            datasets: [{
+                label: "Rendez-vous",
+                data: @json(array_values($rendezvousParMois)),
+                backgroundColor: "rgba(75, 192, 192, 0.6)", // Vert menthe
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+                borderRadius: 8, // Coins arrondis
+                barPercentage: 0.6,
+                categoryPercentage: 0.5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return ` ${context.parsed.y} rendez-vous`;
+                        }
+                    }
+                },
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: "#f0f0f0"
+                    },
+                    ticks: {
+                        stepSize: 5,
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: "easeOutQuart"
+            }
+        }
+    });
+});
+</script>
+<script>
+        // Répartition des âges des patientes (Pie chart)
+// Répartition des âges des patientes (Pie chart)
+var ctx2 = document.getElementById("ageChart").getContext("2d");
+
+new Chart(ctx2, {
+    type: "pie",
+    data: {
+        labels: @json(array_keys($repartitionAgePatientes)), // Ex: ["18–25 ans", "26–35 ans", ...]
+        datasets: [{
+            label: "Répartition des âges",
+            data: @json(array_values($repartitionAgePatientes)),
+            backgroundColor: [
+                "#ff6384", // Rouge
+                "#36a2eb", // Bleu
+                "#ffce56", // Jaune
+                "#4bc0c0", // Turquoise
+                "#9966ff"  // Violet
+            ],
+            borderColor: "#fff",
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                font: {
+                    size: 18,
+                    weight: "bold"
+                },
+                padding: {
+                    top: 10,
+                    bottom: 20
+                }
+            },
+            legend: {
+                display: true,
+                position: "bottom",
+                labels: {
+                    font: {
+                        size: 14
+                    },
+                    padding: 15
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const value = context.parsed;
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${context.label} : ${value} patientes (${percent}%)`;
+                    }
+                }
+            }
+        }
+    }
 });
 
 
-        // Répartition des âges des patientes (Pie chart)
-        var ctx2 = document.getElementById("ageChart").getContext("2d");
-        new Chart(ctx2, {
-            type: "pie",
-            data: {
-                labels: @json(array_keys($repartitionAgePatientes)),
-                datasets: [{
-                    label: "Répartition des âges",
-                    data: @json(array_values($repartitionAgePatientes)),
-                    backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff"],
-                }]
-            }
-        });
-
+</script>
+<script>
         // Consultations par médecin (Bar chart)
-       var ctx3 = document.getElementById("medecinsChart").getContext("2d");
+      var ctx3 = document.getElementById("medecinsChart").getContext("2d");
+
 new Chart(ctx3, {
     type: "bar",
     data: {
-        labels: @json(array_keys($consultationsParMedecin)), // 🔥 Affiche les noms des médecins
+        labels: @json(array_keys($consultationsParMedecin)), // Noms des médecins
         datasets: [{
             label: "Consultations",
             data: @json(array_values($consultationsParMedecin)),
-            backgroundColor: "rgba(75, 192, 192, 0.5)",
-            borderColor: "rgba(75, 192, 192, 1)",
-            borderWidth: 1
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+            borderRadius: 6,
+            barThickness: 24
         }]
+    },
+    options: {
+        indexAxis: 'y', // ✅ Barres horizontales
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: "👨‍⚕️ Consultations par médecin",
+                font: {
+                    size: 18,
+                    weight: "bold"
+                },
+                padding: {
+                    top: 10,
+                    bottom: 20
+                }
+            },
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.label} : ${context.parsed.x} consultations`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    font: {
+                        size: 14
+                    }
+                },
+                grid: {
+                    color: "#f0f0f0"
+                }
+            },
+            y: {
+                ticks: {
+                    font: {
+                        size: 14
+                    }
+                },
+                grid: {
+                    display: false
+                }
+            }
+        },
+        animation: {
+            duration: 1000,
+            easing: "easeOutQuart"
+        }
     }
 });
 
+</script>
+<script>
         // Taux de rendez-vous honorés vs annulés (Doughnut chart)
-        var ctx4 = document.getElementById("tauxChart").getContext("2d");
-        new Chart(ctx4, {
-            type: "doughnut",
-            data: {
-                labels: ["Confirmés", "Annulés"],
-                datasets: [{
-                    label: "Taux Rendez-vous",
-                    data: @json(array_values($tauxRendezVous)),
-                    backgroundColor: ["#28a745", "#dc3545"]
-                }]
+     var ctx4 = document.getElementById("tauxChart").getContext("2d");
+
+new Chart(ctx4, {
+    type: "doughnut",
+    data: {
+        labels: ["Confirmés", "Annulés"],
+        datasets: [{
+            label: "Taux Rendez-vous",
+            data: @json(array_values($tauxRendezVous)),
+            backgroundColor: [
+                "rgba(40, 167, 69, 0.7)",  // Vert (confirmés)
+                "rgba(220, 53, 69, 0.7)"   // Rouge (annulés)
+            ],
+            borderColor: "#fff",
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+
+            legend: {
+                position: "bottom",
+                labels: {
+                    font: {
+                        size: 14
+                    },
+                    padding: 15
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const value = context.parsed;
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${context.label} : ${value} (${percent}%)`;
+                    }
+                }
             }
-        });
-    });
+        },
+        animation: {
+            duration: 1000,
+            easing: "easeOutBounce"
+        }
+    }
+});
 
 </script>
 @vite('resources/js/app.js')
@@ -1232,11 +1464,11 @@ new Chart(ctx3, {
 <div class="modal fade" id="modalEditProfilAdmin" tabindex="-1" aria-labelledby="modalEditProfilAdminLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow-sm rounded-4">
-      <div class="modal-header bg-primary text-white rounded-top-4">
+      <div class="modal-header bg-light border-bottom rounded-top-4">
         <h5 class="modal-title fw-bold" id="modalEditProfilAdminLabel">
           <i class="bi bi-person-circle me-2"></i> Modifier mon profil
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
 
       <form method="POST" action="{{ route('admin.profil.update') }}">
@@ -1293,6 +1525,151 @@ new Chart(ctx3, {
     </div>
   </div>
 </div>
+<!--modal voir message -->
+<div class="modal fade" id="messagesModal" tabindex="-1" aria-labelledby="messagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content shadow">
+            <div class="modal-header  text-white">
+                <h5 class="modal-title" id="messagesModalLabel">📩 Messages de contact</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <div class="modal-body">
+                @if($messages->isEmpty())
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-1"></i>
+                        <p class="mt-2">Aucun message pour le moment.</p>
+                    </div>
+                @else
+                    <div class="list-group">
+                        @foreach($messages as $msg)
+                            <div class="list-group-item py-3">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                    <div class="me-3">
+                                        <h6 class="mb-1">{{ $msg->nom }} <small class="text-muted">({{ $msg->email }})</small></h6>
+                                        <p class="mb-1 text-muted">{{ Str::limit($msg->message, 80) }}</p>
+                                        <small class="text-muted">{{ $msg->created_at->format('d/m/Y H:i') }}</small>
+                                    </div>
+
+                                   <div class="d-flex flex-wrap gap-2 justify-content-end">
+                                        {{-- 🔍 Voir --}}
+                                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#voirMessage{{ $msg->id }}">
+                                            Voir
+                                        </button>
+
+                                        {{-- ✉️ Répondre --}}
+                                        <a href="mailto:{{ $msg->email }}?subject=Réponse à votre message&body=Bonjour {{ $msg->nom }},%0D%0A%0D%0AVotre message a bien été reçu. Voici notre réponse :"
+                                           class="btn btn-sm btn-outline-primary">
+                                           Répondre
+                                        </a>
+
+                                        {{-- 🗑️ Supprimer --}}
+                                        <form method="POST" action="{{ route('admin.messages.supprimer', $msg->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer ce message ?')">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach($messages as $msg)
+<div class="modal fade" id="voirMessage{{ $msg->id }}" tabindex="-1" aria-labelledby="voirMessageLabel{{ $msg->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voirMessageLabel{{ $msg->id }}">📨 Message de {{ $msg->nom }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Email :</strong> {{ $msg->email }}</p>
+                <p><strong>Message :</strong><br>{{ $msg->message }}</p>
+                <p class="text-muted"><small>Envoyé le {{ $msg->created_at->format('d/m/Y à H:i') }}</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+<!--scripte masquer badge message -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('messagesModal');
+    const badge = document.getElementById('messageBadge');
+
+    modal.addEventListener('show.bs.modal', function () {
+        if (badge) {
+            badge.classList.add('d-none'); // Cache le badge
+        }
+    });
+});
+</script>
+<!--scripte de filtrage -->
+<!--scripte de filtrage -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheRendezVous');
+    const filtreStatut = document.getElementById('filtreStatut');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhui');
+    const lignes = document.querySelectorAll('#tableRendezVous tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(6)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-CA'); // format YYYY-MM-DD
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)').textContent.trim(); // colonne date
+            const [jour, mois, annee] = dateTexte.split('/');
+            const dateFormatee = `${annee}-${mois.padStart(2, '0')}-${jour.padStart(2, '0')}`;
+
+            ligne.style.display = (dateFormatee === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
+});
+
+</script>
+<!-- scripte de filtrage -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('filtrePatientes');
+    const lignes = document.querySelectorAll('table tbody tr');
+
+    input.addEventListener('keyup', function () {
+        const filtre = this.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            ligne.style.display = texte.includes(filtre) ? '' : 'none';
+        });
+    });
+});
+</script>
 
 
 </body>

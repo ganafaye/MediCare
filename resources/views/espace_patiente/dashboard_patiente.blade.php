@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - {{ auth('patiente')->user()->prenom ?? 'Patiente' }} {{ auth('patiente')->user()->nom ?? '' }} - MediCare</title>
+    <title>Dashboard Patiente- {{ auth('patiente')->user()->prenom ?? 'Patiente' }} {{ auth('patiente')->user()->nom ?? '' }} - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
 <style>
@@ -123,11 +123,11 @@
         </li>
 
         <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" href="#">
-            <i class="bi bi-person-circle fs-5"></i>
-            <span>Mes informations</span>
-          </a>
-        </li>
+  <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalInfos">
+    <i class="bi bi-person-circle fs-5"></i>
+    <span>Mes informations</span>
+  </a>
+</li>
 
         <li class="nav-item mb-2">
           <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#notificationsModal">
@@ -297,7 +297,7 @@
                                 <h5 class="mt-2 mb-1 fw-bold" style="color:#fd0d99;">Mes informations</h5>
                                 <a href="#" class="btn btn-outline-pink btn-sm rounded-pill px-4 shadow mt-2"
                                    data-bs-toggle="modal" data-bs-target="#modalInfos">
-                                    Modifier mes infos
+                                    voir mon profil
                                 </a>
                             </div>
                         </div>
@@ -322,7 +322,29 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table align-middle mb-0 table-hover">
+                                    <div class="row align-items-end g-2 mb-4">
+  <div class="col-md-5">
+    <input type="text" id="rechercheRendezVousPatiente" class="form-control" placeholder="🔍 Rechercher un rendez-vous (médecin, date...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutPatiente" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiPatiente" class="btn btn-outline-primary">
+      📅 Rendez-vous d’aujourd’hui
+    </button>
+  </div>
+</div>
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+    <table id="tableRendezVousPatiente" class="table align-middle mb-0 table-hover">
+
     <thead class="table-light">
         <tr>
             <th>Date</th>
@@ -333,11 +355,11 @@
         </tr>
     </thead>
     <tbody>
-        @forelse($rendezvous as $rdv)
+        @forelse($rendezvous->sortByDesc('date_heure') as $rdv)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
                 <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
-                <td>{{ $rdv->medecin->nom ?? 'Non spécifié' }}</td>
+                <td>{{ $rdv->medecin ? 'Dr. ' . $rdv->medecin->prenom . ' ' . $rdv->medecin->nom : 'Non spécifié' }}</td>
                 <td>
                     @if($rdv->statut === 'confirmé')
                         <span class="badge bg-success">Confirmé</span>
@@ -358,6 +380,7 @@
         @endforelse
     </tbody>
 </table>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -399,7 +422,29 @@
         <div class="card shadow border-0 rounded-4">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table align-middle mb-0 table-hover">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <div class="row align-items-end g-2 mb-3">
+  <div class="col-md-5">
+    <input type="text" id="rechercheModalRendezVousPatiente" class="form-control" placeholder="🔍 Rechercher un rendez-vous (médecin, motif...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutModalPatiente" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiModalPatiente" class="btn btn-outline-primary">
+      📅 Aujourd’hui
+    </button>
+  </div>
+</div>
+
+                    <table id="tableModalRendezVousPatiente" class="table align-middle mb-0 table-hover">
                         <thead class="table-light">
                             <tr>
                                 <th>Date</th>
@@ -411,11 +456,11 @@
                             </tr>
                         </thead>
                        <tbody>
-    @foreach($rendezvous as $rdv)
+   @foreach($rendezvous->sortByDesc('date_heure') as $rdv)
     <tr>
         <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
         <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
-        <td>{{ $rdv->medecin->nom }} - {{ $rdv->medecin->specialite }}</td>
+        <td>{{$rdv->medecin ? 'Dr. ' . $rdv->medecin->prenom . ' ' . $rdv->medecin->nom : 'Non spécifié'}} - {{ $rdv->medecin->specialite }}</td>
         <td>{{ $rdv->motif }}</td>
         <td>
             @if($rdv->statut == 'confirmé')
@@ -447,6 +492,7 @@
     @endforeach
 </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         </div>
@@ -988,6 +1034,80 @@ document.addEventListener("DOMContentLoaded", function () {
             badge.classList.add('bg-secondary');
         });
     }
+});
+</script>
+<!-- script de recherche -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheRendezVousPatiente');
+    const filtreStatut = document.getElementById('filtreStatutPatiente');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiPatiente');
+    const lignes = document.querySelectorAll('#tableRendezVousPatiente tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(4)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)').textContent.trim();
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheModalRendezVousPatiente');
+    const filtreStatut = document.getElementById('filtreStatutModalPatiente');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiModalPatiente');
+    const lignes = document.querySelectorAll('#tableModalRendezVousPatiente tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)').textContent.trim();
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
 });
 </script>
 

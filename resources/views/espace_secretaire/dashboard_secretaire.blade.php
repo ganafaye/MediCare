@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Dashboard - {{ auth('secretaire')->user()->prenom ?? 'Secrétaire' }} {{ auth('secretaire')->user()->nom ?? '' }} - MediCare</title>
+   <title>Dashboard Sec - {{ auth('secretaire')->user()->prenom ?? 'Secrétaire' }} {{ auth('secretaire')->user()->nom ?? '' }} - MediCare</title>
     @vite('resources/css/app.css')
     <link rel="icon" type="image/png" href="{{ asset('image/logo medecin.png') }}">
     <style>
@@ -177,10 +177,31 @@
 
                 <!-- Tableau des rendez-vous du jour (exemple) -->
              <div class="table-responsive shadow-sm rounded-4" style="max-height: 400px; overflow-y: auto;">
-    <table class="table table-hover align-middle mb-0">
+                <div class="row align-items-end g-2 mb-4">
+  <div class="col-md-5">
+    <input type="text" id="rechercheRendezVousSecretaire" class="form-control" placeholder="🔍 Rechercher (patiente, médecin, motif...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutSecretaire" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiSecretaire" class="btn btn-outline-primary">
+      📅 Rendez-vous d’aujourd’hui
+    </button>
+  </div>
+</div>
+
+    <table id="tableRendezVousSecretaire" class="table table-hover align-middle mb-0">
         <thead class="table-light sticky-top">
             <tr>
-                <th class="text-pink fw-bold">Heure</th>
+               <th class="text-pink fw-bold">Date</th>
                 <th class="text-pink fw-bold">Patiente</th>
                 <th class="text-pink fw-bold">Médecin</th>
                 <th class="text-pink fw-bold">Motif</th>
@@ -191,7 +212,7 @@
         <tbody>
             @foreach($rendezvous as $rdv)
             <tr class="shadow-sm">
-                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}</td>
+                <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
                 <td>{{ $rdv->patiente->prenom }} {{ $rdv->patiente->nom }}</td>
                 <td>Dr. {{ $rdv->medecin->prenom }} {{ $rdv->medecin->nom }}</td>
                 <td>{{ $rdv->motif }}</td>
@@ -267,8 +288,28 @@
                                 <i class="bi bi-plus-circle me-2"></i>Nouveau rendez-vous
                             </button>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0 table-hover">
+                       <div class="table-responsive shadow-sm rounded-4" style="max-height: 400px; overflow-y: auto;">
+                            <div class="row align-items-end g-2 mb-3">
+  <div class="col-md-5">
+    <input type="text" id="rechercheModalRendezVousSecretaire" class="form-control" placeholder="🔍 Rechercher (patiente, médecin, motif...)">
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtreStatutModalSecretaire" class="form-select">
+      <option value="">Tous les statuts</option>
+      <option value="confirmé">Confirmés</option>
+      <option value="en attente">En attente</option>
+      <option value="annulé">Annulés</option>
+    </select>
+  </div>
+
+  <div class="col-md-3 d-grid">
+    <button id="filtrerAujourdhuiModalSecretaire" class="btn btn-outline-primary">
+      📅 Aujourd’hui
+    </button>
+  </div>
+</div>
+                            <table id="tableModalRendezVousSecretaire" class="table align-middle mb-0 table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Date</th>
@@ -389,8 +430,11 @@
                                 <i class="bi bi-plus-circle me-2"></i>Ajouter une patiente
                             </button>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0 table-hover">
+                         <div class="table-responsive shadow-sm rounded-4" style="max-height: 400px; overflow-y: auto;">
+                             <div class="mb-3">
+    <input type="text" id="filtrePatientes" class="form-control" placeholder="🔍 Rechercher une patiente (nom, email, téléphone...)">
+  </div>
+                           <table id="tablePatientes" class="table align-middle mb-0 table-hover">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Nom</th>
@@ -984,7 +1028,7 @@
         new Chart(ctx1, {
             type: "bar",
             data: {
-                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                labels: ["Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc","Jan", "Fév", "Mar", "Avr", "Mai", ],
                 datasets: [{
                     label: "Rendez-vous",
                     data: window.rdvParMois,
@@ -1021,6 +1065,97 @@ document.addEventListener("DOMContentLoaded", function() {
     patienteSelect.addEventListener("change", function() {
         nouvellePatienteForm.style.display = (patienteSelect.value === "new") ? "block" : "none";
     });
+});
+</script>
+<!--Script de recherche --->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheRendezVousSecretaire');
+    const filtreStatut = document.getElementById('filtreStatutSecretaire');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiSecretaire');
+    const lignes = document.querySelectorAll('#tableRendezVousSecretaire tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)')?.textContent?.trim();
+            if (!dateTexte) return;
+
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rechercheInput = document.getElementById('rechercheModalRendezVousSecretaire');
+    const filtreStatut = document.getElementById('filtreStatutModalSecretaire');
+    const boutonAujourdhui = document.getElementById('filtrerAujourdhuiModalSecretaire');
+    const lignes = document.querySelectorAll('#tableModalRendezVousSecretaire tbody tr');
+
+    function filtrerTable() {
+        const recherche = rechercheInput.value.toLowerCase();
+        const statut = filtreStatut.value.toLowerCase();
+
+        lignes.forEach(function (ligne) {
+            const texte = ligne.textContent.toLowerCase();
+            const ligneStatut = ligne.querySelector('td:nth-child(6)').textContent.toLowerCase();
+
+            const correspondRecherche = texte.includes(recherche);
+            const correspondStatut = !statut || ligneStatut.includes(statut);
+
+            ligne.style.display = (correspondRecherche && correspondStatut) ? '' : 'none';
+        });
+    }
+
+    function filtrerAujourdhui() {
+        const aujourdHui = new Date().toLocaleDateString('fr-FR'); // format DD/MM/YYYY
+
+        lignes.forEach(function (ligne) {
+            const dateTexte = ligne.querySelector('td:nth-child(1)')?.textContent?.trim();
+            ligne.style.display = (dateTexte === aujourdHui) ? '' : 'none';
+        });
+    }
+
+    rechercheInput.addEventListener('keyup', filtrerTable);
+    filtreStatut.addEventListener('change', filtrerTable);
+    boutonAujourdhui.addEventListener('click', filtrerAujourdhui);
+});
+</script>
+<!-- recherche patiente-->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('filtrePatientes');
+  const lignes = document.querySelectorAll('#tablePatientes tbody tr');
+
+  input.addEventListener('keyup', function () {
+    const filtre = this.value.toLowerCase();
+
+    lignes.forEach(function (ligne) {
+      const texte = ligne.textContent.toLowerCase();
+      ligne.style.display = texte.includes(filtre) ? '' : 'none';
+    });
+  });
 });
 </script>
 

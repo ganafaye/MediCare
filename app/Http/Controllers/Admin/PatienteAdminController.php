@@ -32,8 +32,10 @@ class PatienteAdminController extends Controller
             'profession' => $request->profession,
             'password' => Hash::make($request->password),
         ]);
+        // ✅ On stocke le mot de passe en clair pour l’email
+        $motDePasse = $request->password;
 
-        $patiente->notify(new \App\Notifications\BienvenueCreeeParAdmin());
+       $patiente->notify(new \App\Notifications\BienvenueCreeeParAdmin($motDePasse));
 
         return back()->with('success', 'Patiente créée avec succès !');
 

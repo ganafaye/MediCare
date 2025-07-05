@@ -6,7 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-
+use Eluceo\iCal\Domain\Entity\Event;
+use Eluceo\iCal\Domain\Entity\Calendar;
+use Eluceo\iCal\Domain\ValueObject\DateTime as ICalDateTime;
+use Eluceo\iCal\Domain\ValueObject\TimeSpan;
+use Eluceo\iCal\Domain\ValueObject\Location;
+use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 class RendezVousCreePatiente extends Notification
 {
     use Queueable;
@@ -33,22 +38,40 @@ class RendezVousCreePatiente extends Notification
     /**
      * Get the mail representation of the notification.
      */
-public function toMail($notifiable)
-    {
-        $date = \Carbon\Carbon::parse($this->rendezvous->date_heure)->format('d/m/Y à H\hi');
-        $medecin = $this->rendezvous->medecin->prenom . ' ' . $this->rendezvous->medecin->nom;
+  public function toMail($notifiable)
+{
+    $start = new \DateTime($this->rendezvous->date_heure);
+    $end = (clone $start)->modify('+30 minutes');
 
-        return (new MailMessage)
-            ->subject('📅 Votre rendez-vous MediCare est enregistré')
-            ->greeting("Bonjour {$notifiable->prenom} {$notifiable->nom},")
-            ->line("Votre demande de rendez-vous a été enregistrée avec succès.")
-            ->line("🗓️ Date et heure : **{$date}**")
-            ->line("👨‍⚕️ Médecin : **Dr. {$medecin}**")
-            ->line("⏳ Statut actuel : *En attente de confirmation*")
-            ->action('Voir mes rendez-vous', url('/patiente/rendez-vous'))
-            ->salutation("Merci pour votre confiance 💙
-— L’équipe MediCare");
-    }
+    $event = new Event();
+    $event->setSummary('Rendez-vous MediCare');
+    $event->setDescription('Consultation avec Dr. ' . $this->rendezvous->medecin->nom);
+    $event->setLocation(new Location('Clinique MediCare')); // ✅ Objet Location requis
+    $event->setOccurrence(new TimeSpan(
+        new ICalDateTime($start, false), // ✅ Ajout du second argument requis
+        new ICalDateTime($end, false)
+    ));
+
+    $calendar = new Calendar([$event]);
+    $calendarFactory = new CalendarFactory();
+    $icsContent = $calendarFactory->createCalendar($calendar);
+
+    // Enregistre le fichier temporairement
+    $icsPath = storage_path('app/public/rendezvous_' . $this->rendezvous->id . '.ics');
+    file_put_contents($icsPath, $icsContent);
+
+    return (new MailMessage)
+        ->subject('📅 Votre rendez-vous a été enregistré')
+        ->greeting("Bonjour {$notifiable->prenom},")
+        ->line("Votre rendez-vous a bien été enregistré.")
+        ->line("🗓️ Vous pouvez l’ajouter à votre calendrier en cliquant ci-dessous.")
+        ->attach($icsPath, [
+            'as' => 'rendezvous-medicare.ics',
+            'mime' => 'text/calendar',
+        ])
+        ->action('Voir mes rendez-vous', url('/dashboard_patiente'))
+        ->salutation("Merci de votre confiance 💙\n— L’équipe MediCare");
+}
 
     /**
      * Get the array representation of the notification.

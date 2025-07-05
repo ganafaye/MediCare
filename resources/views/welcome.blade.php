@@ -318,22 +318,31 @@
                     Contactez-nous
                 </h4>
                 <div class="contact-card bg-white bg-opacity-90 rounded-4 shadow-lg p-4 p-md-5 mx-auto w-100 flex-grow-1">
-                    <form>
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control contact-input" placeholder="Votre nom" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="email" class="form-control contact-input" placeholder="Votre email" required>
-                            </div>
-                            <div class="col-md-12">
-                                <textarea class="form-control contact-input" rows="4" placeholder="Votre message" required></textarea>
-                            </div>
-                            <div class="col-md-12 text-center">
-                                <button type="submit" class="btn btn-pink btn-lg px-5 shadow">Envoyer</button>
-                            </div>
-                        </div>
-                    </form>
+                    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+@endif
+
+                    <form action="{{ route('contact.envoyer') }}" method="POST">
+    @csrf
+    <div class="row g-4">
+        <div class="col-md-6">
+            <input type="text" name="nom" class="form-control contact-input" placeholder="Votre nom" required>
+        </div>
+        <div class="col-md-6">
+            <input type="email" name="email" class="form-control contact-input" placeholder="Votre email" required>
+        </div>
+        <div class="col-md-12">
+            <textarea name="message" class="form-control contact-input" rows="4" placeholder="Votre message" required></textarea>
+        </div>
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-pink btn-lg px-5 shadow">Envoyer</button>
+        </div>
+    </div>
+</form>
+
                 </div>
             </div>
         </div>

@@ -291,3 +291,25 @@ Route::middleware(['auth:patiente'])->group(function () {
 Route::post('/modifier_profil_admin', [AdminAuthController::class, 'update'])
     ->name('admin.profil.update')
     ->middleware('auth:admin');
+
+
+//Route pour le formulaire de contact
+use App\Http\Controllers\ContactController;
+
+// 🔹 Envoi du formulaire de contact (page d’accueil)
+Route::post('/contact', [ContactController::class, 'envoyer'])->name('contact.envoyer');
+
+// 🔹 Dashboard admin (protégé par auth:admin)
+Route::get('/dashboard_admin', [DashboardAdminController::class, 'index'])
+    ->name('dashboard.admin')
+    ->middleware('auth:admin');
+
+// 🔹 Affichage des messages dans le dashboard admin
+Route::get('/admin/messages', [AdminAuthController::class, 'afficherMessages'])
+    ->name('admin.messages')
+    ->middleware('auth:admin');
+
+// 🔹 Suppression d’un message
+Route::delete('/admin/messages/{id}', [AdminAuthController::class, 'supprimerMessage'])
+    ->name('admin.messages.supprimer')
+    ->middleware('auth:admin');

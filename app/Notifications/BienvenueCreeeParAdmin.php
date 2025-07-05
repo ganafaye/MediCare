@@ -14,10 +14,12 @@ class BienvenueCreeeParAdmin extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
-        //
-    }
+   protected $motDePasse;
+
+public function __construct($motDePasse)
+{
+    $this->motDePasse = $motDePasse;
+}
 
     /**
      * Get the notification's delivery channels.
@@ -36,9 +38,13 @@ class BienvenueCreeeParAdmin extends Notification
     {
         return (new MailMessage)
             ->subject('👩‍⚕️ Votre profil MediCare a été créé')
-            ->greeting("Bonjour {$notifiable->prenom},")
+            ->greeting("Bonjour {$notifiable->prenom} {$notifiable->nom},")
             ->line("🩺 Un membre de notre équipe MediCare vient de créer votre compte.")
             ->line("Vous pouvez dès maintenant accéder à votre espace santé personnel en ligne.")
+            ->line("Voici vos identifiants de connexion :")
+            ->line("📧 Email : **{$notifiable->email}**")
+            ->line("🔑 Mot de passe temporaire : **{$this->motDePasse}**")
+            ->line("⚠️ Pensez à le modifier dès votre première connexion.")
             ->line("📅 Suivez vos rendez-vous, téléchargez vos documents, gérez votre dossier médical en toute simplicité.")
             ->action('Accéder à mon espace', url('/connexion'))
             ->salutation("À bientôt sur MediCare,\n— L’équipe MediCare 💙");
