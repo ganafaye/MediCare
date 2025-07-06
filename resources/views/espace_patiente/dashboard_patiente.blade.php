@@ -203,8 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-
-        <!-- Contenu principal -->
+      <!-- Contenu principal -->
         <div class="col px-0">
             <!-- Bouton menu mobile -->
             <button class="btn btn-outline-pink d-md-none mb-3 ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarPatiente" aria-controls="sidebarPatiente">
@@ -226,7 +225,6 @@ document.addEventListener('DOMContentLoaded', function () {
 @endif
 
                 <h2 class="fw-bold mb-4" style="color:#fd0d99;"></h2>
-
                 <!-- En-tête stylisé -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 p-4 rounded-4 shadow" style="background: linear-gradient(90deg, #fde6f2 60%, #fff 100%); border-left: 6px solid #fd0d99;">
                     <div class="d-flex align-items-center gap-3">

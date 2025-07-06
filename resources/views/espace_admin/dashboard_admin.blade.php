@@ -1423,13 +1423,14 @@ new Chart(ctx3, {
 new Chart(ctx4, {
     type: "doughnut",
     data: {
-        labels: ["Confirmés", "Annulés"],
+        labels: ["Confirmés", "Annulés" ,"en attente"],
         datasets: [{
             label: "Taux Rendez-vous",
             data: @json(array_values($tauxRendezVous)),
-            backgroundColor: [
-                "rgba(40, 167, 69, 0.7)",  // Vert (confirmés)
-                "rgba(220, 53, 69, 0.7)"   // Rouge (annulés)
+           backgroundColor: [
+                "rgba(40, 167, 69, 0.7)",   // Vert
+                "rgba(220, 53, 69, 0.7)",   // Rouge
+                "rgba(255, 193, 7, 0.7)"    // Jaune (en attente)
             ],
             borderColor: "#fff",
             borderWidth: 2
@@ -1662,7 +1663,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 <!-- scripte de filtrage -->
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById('filtrePatientes');

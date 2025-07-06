@@ -20,7 +20,7 @@
         <!-- Logo -->
         <a class="navbar-brand fw-bold d-flex align-items-center text-primary" href="#">
             <img src="image/logo medecin.png" alt="Logo MediCare" style="height: 40px;" class="me-2">
-            MediCare
+           <h4 class="fw-bold mb-0" style="color:#fd0d99;">MediCare</h4>
         </a>
         <!-- Bouton mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

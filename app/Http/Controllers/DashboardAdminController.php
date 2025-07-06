@@ -52,6 +52,8 @@ class DashboardAdminController extends Controller
     $tauxRendezVous = [
         "confirmés" => RendezVous::where("statut", "confirmé")->count(),
         "annulés" => RendezVous::where("statut", "annulé")->count(),
+        "En attente" => DB::table('rendez_vous')->where("statut", "en_attente")->count(),
+
     ];
 
     // Revenus par mois (année en cours)

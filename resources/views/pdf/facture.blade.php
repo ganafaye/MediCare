@@ -28,7 +28,7 @@
         <div class="facture-info">
             <p><strong>Numéro de Facture :</strong> {{ $facture->id }}</p>
             <p><strong>Date d'Émission :</strong> {{ \Carbon\Carbon::parse($facture->created_at)->format('d/m/Y H:i') }}</p>
-            <p><strong>Statut :</strong> {{ $facture->status }}</p>
+            <p><strong>Statut :</strong> {{ $facture->statu }}</p>
         </div>
         <div class="separator"></div>
         <div class="header">
