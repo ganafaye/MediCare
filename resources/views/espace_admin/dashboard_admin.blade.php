@@ -381,7 +381,62 @@
                     <h5 class="card-title mb-4" style="color:#fd0d99;">
                         <i class="bi bi-pie-chart-fill me-2"></i>Répartition patientes par âge
                     </h5>
-                    <canvas id="ageChart" class="chart-canvas-circle"></canvas>
+                  <div class="d-flex justify-content-center">
+  <div id="ageChart" style="width: 400px; height: 400px;"></div>
+</div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+                    @php
+  $labels = array_keys(array_filter($repartitionAgePatientes, fn($v) => $v > 0));
+  $values = array_values(array_filter($repartitionAgePatientes, fn($v) => $v > 0));
+@endphp
+
+<script>
+  const chartDom = document.getElementById('ageChart');
+  const ageChart = echarts.init(chartDom);
+
+  const ageLabels = @json($labels);
+  const ageValues = @json($values);
+
+  const pieData = ageLabels.map((label, index) => ({
+    name: label,
+    value: ageValues[index]
+  }));
+
+  const option = {
+
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b} : {c} patientes ({d}%)'
+    },
+    legend: {
+      orient: 'horizontal',
+      bottom: 10
+    },
+    series: [
+      {
+        name: 'Tranche d’âge',
+        type: 'pie',
+        radius: '60%',
+        data: pieData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        },
+        label: {
+          formatter: '{b} : {d}%'
+        }
+      }
+    ]
+  };
+
+  ageChart.setOption(option);
+</script>
+
                 </div>
             </div>
         </div>
