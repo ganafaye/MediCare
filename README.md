@@ -69,19 +69,60 @@ routes/
 
 ### Tableau de bord médecin
 
-![Dashboard médecin](https://raw.githubusercontent.com/ganafaye/MediCare/main/screenshots/dashboard-medecin.png)
+<img width="1910" height="1961" alt="FireShot Capture 025 - Dashboard -Dr  Gana Faye - MediCare medecin -  127 0 0 1" src="https://github.com/user-attachments/assets/bdb69e90-2fa3-4a18-b703-a1580f5c4e98" />
 
-### Suivi de grossesse
 
-![Suivi grossesse](https://raw.githubusercontent.com/ganafaye/MediCare/main/screenshots/suivi-grossesse.png)
+### Tableau de bord patiente 
 
-### Prise de rendez-vous
+![Capture d’écran_5-7-2025_101424_127 0 0 1](https://github.com/user-attachments/assets/512c3bb9-b55c-4197-9ef2-b17bf08cc269)
 
-![Rendez-vous](https://raw.githubusercontent.com/ganafaye/MediCare/main/screenshots/prise-rdv.png)
+### Prise de rendez-vous par la patiente
+
+<img width="1910" height="1559" alt="FireShot Capture 016 - Dashboard Patiente- Gana Faye - MediCare rendez vous -  127 0 0 1" src="https://github.com/user-attachments/assets/d72ae3cd-b550-4d89-abe3-b648ab40fbc1" />
+<img width="839" height="678" alt="FireShot Capture 017 - Dashboard Patiente- Gana Faye - MediCare prise de rendez vous -  127 0 0 1" src="https://github.com/user-attachments/assets/f9ecdd30-504c-4c93-84c0-3da0006f1975" />
+
+
+### Gestion des documents par la patiente
+
+<img width="1910" height="1559" alt="FireShot Capture 019 - Dashboard Patiente- Gana Faye - MediCare -liste des documents  127 0 0 1" src="https://github.com/user-attachments/assets/80c9f6a1-7324-47c6-9f2a-eefb255fbbc8" />
+
+
+### Suivi grossesse par la patiente 
+
+<img width="1750" height="3389" alt="FireShot Capture 048 - Suivi de grossesse - MediCare -  127 0 0 1" src="https://github.com/user-attachments/assets/fcf10cd3-dce7-4738-97ac-71dfb6fc97ef" />
+
+
 
 ### Interface secrétaire
 
-![Secretaire](https://raw.githubusercontent.com/ganafaye/MediCare/main/screenshots/dashboard-secretaire.png)
+<img width="1910" height="1627" alt="FireShot Capture 041 - Dashboard Sec - gana faye - MediCare -  127 0 0 1 " src="https://github.com/user-attachments/assets/5aa3de2c-74df-4859-949f-87721df893c8" />
+
+### Interface secrétaire gestion rendez vous 
+
+<img width="1910" height="1627" alt="FireShot Capture 042 - Dashboard Sec - gana faye - MediCare -  127 0 0 1" src="https://github.com/user-attachments/assets/0b7bc776-9809-4111-8435-16a1d3bbb8be" />
+
+<img width="1910" height="1627" alt="FireShot Capture 043 - Dashboard Sec - gana faye - MediCare -  127 0 0 1" src="https://github.com/user-attachments/assets/677d0af2-1494-4188-ac3f-835fd6221ecc" />
+
+### Interface secrétaire gestion facture du clinique 
+
+<img width="1910" height="1627" alt="FireShot Capture 047 - Dashboard Sec - gana faye - MediCare -  127 0 0 1" src="https://github.com/user-attachments/assets/035abd80-b200-4bb2-b779-7cf411689d69" />
+
+
+### Interface admin
+
+<img width="1910" height="2399" alt="FireShot Capture 034 - Dashboard - Admin - MediCare -  127 0 0 1" src="https://github.com/user-attachments/assets/0252f0db-62f7-44e0-99c4-ddb5daee7fa9" />
+
+### Interface sadmin gestion des users  
+
+<img width="1910" height="2396" alt="FireShot Capture 035 - Dashboard - Admin - MediCare gestion patiente -  127 0 0 1" src="https://github.com/user-attachments/assets/e4dabb36-21e5-4f3c-9106-f9904e9285f6" />
+
+<img width="1910" height="2396" alt="FireShot Capture 038 - Dashboard - Admin - MediCare -  127 0 0 1  medecin gestion" src="https://github.com/user-attachments/assets/bd69ad27-7e10-4a85-90a8-ce8ddd568d61" />
+
+<img width="1910" height="2396" alt="FireShot Capture 040 - Dashboard - Admin - MediCare -  127 0 0 1  secretaire" src="https://github.com/user-attachments/assets/711185fe-1b4f-4c9d-8023-0eaa96054c19" />
+
+### Interface sadmin gestion des rendez vous par l'admin
+
+![Capture d’écran_5-7-2025_15562_127 0 0 1](https://github.com/user-attachments/assets/7e4c213c-634b-4166-bbc0-0e8b559b1122)
 
 ---
 
