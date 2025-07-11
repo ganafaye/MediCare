@@ -120,9 +120,15 @@ routes/
 
 <img width="1910" height="2396" alt="FireShot Capture 040 - Dashboard - Admin - MediCare -  127 0 0 1  secretaire" src="https://github.com/user-attachments/assets/711185fe-1b4f-4c9d-8023-0eaa96054c19" />
 
-### Interface sadmin gestion des rendez vous par l'admin
+### Interface admin gestion des rendez vous par l'admin
 
 ![Capture d’écran_5-7-2025_15562_127 0 0 1](https://github.com/user-attachments/assets/7e4c213c-634b-4166-bbc0-0e8b559b1122)
+
+
+### Exemple de discussion avec ChatBot
+
+![Capture d’écran_5-7-2025_15322_127 0 0 1](https://github.com/user-attachments/assets/84d38c39-77d4-48f2-930c-1d34b5038f5f)
+
 
 ---
 
