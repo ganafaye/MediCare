@@ -100,12 +100,43 @@
           </a>
         </li>
 
-        <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalRendezVous">
-            <i class="bi bi-calendar-check fs-5"></i>
-            <span>Mes rendez-vous</span>
-          </a>
-        </li>
+       @php
+  $rendezvousAujourdHui = $rendezvous->filter(function($rdv) {
+    return \Carbon\Carbon::parse($rdv->date_heure)->isSameDay(\Carbon\Carbon::today());
+  });
+@endphp
+
+<li class="nav-item mb-2">
+  <a class="nav-link d-flex align-items-center gap-2"
+     href="#"
+     data-bs-toggle="modal"
+     data-bs-target="#modalRendezVous"
+     id="rendezvousLink">
+
+    <i class="bi bi-calendar-check fs-5"></i>
+    <span>Mes rendez-vous</span>
+
+    @if($rendezvousAujourdHui->isNotEmpty())
+      <span class="badge bg-info rounded-pill ms-auto" id="rendezvousBadge">
+        +{{ $rendezvousAujourdHui->count() }}
+      </span>
+    @endif
+  </a>
+</li>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const link = document.getElementById('rendezvousLink');
+    const badge = document.getElementById('rendezvousBadge');
+
+    if (link && badge) {
+      link.addEventListener('click', function () {
+        badge.classList.add('d-none');
+      });
+    }
+  });
+</script>
+
 
         <li class="nav-item mb-2">
           <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalPatientes">

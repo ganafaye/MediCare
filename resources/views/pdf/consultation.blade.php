@@ -38,7 +38,7 @@
             <p><strong>Tension :</strong> {{ $consultation->tension }} mmHg</p>
             <p><strong>Nombre de grossesses :</strong> {{ $consultation->nombre_grossesses }}</p>
             <p><strong>Antécédents médicaux :</strong> {{ $consultation->antecedents }}</p>
-            <p><strong>Médecin :</strong> Dr. {{ $consultation->medecin->nom }} ({{ $consultation->medecin->specialite }})</p>
+            <p><strong>Médecin :</strong> Dr.  {{ $consultation->medecin->prenom }}{{ $consultation->medecin->nom }} ({{ $consultation->medecin->specialite }})</p>
         </div>
 
         <div class="separator"></div>

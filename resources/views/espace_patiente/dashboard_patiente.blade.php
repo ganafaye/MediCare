@@ -114,12 +114,29 @@
           </a>
         </li>
 
-        <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
-            <i class="bi bi-file-medical fs-5"></i>
-            <span>Mes consultations</span>
-          </a>
-        </li>
+       <li class="nav-item mb-2">
+  <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConsultations">
+    <i class="bi bi-file-medical fs-5"></i>
+    <span>Mes consultations</span>
+
+    @if($consultations->isNotEmpty())
+      <span class="badge bg-info rounded-pill ms-auto">+{{ $consultations->count() }}</span>
+    @endif
+  </a>
+</li>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const navLink = document.querySelector('[data-bs-target="#modalConsultations"]');
+    const badge = navLink?.querySelector('.badge');
+
+    if (navLink && badge) {
+      navLink.addEventListener('click', function () {
+        badge.classList.add('d-none'); // masquage via classe Bootstrap
+      });
+    }
+  });
+</script>
+
 
         @php
           $age = $age ?? \Carbon\Carbon::parse(auth()->user()->date_naissance)->age;
@@ -134,11 +151,30 @@
         @endif
 
         <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDocuments">
-            <i class="bi bi-file-earmark-medical fs-5"></i>
-            <span>Mes documents</span>
-          </a>
-        </li>
+  <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDocuments" id="documentsLink">
+    <i class="bi bi-file-earmark-medical fs-5"></i>
+    <span>Mes documents</span>
+
+    @if($ordonnances->isNotEmpty() || $factures->isNotEmpty())
+      <span class="badge bg-info rounded-pill ms-auto" id="documentsBadge">
+        +{{ $ordonnances->count() + $factures->count() }}
+      </span>
+    @endif
+  </a>
+</li>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const link = document.getElementById('documentsLink');
+    const badge = document.getElementById('documentsBadge');
+
+    if (link && badge) {
+      link.addEventListener('click', function () {
+        badge.classList.add('d-none'); // masque le badge
+      });
+    }
+  });
+</script>
+
 
         <li class="nav-item mb-2">
   <a class="nav-link d-flex align-items-center gap-2" href="#" data-bs-toggle="modal" data-bs-target="#modalInfos">
@@ -508,6 +544,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             </tr>
                         </thead>
                        <tbody>
+                        @if($rendezvous->isEmpty())
+    <tr>
+        <td colspan="6" class="text-center text-muted">
+            Aucun rendez-vous programmé pour le moment.
+        </td>
+    </tr>
+@else
    @foreach($rendezvous->sortByDesc('date_heure') as $rdv)
     <tr>
         <td>{{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}</td>
@@ -542,6 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </td>
     </tr>
     @endforeach
+    @endif
 </tbody>
                     </table>
                 </div>
@@ -614,10 +658,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             </tr>
                         </thead>
 <tbody>
+    @if($consultations->isEmpty())
+    <tr>
+        <td colspan="6" class="text-center text-muted">
+            Aucune consultation disponible pour le moment.
+        </td>
+    </tr>
+@else
     @foreach ($consultations as $consultation)
     <tr>
         <td>{{ \Carbon\Carbon::parse($consultation->date_consultation)->format('d/m/Y') }}</td>
-        <td>Dr. {{ $consultation->medecin->nom }}</td>
+        <td>Dr. {{ $consultation->medecin->prenom }} {{ $consultation->medecin->nom }}</td>
         <td>{{ $consultation->motif }}</td>
         <td>{{ $consultation->diagnostic ?? 'Non renseigné' }}</td>
         <td>
@@ -632,6 +683,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </td>
     </tr>
     @endforeach
+    @endif
 </tbody>
                     </table>
                 </div>
@@ -665,6 +717,13 @@ document.addEventListener('DOMContentLoaded', function () {
         </tr>
     </thead>
     <tbody>
+        @if($ordonnances->isEmpty() && $factures->isEmpty())
+    <tr>
+        <td colspan="5" class="text-center text-muted">
+            <i class="bi bi-info-circle me-2"></i> Aucun document médical disponible pour le moment.
+        </td>
+    </tr>
+@else
         @foreach ($ordonnances as $ordonnance)
         <tr>
             <td>{{ \Carbon\Carbon::parse($ordonnance->date_prescription)->format('d/m/Y') }}</td>
@@ -696,6 +755,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </td>
         </tr>
         @endforeach
+        @endif
     </tbody>
 </table>
 

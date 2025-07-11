@@ -31,7 +31,7 @@
         <div class="facture-info">
             <p><strong>Patient :</strong> {{ $ordonnance->patiente->prenom }} {{ $ordonnance->patiente->nom }}</p>
             <p><strong>Date de prescription :</strong> {{ \Carbon\Carbon::parse($ordonnance->date_prescription)->format('d/m/Y') }}</p>
-            <p><strong>Médecin :</strong> Dr. {{ $ordonnance->medecin->nom }} ({{ $ordonnance->medecin->specialite }})</p>
+            <p><strong>Médecin :</strong> Dr.{{ $ordonnance->medecin->prenom }} {{ $ordonnance->medecin->nom }} ({{ $ordonnance->medecin->specialite }})</p>
         </div>
 
         <div class="separator"></div>
