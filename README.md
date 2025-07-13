@@ -65,7 +65,6 @@ routes/
 
 ## 📸 Captures d’écran
 
-> ⚠️ N’oublie pas d’ajouter les images dans `/screenshots/` ou via GitHub.
 
 ### Tableau de bord médecin
 
