@@ -132,7 +132,7 @@
                             </span>
                             <div class="d-flex gap-2 mt-1">
                                 <span class="badge rounded-pill" style="background:#fd0d991a; color:#fd0d99;">
-                                    Email : {{ Auth::guard('secretaire')->user()->email ?? '--' }}
+                                    Email : {{ Auth::guard('secretaire')->user()->email ?? '--' }} 
                                 </span>
                             </div>
                         </div>
@@ -237,11 +237,18 @@
                             data-bs-target="#modalVoirRendezVous{{ $rdv->id }}">
                         <i class="bi bi-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-success rounded-pill"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
-                        <i class="bi bi-pencil"></i>
-                    </button>
+                    @if($rdv->statut === 'en_attente')
+    <button class="btn btn-sm btn-outline-success rounded-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+        <i class="bi bi-pencil"></i>
+    </button>
+@else
+    <button class="btn btn-sm btn-outline-secondary rounded-pill" disabled title="Modification non autorisée">
+        <i class="bi bi-lock"></i>
+    </button>
+@endif
+
                 </td>
             </tr>
             @endforeach
@@ -353,11 +360,18 @@
             </button>
 
             <!-- Modifier -->
-            <button class="btn btn-sm btn-outline-success rounded-pill"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
-                <i class="bi bi-pencil"></i>
-            </button>
+           @if($rdv->statut === 'en_attente')
+    <button class="btn btn-sm btn-outline-success rounded-pill"
+            data-bs-toggle="modal"
+            data-bs-target="#modalModifierRendezVous{{ $rdv->id }}">
+        <i class="bi bi-pencil"></i>
+    </button>
+@else
+    <button class="btn btn-sm btn-outline-secondary rounded-pill" disabled title="Modification non autorisée">
+        <i class="bi bi-lock"></i>
+    </button>
+@endif
+
         </td>
     </tr>
     @endforeach
