@@ -214,9 +214,18 @@ Route::post('/rendezvous/admin/store', [RendezVousController::class, 'storeByAdm
     ->middleware('auth:admin');
 // Deconnexion des users  : administrateur, secretaire, medecin et patiente
 Route::post('/logout', function () {
-    Auth::logout(); // ✅ Déconnecte l'utilisateur
-    return redirect('/login'); // ✅ Redirige vers la page de connexion
+    foreach (['admin', 'medecin', 'secretaire', 'patiente'] as $guard) {
+        if (Auth::guard($guard)->check()) {
+            Auth::guard($guard)->logout();
+        }
+    }
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/login');
 })->name('logout');
+
 
 
 // route pour la création d'un dossier médical
