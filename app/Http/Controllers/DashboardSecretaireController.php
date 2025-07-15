@@ -13,6 +13,10 @@ class DashboardSecretaireController extends Controller
 {
      public function index()
 {
+    // 🔐 Vérification session secretaire
+        if (!Auth::guard('secretaire')->check()) {
+            return redirect('/login')->with('error', 'Session expirée. Veuillez vous reconnecter.');
+        }
     $patientes = Patiente::all();
     $medecins = Medecin::all();
     $rendezvous = RendezVous::orderBy('date_heure', 'asc')->get();
@@ -33,7 +37,11 @@ $statutRdv = [
 ];
 
    $factures = Facture::latest()->get(); // Récupère toutes les factures
-    return view('espace_secretaire.dashboard_secretaire', compact('patientes', 'medecins', 'rendezvous' , 'rdvParMois', 'statutRdv' , 'factures'));
+    return response()->view('espace_secretaire.dashboard_secretaire', compact('patientes', 'medecins', 'rendezvous' , 'rdvParMois', 'statutRdv' , 'factures'))
+    ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
+
 }
 
 }

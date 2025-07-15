@@ -10,12 +10,16 @@ use App\Models\Medecin;
 use App\Models\Facture;
 use Illuminate\Support\Facades\DB;
 use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 
 
 class DashboardAdminController extends Controller
 {
     public function index()
     {
+         if (!Auth::guard('admin')->check()) {
+        return redirect('/login')->with('error', 'Session expirée. Veuillez vous reconnecter.');
+    }
         $patientes = \App\Models\Patiente::all(); // récupère toutes les patientes
         $medecins = \App\Models\Medecin::all(); // <-- ajoute cette ligne
         $secretaires = \App\Models\Secretaire::all(); // récupère toutes les secrétaires
@@ -71,7 +75,11 @@ $revenuTotal = Facture::sum('montant');
 $nombreFactures = Facture::count();
 
 $messages = Message::latest()->take(10)->get(); // ou paginate si tu veux
-        return view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous' , 'revenusParMois', 'revenuTotal', 'nombreFactures' ,'messages'));
+        return response()->view('espace_admin.dashboard_admin', compact('patientes', 'medecins' , 'secretaires' , 'rendezvous' , 'nombrePatientes', 'nombreMedecins', 'rendezVousDuJour' , 'rendezvousParMois', 'repartitionAgePatientes', 'consultationsParMedecin', 'tauxRendezVous' , 'revenusParMois', 'revenuTotal', 'nombreFactures' ,'messages'))
+
+    ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+->header('Pragma', 'no-cache')
+->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
 

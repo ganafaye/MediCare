@@ -18,13 +18,17 @@ class DashboardMedecinController extends Controller
 {
     public function index()
     {
+        // 🔐 Sécurité : vérifie la session
+        if (!Auth::guard('medecin')->check()) {
+            return redirect('/login')->with('error', 'Session médecin expirée. Veuillez vous reconnecter.');
+        }
         $medecin_id = Auth::id();
         $patientes = Patiente::whereHas('rendezvous', function ($query) use ($medecin_id) { $query->where('medecin_id', $medecin_id);})->get();
          // 🔥 Récupérer les rendez-vous du médecin connecté
         $rendezvous = RendezVous::where('medecin_id', $medecin_id)
-                            ->where('statut', '!=', 'annulé')
-                            ->orderBy('date_heure', 'asc')
-                            ->get();
+                        ->orderBy('date_heure', 'asc')
+                        ->get();
+
 // Consultations par mois du médecin connecté
 $consultationsParMois = DB::table('rendez_vous')
     ->selectRaw("MONTH(date_heure) as mois, COUNT(*) as total")
@@ -71,9 +75,13 @@ $repartitionMotifs = DB::table('rendez_vous')
         ->latest()
         ->get();
 
-        return view('espace_medecin.dashboard_medecin' , compact('patientes' , 'rendezvous' , 'consultationsParMois', 'repartitionMotifs' , 'dossiers' ,'ordonnances' ,'consultations' , 'notifications' , 'grossesses'))
-            ->with('medecin', $medecin)
-            ->with('grossesses', $grossesses)
-            ->with('dossiers', $dossiers);
+        return response()->view('espace_medecin.dashboard_medecin', compact(
+    'medecin', 'patientes', 'rendezvous', 'consultationsParMois',
+    'repartitionMotifs', 'dossiers', 'ordonnances',
+    'consultations', 'notifications', 'grossesses'
+))
+->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+->header('Pragma', 'no-cache')
+->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 }

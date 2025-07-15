@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
-
 use App\Models\RendezVous;
 use App\Models\Medecin;
 use App\Models\DossierMedical;
@@ -19,6 +17,10 @@ class DashboardPatienteController extends Controller
 {
     public function index()
     {
+        // 🔐 Vérifie la session
+        if (!Auth::guard('patiente')->check()) {
+            return redirect('/login')->with('error', 'Session expirée. Veuillez vous reconnecter.');
+        }
         $medecins = Medecin::all();
         $rendezvous = RendezVous::where('patiente_id', Auth::id())->get();
         $patiente = auth()->user(); // Récupère la patiente connectée
@@ -55,6 +57,9 @@ class DashboardPatienteController extends Controller
             'date' => $ordonnance->created_at->format('d/m/Y à H:i'),
         ]);
     }
-        return view('espace_patiente.dashboard_patiente' , compact('rendezvous' , 'medecins' , 'dossier' , 'ordonnances' , 'consultations' , 'factures' , 'notifications'));
+        return response()->view('espace_patiente.dashboard_patiente' , compact('rendezvous' , 'medecins' , 'dossier' , 'ordonnances' , 'consultations' , 'factures' , 'notifications'))
+        ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 }
