@@ -198,6 +198,4 @@ Projet académique — Licence libre non commerciale.
 
 ---
 
-Souhaite-tu que je **crée le fichier prêt à être copié-collé ou téléchargé** ?  
-Et veux-tu que je t’aide à **uploader les captures dans le dépôt et corriger les liens d’image** ?
 ```
